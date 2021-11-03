@@ -1,9 +1,9 @@
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Stride.Graphics;
 using Stride.UI;
 using Stride.UI.Controls;
 using Stride.UI.Panels;
-using System;
 
 namespace Stride3DTutorials
 {
@@ -19,9 +19,13 @@ namespace Stride3DTutorials
             _mainCanvas.PreviewTouchUp += MainCanvasPreviewTouchUp;
             _mainCanvas.CanBeHitByUser = true;
 
-            var panel = GetPanel();
+            var font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
+
+            var panel = GetStackPanel();
 
             panel.Children.Add(GetTitle("Window 1"));
+            panel.Children.Add(GetCloseButton());
+            panel.Children.Add(GetLine());
 
             //Entity.Add(new UIComponent()
             //{
@@ -30,7 +34,7 @@ namespace Stride3DTutorials
 
             _mainCanvas.Children.Add(panel);
 
-            var position = new Vector3(0.25f, 0.25f, 0);
+            var position = new Vector3(0, 0, 0);
 
             panel.SetCanvasRelativePosition(position);
 
@@ -48,7 +52,7 @@ namespace Stride3DTutorials
 
             //SceneSystem.SceneInstance.RootScene.Entities.Add(uiEntity);
 
-            StackPanel GetPanel() => new()
+            StackPanel GetStackPanel() => new()
             {
                 BackgroundColor = new Color(0, 0, 0, 200),
                 Width = 300,
@@ -58,16 +62,31 @@ namespace Stride3DTutorials
             UIElement GetTitle(string title) => new TextBlock
             {
                 Text = title,
-                //TextSize = 12,
-                //TextColor = Color.White,
+                //Width = 50,
+                //Height = 30,
+                TextColor = Color.White,
+                TextSize = 20,
+                Font = font,
+                Margin = new Thickness(3, 3, 3, 0)
             };
+
+            UIElement GetLine() => new Border
+            {
+                BorderColor = Color.White,
+                BorderThickness = new Thickness(0, 0, 0, 2)
+            };
+
+            UIElement GetCloseButton() => new Button();
         }
 
-        private void MainCanvasPreviewTouchUp(object? sender, TouchEventArgs e) => throw new NotImplementedException();
+        private void MainCanvasPreviewTouchUp(object? sender, TouchEventArgs e)
+        {
+            Log.Info("Release mouse button");
+        }
 
         private void MainCanvasPreviewTouchMove(object? sender, TouchEventArgs e)
         {
-            throw new NotImplementedException();
+            Log.Info("Moving");
         }
 
         public override void Update()
