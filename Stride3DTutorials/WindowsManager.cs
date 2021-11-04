@@ -15,8 +15,8 @@ namespace Stride3DTutorials
 
         public override void Start()
         {
-            _mainCanvas.PreviewTouchMove += MainCanvasPreviewTouchMove;
-            _mainCanvas.PreviewTouchUp += MainCanvasPreviewTouchUp;
+            _mainCanvas.PreviewTouchMove += MainCanvas_PreviewTouchMove;
+            _mainCanvas.PreviewTouchUp += MainCanvas_PreviewTouchUp;
             _mainCanvas.CanBeHitByUser = true;
 
             var font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
@@ -28,6 +28,8 @@ namespace Stride3DTutorials
             //closeButton.SetCanvasAbsolutePosition(new Vector3(0, -1, 0));
             panel.Children.Add(closeButton);
             panel.Children.Add(GetTitle("Window 1"));
+            panel.CanBeHitByUser = true;
+            panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
             //Entity.Add(new UIComponent()
             //{
@@ -99,14 +101,27 @@ namespace Stride3DTutorials
             };
         }
 
-        private void MainCanvasPreviewTouchUp(object? sender, TouchEventArgs e)
+        private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
         {
-            Log.Info("Release mouse button");
+            _dragElement = sender as UIElement;
+            _offset = e.ScreenPosition;
+
+            //Log.Warning($"Panel Touched {e.ScreenPosition}, {e.ScreenTranslation}, {e.WorldPosition}, {e.WorldTranslation}");
+        }
+        private void MainCanvas_PreviewTouchMove(object? sender, TouchEventArgs e)
+        {
+            if (_dragElement == null) return;
+
+            var position = e.ScreenPosition;
+
+            _dragElement.SetCanvasRelativePosition((Vector3)position);
+
+            Log.Info("Moving");
         }
 
-        private void MainCanvasPreviewTouchMove(object? sender, TouchEventArgs e)
+        private void MainCanvas_PreviewTouchUp(object? sender, TouchEventArgs e)
         {
-            Log.Info("Moving");
+            _dragElement = null;
         }
 
         public override void Update()
