@@ -15,6 +15,8 @@ namespace Stride3DTutorials
 
         public override void Start()
         {
+            Log.Warning("Application Started");
+
             _mainCanvas.PreviewTouchMove += MainCanvas_PreviewTouchMove;
             _mainCanvas.PreviewTouchUp += MainCanvas_PreviewTouchUp;
             _mainCanvas.CanBeHitByUser = true;
@@ -60,7 +62,9 @@ namespace Stride3DTutorials
             {
                 BackgroundColor = new Color(0, 0, 0, 200),
                 Width = 300,
-                Height = 200
+                Height = 200,
+                DefaultWidth = 300,
+                DefaultHeight = 200
             };
 
             UIElement GetTitle(string title) => new TextBlock
@@ -104,9 +108,32 @@ namespace Stride3DTutorials
         private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
         {
             _dragElement = sender as UIElement;
-            _offset = e.ScreenPosition;
+            var touchPosition = new Vector2(_mainCanvas.ActualWidth * e.ScreenPosition.X, _mainCanvas.ActualHeight * e.ScreenPosition.Y);
+
+            var relativeElementPosition = _dragElement.GetCanvasRelativePosition();
+
+            var position = new Vector2(_mainCanvas.ActualWidth * relativeElementPosition.X, _mainCanvas.ActualHeight * relativeElementPosition.Y);
+
+            _offset = e.ScreenPosition - (Vector2)relativeElementPosition;
+
+            var distance = touchPosition - position;
+
+            var ratio = new Vector2(distance.X/300, distance.Y/200);
+
+            _dragElement.SetCanvasRelativePosition((Vector3)_offset);
+            _dragElement.SetCanvasPinOrigin((Vector3)ratio);
+
+            //_offset = (Vector2?)_dragElement.GetCanvasRelativePosition();
+
+            //_dragElement.SetCanvasRelativePosition(_dragElement.GetCanvasRelativePosition()- new Vector3(0.5f));
+            //_dragElement.SetCanvasPinOrigin(new Vector3(0.5f));
+
+            //_dragElement.SetCanvasPinOrigin((Vector3)(e.ScreenPosition - (Vector2)_dragElement.GetCanvasRelativePosition()));
+
+            Log.Warning($"Panel Touched\n{e.ScreenPosition},\n{e.ScreenTranslation},\n{e.WorldPosition},\n{e.WorldTranslation},\nPanel Anchor:{_dragElement.GetCanvasPinOrigin()},\nPanel Position:{_dragElement.GetCanvasRelativePosition()}\n{e.ScreenPosition-(Vector2)_dragElement.GetCanvasRelativePosition()}\nTouch: {distance}\n\n");
 
             //Log.Warning($"Panel Touched {e.ScreenPosition}, {e.ScreenTranslation}, {e.WorldPosition}, {e.WorldTranslation}");
+
         }
         private void MainCanvas_PreviewTouchMove(object? sender, TouchEventArgs e)
         {
@@ -114,7 +141,7 @@ namespace Stride3DTutorials
 
             var position = e.ScreenPosition;
 
-            _dragElement.SetCanvasRelativePosition((Vector3)position);
+            _dragElement.SetCanvasRelativePosition((Vector3)(position));
 
             Log.Info("Moving");
         }
