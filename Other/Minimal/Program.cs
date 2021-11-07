@@ -21,8 +21,8 @@ namespace Minimal
             var model = new Model();
             cube.Generate(game.Services, model);
 
-            var entity = new Entity();
-            entity.GetOrCreate<ModelComponent>().Model = model;
+            var cubeEntity = new Entity();
+            cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
             var camera = new CameraComponent();
             camera.Projection = CameraProjectionMode.Perspective;
@@ -59,7 +59,7 @@ namespace Minimal
             lightComponent.Type = light2;
             //lightComponent.Intensity = 800;
 
-            scene.Entities.Add(entity);
+            scene.Entities.Add(cubeEntity);
             scene.Entities.Add(directionalLightEntity);
             scene.Entities.Add(cameraEntity);
             scene.Entities.Add(skyboxEntity);

@@ -18,8 +18,6 @@ namespace DragAndDrop
             BackgroundColor = new Color(0, 0, 0, 200);
             Width = _width;
             Height = _height;
-            //DefaultWidth = _width;
-            //DefaultHeight = 200;
             CanBeHitByUser = true;
 
             this.SetCanvasRelativePosition(position ?? Vector3.Zero);

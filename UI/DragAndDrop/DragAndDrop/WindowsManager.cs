@@ -1,12 +1,20 @@
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Graphics;
+using Stride.Rendering;
+using Stride.Rendering.ProceduralModels;
 using Stride.UI;
 using Stride.UI.Controls;
 using Stride.UI.Panels;
+using System;
 
 namespace DragAndDrop
 {
+    // Do I need to remove handlers?
+    // Do I need to default the font as I did?
+    // Can we simplify anything else?
+    // Why is not my font sharp?
+    // The font is not white https://github.com/stride3d/stride/issues/1154
     public class WindowsManager : SyncScript
     {
         private readonly Canvas _mainCanvas = new() { CanBeHitByUser = true };
@@ -15,6 +23,7 @@ namespace DragAndDrop
         private Vector2? _offset;
         private int _lastZIndex = 1;
         private int _windowId = 1;
+        private Random _random = new Random();
 
         public override void Start()
         {
@@ -43,11 +52,17 @@ namespace DragAndDrop
             newWindowButton.PreviewTouchUp += NewWindowButton_PreviewTouchUp;
 
             var generateItemsButton = GetButton("Generate Items", new Vector2(10, 90));
+            generateItemsButton.PreviewTouchUp += GenerateItemsButton_PreviewTouchUp;
 
             panel.Children.Add(newWindowButton);
             panel.Children.Add(generateItemsButton);
 
             _mainCanvas.Children.Add(panel);
+        }
+
+        private void GenerateItemsButton_PreviewTouchUp(object? sender, TouchEventArgs e)
+        {
+            GenerateCube();
         }
 
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
@@ -93,6 +108,25 @@ namespace DragAndDrop
             TextAlignment = TextAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
+
+        private void GenerateCube()
+        {
+            var cube = new CubeProceduralModel();
+
+            var model = new Model();
+            cube.Generate(Services, model);
+
+            var entity = new Entity();
+            entity.Transform.Scale = new Vector3(0.1f);
+            entity.Transform.Position = new Vector3(
+                -3 + (float)(_random.NextDouble() * 6),
+                (float)(_random.NextDouble() * 1) + 2,
+                -3 + (float)(_random.NextDouble() * 6));
+
+            entity.GetOrCreate<ModelComponent>().Model = model;
+
+            Entity.AddChild(entity);
+        }
 
         public override void Update()
         {
