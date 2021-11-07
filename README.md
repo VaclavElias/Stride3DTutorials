@@ -10,8 +10,10 @@ All examples are in .NET 5 and C# 9.0.
 
 Example/Tutorial|Status
 ---------|----------
-Drag and Drop|![Research](https://img.shields.io/badge/status-in%20progress-green)
-Minimal API | ![Research](https://img.shields.io/badge/status-research-blue)
+Drag and Drop|![Research](https://img.shields.io/badge/status-review-orange?style=for-the-badge)
+Minimal API | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
+
+<!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
 ## Other Stride3D tutorials and examples
  - Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
