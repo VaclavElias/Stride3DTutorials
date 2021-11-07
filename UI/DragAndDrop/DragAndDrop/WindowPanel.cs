@@ -26,12 +26,7 @@ namespace DragAndDrop
 
             AddTitle(title);
             AddLine();
-
-            var closeButton = GetCloseButton();
-
-            closeButton.PreviewTouchUp += CloseButton_PreviewTouchUp;
-
-            Children.Add(closeButton);
+            AddCloseButton();
         }
 
         private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
@@ -63,14 +58,21 @@ namespace DragAndDrop
             Height = 27
         });
 
-        private UIElement GetCloseButton() => new Button
+        private void AddCloseButton()
         {
-            Content = GetCloseButtonTitle(),
-            BackgroundColor = new Color(0, 0, 0, 200),
-            Width = _buttonSize,
-            Height = _buttonSize,
-            Margin = new Thickness(_width - _buttonSize, 0, 0, 0),
-        };
+            var button = new Button
+            {
+                Content = GetCloseButtonTitle(),
+                BackgroundColor = new Color(0, 0, 0, 200),
+                Width = _buttonSize,
+                Height = _buttonSize,
+                Margin = new Thickness(_width - _buttonSize, 0, 0, 0),
+            };
+
+            button.PreviewTouchUp += CloseButton_PreviewTouchUp;
+
+            Children.Add(button);
+        }
 
         private UIElement GetCloseButtonTitle() => new TextBlock
         {
