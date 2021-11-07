@@ -9,26 +9,32 @@ namespace DragAndDrop
     public class WindowsManager : SyncScript
     {
         private readonly Canvas _mainCanvas = new() { CanBeHitByUser = true };
+        private SpriteFont _font = null!;
         private UIElement? _dragElement;
         private Vector2? _offset;
 
         public override void Start()
         {
-            var font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
+            _font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
 
-            var panel = new WindowPanel("Window1", font);
-
-            panel.PreviewTouchDown += Panel_PreviewTouchDown;
+            CreateWindow();
 
             _mainCanvas.PreviewTouchMove += MainCanvas_PreviewTouchMove;
             _mainCanvas.PreviewTouchUp += MainCanvas_PreviewTouchUp;
-
-            _mainCanvas.Children.Add(panel);
 
             Entity.Add(new UIComponent()
             {
                 Page = new UIPage() { RootElement = _mainCanvas }
             });
+        }
+
+        private void CreateWindow()
+        {
+            var panel = new WindowPanel("Window1", _font);
+
+            panel.PreviewTouchDown += Panel_PreviewTouchDown;
+
+            _mainCanvas.Children.Add(panel);
         }
 
         private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
