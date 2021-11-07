@@ -5,7 +5,7 @@ using Stride.UI;
 using Stride.UI.Controls;
 using Stride.UI.Panels;
 
-namespace Stride3DTutorials
+namespace DragAndDrop
 {
     public class WindowsManager : SyncScript
     {
@@ -84,12 +84,13 @@ namespace Stride3DTutorials
                 Height = 27
             };
 
-            UIElement GetCloseButton() => new Button {
+            UIElement GetCloseButton() => new Button
+            {
                 Content = GetCloseButtonTitle(),
                 BackgroundColor = new Color(0, 0, 0, 200),
                 Width = 25,
                 Height = 25,
-                Margin = new Thickness(300-25,0,0,0),
+                Margin = new Thickness(300 - 25, 0, 0, 0),
             };
 
             UIElement GetCloseButtonTitle() => new TextBlock
@@ -118,7 +119,7 @@ namespace Stride3DTutorials
 
             var distance = touchPosition - position;
 
-            var ratio = new Vector2(distance.X/300, distance.Y/200);
+            var ratio = new Vector2(distance.X / 300, distance.Y / 200);
 
             //_dragElement.SetCanvasRelativePosition((Vector3)_offset);
             //_dragElement.SetCanvasPinOrigin((Vector3)ratio);
@@ -130,7 +131,7 @@ namespace Stride3DTutorials
 
             //_dragElement.SetCanvasPinOrigin((Vector3)(e.ScreenPosition - (Vector2)_dragElement.GetCanvasRelativePosition()));
 
-            Log.Warning($"Panel Touched\n{e.ScreenPosition},\n{e.ScreenTranslation},\n{e.WorldPosition},\n{e.WorldTranslation},\nPanel Anchor:{_dragElement.GetCanvasPinOrigin()},\nPanel Position:{_dragElement.GetCanvasRelativePosition()}\n{e.ScreenPosition-(Vector2)_dragElement.GetCanvasRelativePosition()}\nTouch: {distance}\n\n");
+            Log.Warning($"Panel Touched\n{e.ScreenPosition},\n{e.ScreenTranslation},\n{e.WorldPosition},\n{e.WorldTranslation},\nPanel Anchor:{_dragElement.GetCanvasPinOrigin()},\nPanel Position:{_dragElement.GetCanvasRelativePosition()}\n{e.ScreenPosition - (Vector2)_dragElement.GetCanvasRelativePosition()}\nTouch: {distance}\n\n");
 
             //Log.Warning($"Panel Touched {e.ScreenPosition}, {e.ScreenTranslation}, {e.WorldPosition}, {e.WorldTranslation}");
 

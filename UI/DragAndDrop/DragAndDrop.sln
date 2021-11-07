@@ -1,0 +1,11 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 16
+VisualStudioVersion = 16.0.0.0
+MinimumVisualStudioVersion = 16.0.0.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDrop.Windows", "DragAndDrop.Windows\DragAndDrop.Windows.csproj", "{AF827462-3D98-449F-B64B-F831B587F293}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragAndDrop", "DragAndDrop\DragAndDrop.csproj", "{E1C13906-CFAC-461A-91E0-DE1AC0BDD576}"
+EndProject
+Global
+EndGlobal

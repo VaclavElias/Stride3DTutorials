@@ -1,9 +1,9 @@
 !GameSettingsAsset
-Id: 0398482b-f0a7-4179-85f0-c0974e531879
+Id: d5a02bf3-2688-4e21-aec4-c9a31258ade7
 SerializedVersion: {Stride: 3.1.0.1}
 Tags: []
-DefaultScene: 70464751-07af-4e25-a90c-f34f711eb989:MainScene
-GraphicsCompositor: 3510fb30-8545-4538-ab5f-176219db5f1f:GraphicsCompositor
+DefaultScene: 996cdf8a-5137-4d9b-aeea-1ebcfb7891ee:MainScene
+GraphicsCompositor: a2fdbb08-b9b9-4c21-aa58-009078e095cc:GraphicsCompositor
 Defaults:
     - !Stride.Audio.AudioEngineSettings,Stride.Audio
         HrtfSupport: false

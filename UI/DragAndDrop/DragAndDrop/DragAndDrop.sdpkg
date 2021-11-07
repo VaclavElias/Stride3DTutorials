@@ -1,13 +1,14 @@
 !Package
 SerializedVersion: {Assets: 3.1.0.0}
 Meta:
-    Name: Stride3DTutorials.Windows
+    Name: DragAndDrop
     Version: 1.0.0
     Authors: []
     Owners: []
     Dependencies: null
 AssetFolders:
     -   Path: !dir Assets
+    -   Path: !dir Effects
 ResourceFolders:
     - !dir Resources
 OutputGroupDirectories: {}

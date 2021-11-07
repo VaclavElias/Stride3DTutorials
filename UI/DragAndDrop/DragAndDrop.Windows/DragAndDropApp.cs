@@ -1,8 +1,8 @@
 using Stride.Engine;
 
-namespace Stride3DTutorials
+namespace DragAndDrop
 {
-    class Stride3DTutorialsApp
+    class DragAndDropApp
     {
         static void Main(string[] args)
         {

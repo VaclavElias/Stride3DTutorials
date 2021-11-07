@@ -5,7 +5,7 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Stride3DTutorials</RootNamespace>
+    <RootNamespace>DragAndDrop</RootNamespace>
 
     <OutputPath>..\Bin\Windows\$(Configuration)\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Stride3DTutorials\Stride3DTutorials.csproj" />
+    <ProjectReference Include="..\DragAndDrop\DragAndDrop.csproj" />
   </ItemGroup>
 
 </Project>
