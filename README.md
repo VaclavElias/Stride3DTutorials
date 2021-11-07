@@ -1,4 +1,4 @@
-# Stride3DTutorials
+# Stride Game Engine Tutorials
 
 Stride3D tutorials and examples.
 
