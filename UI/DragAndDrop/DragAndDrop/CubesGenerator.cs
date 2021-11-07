@@ -32,6 +32,7 @@ namespace DragAndDrop
                 -3 + (float)(_random.NextDouble() * 6));
 
             entity.GetOrCreate<ModelComponent>().Model = model;
+
             var rigidBody = entity.GetOrCreate<RigidbodyComponent>();
             rigidBody.Gravity = new Vector3(0, 0.5f, 0);
             rigidBody.ColliderShape = new BoxColliderShape(false, new Vector3(0.1f));

@@ -24,8 +24,8 @@ namespace DragAndDrop
 
             _font = font;
 
-            Children.Add(GetTitle(title));
-            Children.Add(GetLine());
+            AddTitle(title);
+            AddLine();
 
             var closeButton = GetCloseButton();
 
@@ -43,22 +43,25 @@ namespace DragAndDrop
             parent.Children.Remove(this);
         }
 
-        private UIElement GetTitle(string title) => new TextBlock
+        private void AddTitle(string title)
         {
-            Text = title,
-            TextColor = Color.White,
-            TextSize = 20,
-            Font = _font,
-            Margin = new Thickness(3, 3, 3, 0),
-        };
+            Children.Add(new TextBlock
+            {
+                Text = title,
+                TextColor = Color.White,
+                TextSize = 20,
+                Font = _font,
+                Margin = new Thickness(3, 3, 3, 0),
+            });
+        }
 
-        private UIElement GetLine() => new Border
+        private void AddLine() => Children.Add(new Border
         {
             BorderColor = Color.White,
             BorderThickness = new Thickness(0, 0, 0, 2),
             Width = _width,
             Height = 27
-        };
+        });
 
         private UIElement GetCloseButton() => new Button
         {
