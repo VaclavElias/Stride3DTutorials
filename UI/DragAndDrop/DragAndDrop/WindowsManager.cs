@@ -1,34 +1,34 @@
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Graphics;
-using Stride.Rendering;
-using Stride.Rendering.ProceduralModels;
 using Stride.UI;
 using Stride.UI.Controls;
 using Stride.UI.Panels;
-using System;
 
 namespace DragAndDrop
 {
-    // Do I need to remove handlers?
-    // Do I need to default the font as I did?
-    // Can we simplify anything else?
-    // Why is not my font sharp?
-    // The font is not white https://github.com/stride3d/stride/issues/1154
-    public class WindowsManager : SyncScript
+    // 1) Do I need to remove handlers here and in WindowPanel?
+    // 2) Do I need to default the font as I did, any better way?
+    // 3) Can we simplify anything else?
+    // 4) Why is not my font sharp?
+    // 5) Why are cubes moving funny once landed?
+    // Fact: The font is not white https://github.com/stride3d/stride/issues/1154
+
+    public class WindowsManager : StartupScript
     {
         private readonly Canvas _mainCanvas = new() { CanBeHitByUser = true };
+        private CubesGenerator? _cubesGenerator;
         private SpriteFont _font = null!;
         private UIElement? _dragElement;
         private Vector2? _offset;
         private int _lastZIndex = 1;
         private int _windowId = 1;
-        private Random _random = new Random();
 
         public override void Start()
         {
             Log.Info("Windows Manager Started");
 
+            _cubesGenerator = new CubesGenerator(Services);
             _font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
 
             CreateWindow("Main Window");
@@ -46,6 +46,7 @@ namespace DragAndDrop
         private void CreateWindow(string title, Vector3? position = null)
         {
             var panel = new WindowPanel(title, _font, position);
+            panel.SetPanelZIndex(_lastZIndex++);
             panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
             var newWindowButton = GetButton("New Window", new Vector2(10, 50));
@@ -61,14 +62,10 @@ namespace DragAndDrop
         }
 
         private void GenerateItemsButton_PreviewTouchUp(object? sender, TouchEventArgs e)
-        {
-            GenerateCube();
-        }
+            => GenerateCubes(10);
 
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
-        {
-            CreateWindow($"Window {_windowId++}");
-        }
+            => CreateWindow($"Window {_windowId++}");
 
         private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
         {
@@ -109,27 +106,14 @@ namespace DragAndDrop
             VerticalAlignment = VerticalAlignment.Center
         };
 
-        private void GenerateCube()
+        private void GenerateCubes(int count)
         {
-            var cube = new CubeProceduralModel();
+            if (_cubesGenerator is null) return;
 
-            var model = new Model();
-            cube.Generate(Services, model);
-
-            var entity = new Entity();
-            entity.Transform.Scale = new Vector3(0.1f);
-            entity.Transform.Position = new Vector3(
-                -3 + (float)(_random.NextDouble() * 6),
-                (float)(_random.NextDouble() * 1) + 2,
-                -3 + (float)(_random.NextDouble() * 6));
-
-            entity.GetOrCreate<ModelComponent>().Model = model;
-
-            Entity.AddChild(entity);
-        }
-
-        public override void Update()
-        {
+            for (int i = 0; i < count; i++)
+            {
+                Entity.AddChild(_cubesGenerator.GetCube());
+            }
         }
     }
 }

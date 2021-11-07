@@ -12,6 +12,7 @@ Hierarchy:
         - ref!! 69a34d54-c014-486f-aab9-5ff24293aced
         - ref!! d0765d1f-1e8e-4c2a-ab70-011cb3aaf85b
         - ref!! b6df92dd-1b11-46f0-bf93-6fa1d86ddcc2
+        - ref!! c5afd949-234e-4cd5-9d43-2b731334792a
     Parts:
         -   Entity:
                 Id: 3265bdfa-154f-4ae1-ae58-1a3ac8a87e6a
@@ -19,7 +20,7 @@ Hierarchy:
                 Components:
                     8c1e24e9f59192a99e90f22655ef0a76: !TransformComponent
                         Id: 7cd23ab3-691d-4b4f-8208-3efdd888037a
-                        Position: {X: 2.6, Y: 0.6, Z: -1.0}
+                        Position: {X: 7.0, Y: 1.6, Z: -1.0}
                         Rotation: {X: 0.0, Y: 0.82903755, Z: 0.0, W: 0.5591929}
                         Scale: {X: 1.0, Y: 1.0, Z: 1.0}
                         Children: {}
@@ -81,6 +82,41 @@ Hierarchy:
                         Model: 9daf290f-f1ad-45b3-aa52-a298e84c71c1:Sphere
                         Materials: {}
         -   Entity:
+                Id: c5afd949-234e-4cd5-9d43-2b731334792a
+                Name: Sphere 2
+                Components:
+                    9f3e1484f04e2e91224a7c7ad9776d8c: !TransformComponent
+                        Id: 5334a48c-64d3-435e-94ea-daa23a178142
+                        Position: {X: 1.067, Y: 1.826, Z: 0.0}
+                        Rotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
+                        Scale: {X: 1.0, Y: 1.0, Z: 1.0}
+                        Children: {}
+                    3f4021b2a38462885f86e062803da5c1: !ModelComponent
+                        Id: 8aae1bd7-9972-460f-8305-23082cafcf70
+                        Model: 9daf290f-f1ad-45b3-aa52-a298e84c71c1:Sphere
+                        Materials: {}
+                    22e3928d674e71bd21aec0c8d4ab91bd: !RigidbodyComponent
+                        Id: 4dd2024b-9124-49c9-86c8-df2fdfb3b742
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        IsKinematic: false
+                        Mass: 1.0
+                        LinearDamping: 0.0
+                        AngularDamping: 0.0
+                        OverrideGravity: false
+                        Gravity: {X: 0.0, Y: 0.5, Z: 0.0}
+                        NodeName: null
+                        ColliderShapes:
+                            91e581c6310a0dfee24369d74217abda: !SphereColliderShapeDesc
+                                Is2D: false
+                                Radius: 0.52
+                                LocalOffset: {X: 0.0, Y: 0.0, Z: 0.0}
+        -   Entity:
                 Id: d0765d1f-1e8e-4c2a-ab70-011cb3aaf85b
                 Name: Ground
                 Components:
@@ -94,6 +130,20 @@ Hierarchy:
                         Id: b87bf00e-6d05-4508-aa21-58f10acc09e2
                         Model: 47d80151-6ae0-4840-8c5e-47c6a9480761:Ground
                         Materials: {}
+                    a4da88720cb5cdef642258648b0df69b: !StaticColliderComponent
+                        Id: 9da06822-3ecc-4cae-9558-16fa4312ef22
+                        CanSleep: false
+                        Restitution: 0.0
+                        Friction: 0.5
+                        RollingFriction: 0.0
+                        CcdMotionThreshold: 0.0
+                        CcdSweptSphereRadius: 0.0
+                        IsTrigger: false
+                        AlwaysUpdateNaviMeshCache: false
+                        ColliderShapes:
+                            46e04e04090e848c60a2af1afff44a36: !StaticPlaneColliderShapeDesc
+                                Normal: {X: 0.0, Y: 1.0, Z: 0.0}
+                                Offset: 0.0
         -   Entity:
                 Id: d3396383-1a51-4f55-9687-013f727239d1
                 Name: Directional light
