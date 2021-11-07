@@ -120,8 +120,8 @@ namespace Stride3DTutorials
 
             var ratio = new Vector2(distance.X/300, distance.Y/200);
 
-            _dragElement.SetCanvasRelativePosition((Vector3)_offset);
-            _dragElement.SetCanvasPinOrigin((Vector3)ratio);
+            //_dragElement.SetCanvasRelativePosition((Vector3)_offset);
+            //_dragElement.SetCanvasPinOrigin((Vector3)ratio);
 
             //_offset = (Vector2?)_dragElement.GetCanvasRelativePosition();
 

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride3DTutorials.Windows",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride3DTutorials", "Stride3DTutorials\Stride3DTutorials.csproj", "{C9B63345-5E7E-45B5-BD69-434E5B4A8DD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalExample", "MinimalExample\MinimalExample.csproj", "{BE5DCD31-4644-4CA2-9522-7B2F6A7AE9B2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C9B63345-5E7E-45B5-BD69-434E5B4A8DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9B63345-5E7E-45B5-BD69-434E5B4A8DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9B63345-5E7E-45B5-BD69-434E5B4A8DD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5DCD31-4644-4CA2-9522-7B2F6A7AE9B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5DCD31-4644-4CA2-9522-7B2F6A7AE9B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5DCD31-4644-4CA2-9522-7B2F6A7AE9B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5DCD31-4644-4CA2-9522-7B2F6A7AE9B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
