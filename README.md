@@ -13,3 +13,10 @@ Example/Tutorial|Status
 Drag and Drop|![Research](https://img.shields.io/badge/status-in%20progress-green)
 Minimal API | ![Research](https://img.shields.io/badge/status-research-blue)
 
+## Other Stride3D tutorials and examples
+ - Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
+
+- Stride Tutorials from Jorn Theunissen https://www.youtube.com/playlist?list=PLM8hj-JyVnYr-usNqX5aeXG0IwTY9FVge
+
+- Stride Tutorials from Marian Dziubiak https://www.youtube.com/playlist?list=PL3KxSbsaNqqvlio_mwy0CIMZcYQugcRIc
+
