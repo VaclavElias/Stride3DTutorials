@@ -12,12 +12,17 @@ namespace DragAndDrop
         private SpriteFont _font = null!;
         private UIElement? _dragElement;
         private Vector2? _offset;
+        private int _lastZIndex = 1;
+        private int _windowId = 1;
 
         public override void Start()
         {
+            Log.Info("Windows Manager Started");
+
             _font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
 
-            CreateWindow();
+            CreateWindow("Main Window");
+            CreateWindow($"Window {_windowId++}", new Vector3(0.02f));
 
             _mainCanvas.PreviewTouchMove += MainCanvas_PreviewTouchMove;
             _mainCanvas.PreviewTouchUp += MainCanvas_PreviewTouchUp;
@@ -28,9 +33,9 @@ namespace DragAndDrop
             });
         }
 
-        private void CreateWindow()
+        private void CreateWindow(string title, Vector3? position = null)
         {
-            var panel = new WindowPanel("Window1", _font);
+            var panel = new WindowPanel(title, _font, position);
 
             panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
@@ -42,6 +47,9 @@ namespace DragAndDrop
             _dragElement = sender as UIElement;
 
             if (_dragElement is null) return;
+
+            // we need to increase ZIndex so the active windows is on the top, let's hope you will close the game by the time this hits the max :)
+            _dragElement.SetPanelZIndex(_lastZIndex++);
 
             _offset = e.ScreenPosition - (Vector2)_dragElement.GetCanvasRelativePosition();
         }

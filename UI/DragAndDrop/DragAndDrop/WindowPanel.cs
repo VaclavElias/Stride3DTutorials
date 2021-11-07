@@ -10,7 +10,7 @@ namespace DragAndDrop
     {
         private readonly SpriteFont _font;
 
-        public WindowPanel(string title, SpriteFont font)
+        public WindowPanel(string title, SpriteFont font, Vector3? position = null)
         {
             BackgroundColor = new Color(0, 0, 0, 200);
             Width = 300;
@@ -19,12 +19,27 @@ namespace DragAndDrop
             DefaultHeight = 200;
             CanBeHitByUser = true;
 
+            this.SetCanvasRelativePosition(position ?? Vector3.Zero);
+
             _font = font;
 
-            Children.Add(GetLine());
-            var closeButton = GetCloseButton();
-            Children.Add(closeButton);
             Children.Add(GetTitle(title));
+            Children.Add(GetLine());
+
+            var closeButton = GetCloseButton();
+
+            closeButton.PreviewTouchUp += CloseButton_PreviewTouchUp;
+
+            Children.Add(closeButton);
+        }
+
+        private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
+        {
+            var parent = (Canvas)Parent;
+
+            if (parent is null) return;
+
+            parent.Children.Remove(this);
         }
 
         //public void Set()
