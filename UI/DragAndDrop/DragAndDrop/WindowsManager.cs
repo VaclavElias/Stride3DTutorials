@@ -3,7 +3,6 @@ using Stride.Engine;
 using Stride.Graphics;
 using Stride.UI;
 using Stride.UI.Controls;
-using Stride.UI.Panels;
 
 namespace DragAndDrop
 {
@@ -11,11 +10,8 @@ namespace DragAndDrop
     {
         public SpriteFont? Font { get; set; }
 
-        private readonly Canvas _mainCanvas = new() { CanBeHitByUser = true };
+        private readonly DragAndDropContainer _mainCanvas = new();
         private CubesGenerator? _cubesGenerator;
-        private UIElement? _dragElement;
-        private Vector2? _offset;
-        private int _lastZIndex = 1;
         private int _windowId = 1;
         private int _cubesCount = 100;
 
@@ -30,9 +26,6 @@ namespace DragAndDrop
             CreateWindow("Main Window");
             CreateWindow($"Window {_windowId++}", new Vector3(0.02f));
 
-            _mainCanvas.PreviewTouchMove += MainCanvas_PreviewTouchMove;
-            _mainCanvas.PreviewTouchUp += MainCanvas_PreviewTouchUp;
-
             Entity.Add(new UIComponent()
             {
                 Page = new UIPage() { RootElement = _mainCanvas }
@@ -44,8 +37,8 @@ namespace DragAndDrop
 
         private void CreateWindow(string title, Vector3? position = null)
         {
-            var panel = new WindowPanel(title, Font!, position);
-            panel.SetPanelZIndex(_lastZIndex++);
+            var panel = new DragAndDropCanvas(title, Font!, position);
+            panel.SetPanelZIndex(_mainCanvas.GetNewZIndex());
             panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
             var newWindowButton = GetButton("New Window", new Vector2(10, 50));
@@ -66,27 +59,17 @@ namespace DragAndDrop
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
             => CreateWindow($"Window {_windowId++}");
 
+        // Move this to the WindowPanel
         private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
         {
-            _dragElement = sender as UIElement;
+            if (sender is not UIElement dragElement) return;
 
-            if (_dragElement is null) return;
+            dragElement.SetPanelZIndex(_mainCanvas.GetNewZIndex());
 
-            // we need to increase ZIndex so the active window is on the top, let's hope you will close the game by the time this hits the max :)
-            _dragElement.SetPanelZIndex(_lastZIndex++);
+            _mainCanvas.SetDragElement(dragElement);
 
-            _offset = e.ScreenPosition - (Vector2)_dragElement.GetCanvasRelativePosition();
+            _mainCanvas.SetOffset(e.ScreenPosition - (Vector2)dragElement.GetCanvasRelativePosition());
         }
-
-        private void MainCanvas_PreviewTouchMove(object? sender, TouchEventArgs e)
-        {
-            if (_dragElement == null) return;
-
-            _dragElement.SetCanvasRelativePosition((Vector3)(e.ScreenPosition - _offset ?? Vector2.Zero));
-        }
-
-        private void MainCanvas_PreviewTouchUp(object? sender, TouchEventArgs e)
-            => _dragElement = null;
 
         private UIElement GetButton(string title, Vector2 position) => new Button
         {

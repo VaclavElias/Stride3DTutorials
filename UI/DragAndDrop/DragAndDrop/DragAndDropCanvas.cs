@@ -6,14 +6,15 @@ using Stride.UI.Panels;
 
 namespace DragAndDrop
 {
-    public class WindowPanel : Canvas
+
+    public class DragAndDropCanvas : Canvas
     {
         private readonly SpriteFont _font;
         private int _width = 300;
         private int _height = 200;
         private int _buttonSize = 25;
 
-        public WindowPanel(string title, SpriteFont font, Vector3? position = null)
+        public DragAndDropCanvas(string title, SpriteFont font, Vector3? position = null)
         {
             BackgroundColor = new Color(0, 0, 0, 200);
             Width = _width;
@@ -31,9 +32,7 @@ namespace DragAndDrop
 
         private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
         {
-            var parent = Parent as Canvas;
-
-            if (parent is null) return;
+            if (Parent is not Canvas parent) return;
 
             parent.Children.Remove(this);
         }

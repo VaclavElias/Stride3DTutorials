@@ -26,7 +26,7 @@ namespace DragAndDrop
 
             var entity = new Entity();
 
-            entity.Transform.Scale = new Vector3(0.1f);
+            entity.Transform.Scale = new Vector3(0.3f);
             entity.Transform.Position = new Vector3(
                 GetSize(),
                 (float)(_random.NextDouble() * 1) + _height,
