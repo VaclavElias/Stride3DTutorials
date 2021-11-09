@@ -7,29 +7,25 @@ using Stride.UI.Panels;
 
 namespace DragAndDrop
 {
-    // 1) Do I need to remove handlers here and in WindowPanel?
-    // 2) Do I need to default the font as I did, any better way?
-    // 3) Can we simplify anything else?
-    // 4) Why is not my font sharp?
-    // 5) Why are cubes moving funny once landed?
-    // Fact: The font is not white https://github.com/stride3d/stride/issues/1154
-
     public class WindowsManager : StartupScript
     {
+        public SpriteFont? Font { get; set; }
+
         private readonly Canvas _mainCanvas = new() { CanBeHitByUser = true };
         private CubesGenerator? _cubesGenerator;
-        private SpriteFont _font = null!;
         private UIElement? _dragElement;
         private Vector2? _offset;
         private int _lastZIndex = 1;
         private int _windowId = 1;
+        private int _cubesCount = 100;
 
         public override void Start()
         {
             Log.Info("Windows Manager Started");
 
+            Font ??= LoadDefaultFont();
+
             _cubesGenerator = new CubesGenerator(Services);
-            _font = Game.Content.Load<SpriteFont>("StrideDefaultFont");
 
             CreateWindow("Main Window");
             CreateWindow($"Window {_windowId++}", new Vector3(0.02f));
@@ -43,9 +39,12 @@ namespace DragAndDrop
             });
         }
 
+        private SpriteFont? LoadDefaultFont()
+            => Game.Content.Load<SpriteFont>("StrideDefaultFont");
+
         private void CreateWindow(string title, Vector3? position = null)
         {
-            var panel = new WindowPanel(title, _font, position);
+            var panel = new WindowPanel(title, Font!, position);
             panel.SetPanelZIndex(_lastZIndex++);
             panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
@@ -62,7 +61,7 @@ namespace DragAndDrop
         }
 
         private void GenerateItemsButton_PreviewTouchUp(object? sender, TouchEventArgs e)
-            => GenerateCubes(10);
+            => GenerateCubes(_cubesCount);
 
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
             => CreateWindow($"Window {_windowId++}");
@@ -101,7 +100,7 @@ namespace DragAndDrop
             Text = title,
             TextColor = Color.White,
             TextSize = 18,
-            Font = _font,
+            Font = Font,
             TextAlignment = TextAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
