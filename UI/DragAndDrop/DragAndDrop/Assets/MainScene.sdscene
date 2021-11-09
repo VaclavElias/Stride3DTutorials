@@ -67,6 +67,7 @@ Hierarchy:
                         Children: {}
                     284249c3aef0c508ab5e02883bbef67f: !DragAndDrop.WindowsManager,DragAndDrop
                         Id: 9cad01e4-aaf6-47c4-b14f-fbbe74fac7bf
+                        Font: null
         -   Entity:
                 Id: b6df92dd-1b11-46f0-bf93-6fa1d86ddcc2
                 Name: Sphere
@@ -99,13 +100,13 @@ Hierarchy:
                         Id: 4dd2024b-9124-49c9-86c8-df2fdfb3b742
                         CanSleep: false
                         Restitution: 0.0
-                        Friction: 0.5
+                        Friction: 2.0
                         RollingFriction: 0.0
                         CcdMotionThreshold: 0.0
                         CcdSweptSphereRadius: 0.0
                         IsTrigger: false
                         IsKinematic: false
-                        Mass: 1.0
+                        Mass: 5.0
                         LinearDamping: 0.0
                         AngularDamping: 0.0
                         OverrideGravity: false
@@ -134,16 +135,18 @@ Hierarchy:
                         Id: 9da06822-3ecc-4cae-9558-16fa4312ef22
                         CanSleep: false
                         Restitution: 0.0
-                        Friction: 0.5
+                        Friction: 1.0
                         RollingFriction: 0.0
                         CcdMotionThreshold: 0.0
                         CcdSweptSphereRadius: 0.0
                         IsTrigger: false
                         AlwaysUpdateNaviMeshCache: false
                         ColliderShapes:
-                            46e04e04090e848c60a2af1afff44a36: !StaticPlaneColliderShapeDesc
-                                Normal: {X: 0.0, Y: 1.0, Z: 0.0}
-                                Offset: 0.0
+                            0900c617686e73b944b5da73473b08f5: !BoxColliderShapeDesc
+                                Is2D: false
+                                Size: {X: 50.0, Y: 1.0, Z: 50.0}
+                                LocalOffset: {X: 0.0, Y: -0.5, Z: 0.0}
+                                LocalRotation: {X: 0.0, Y: 0.0, Z: 0.0, W: 1.0}
         -   Entity:
                 Id: d3396383-1a51-4f55-9687-013f727239d1
                 Name: Directional light
