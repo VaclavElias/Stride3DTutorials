@@ -31,7 +31,7 @@ namespace DragAndDrop
 
         private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
         {
-            var parent = (Canvas)Parent;
+            var parent = Parent as Canvas;
 
             if (parent is null) return;
 
