@@ -13,31 +13,36 @@ namespace DragAndDrop
         private readonly Random _random = new();
         private readonly CubeProceduralModel _cubeModel = new();
         private readonly IServiceRegistry _services;
+        private readonly int _squareSize = 4;
+        private readonly int _height = 4;
 
-        public CubesGenerator(IServiceRegistry services)
-        {
-            _services = services;
-        }
+        public CubesGenerator(IServiceRegistry services) => _services = services;
 
         public Entity GetCube()
         {
             var model = new Model();
+
             _cubeModel.Generate(_services, model);
 
             var entity = new Entity();
+
             entity.Transform.Scale = new Vector3(0.1f);
             entity.Transform.Position = new Vector3(
-                -3 + (float)(_random.NextDouble() * 6),
-                (float)(_random.NextDouble() * 1) + 2,
-                -3 + (float)(_random.NextDouble() * 6));
+                GetSize(),
+                (float)(_random.NextDouble() * 1) + _height,
+                GetSize());
 
             entity.GetOrCreate<ModelComponent>().Model = model;
 
             var rigidBody = entity.GetOrCreate<RigidbodyComponent>();
-            rigidBody.Gravity = new Vector3(0, 0.5f, 0);
-            rigidBody.ColliderShape = new BoxColliderShape(false, new Vector3(0.1f));
+            rigidBody.ColliderShape = new BoxColliderShape(false, new Vector3(1));
 
             return entity;
+
+            float GetSize()
+            {
+                return -_squareSize + (float)(_random.NextDouble() * _squareSize * 2);
+            }
         }
     }
 }
