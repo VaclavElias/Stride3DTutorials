@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minimal", "Other\Minimal\Minimal.csproj", "{F869D39D-4650-40EB-91F2-4F3DD827ABD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minimal", "Other\Minimal\Minimal.csproj", "{F869D39D-4650-40EB-91F2-4F3DD827ABD9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Other", "Other", "{CD345AA7-9650-4A53-ADCC-2179C558DE15}"
 EndProject
@@ -12,6 +12,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragAndDrop.Windows", "UI\DragAndDrop\DragAndDrop.Windows\DragAndDrop.Windows.csproj", "{43C9B699-FF1A-4609-8AC7-168524721057}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragAndDrop", "UI\DragAndDrop\DragAndDrop\DragAndDrop.csproj", "{9B1C9870-1FBF-486D-B478-7ADE9806D1F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5045D401-07FD-4918-AA58-02BA61C054B6}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

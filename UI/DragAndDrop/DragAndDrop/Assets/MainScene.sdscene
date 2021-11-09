@@ -142,7 +142,7 @@ Hierarchy:
                         IsTrigger: false
                         AlwaysUpdateNaviMeshCache: false
                         ColliderShapes:
-                            0900c617686e73b944b5da73473b08f5: !BoxColliderShapeDesc
+                            63e97b6a2c8247573f6e3953e4b21ae9: !BoxColliderShapeDesc
                                 Is2D: false
                                 Size: {X: 50.0, Y: 1.0, Z: 50.0}
                                 LocalOffset: {X: 0.0, Y: -0.5, Z: 0.0}

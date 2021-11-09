@@ -13,6 +13,19 @@ Example/Tutorial|Status
 Drag and Drop|![Research](https://img.shields.io/badge/status-review-orange?style=for-the-badge)
 Minimal API | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
 
+### Drag And Drop
+
+Very basic implementation of drag and drop window, using Canvas.
+
+#### Q1: The font is not sharp and white?
+Additional set up is needed https://github.com/stride3d/stride/issues/1154.
+
+#### Q2: Why are cubes moving funny once landed?
+- The first issue was that I set collider size the same as entity scale, that means also collider was scaled.
+- The second issue was that Static Collider - Infinity Plane is causing sliding, also in Unity. I changed it to Box type and it seems ok
+
+#### Q3: Why the application gets problem with 10,000 boxes?
+
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
 ## Other Stride3D tutorials and examples
