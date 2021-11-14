@@ -28,9 +28,9 @@ namespace DragAndDrop
 
             entity.Transform.Scale = new Vector3(0.3f);
             entity.Transform.Position = new Vector3(
-                GetSize(),
+                GetRandomPosition(),
                 (float)(_random.NextDouble() * 1) + _height,
-                GetSize());
+                GetRandomPosition());
 
             entity.GetOrCreate<ModelComponent>().Model = model;
 
@@ -39,7 +39,7 @@ namespace DragAndDrop
 
             return entity;
 
-            float GetSize()
+            float GetRandomPosition()
             {
                 return -_squareSize + (float)(_random.NextDouble() * _squareSize * 2);
             }

@@ -29,6 +29,15 @@ Hierarchy:
                         Name: null
                         Projection: Perspective
                         Slot: 5670b49b-2aab-4c74-b08c-dc7127b3c907
+                    6de8cfaa94d8719e32f6a27426770c3e: !DragAndDrop.BasicCameraController,DragAndDrop
+                        Id: 8e377d3f-33c6-4218-a7a4-cf4095c2d45b
+                        Gamepad: false
+                        KeyboardMovementSpeed: {X: 5.0, Y: 5.0, Z: 5.0}
+                        TouchMovementSpeed: {X: 0.7, Y: 0.7, Z: 0.3}
+                        SpeedFactor: 5.0
+                        KeyboardRotationSpeed: {X: 3.0, Y: 3.0}
+                        MouseRotationSpeed: {X: 1.0, Y: 1.0}
+                        TouchRotationSpeed: {X: 1.0, Y: 0.7}
         -   Entity:
                 Id: 69a34d54-c014-486f-aab9-5ff24293aced
                 Name: Skybox

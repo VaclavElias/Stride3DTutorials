@@ -12,8 +12,10 @@ namespace DragAndDrop
 
         private readonly DragAndDropContainer _mainCanvas = new();
         private CubesGenerator? _cubesGenerator;
+        private TextBlock? _textBlock;
         private int _windowId = 1;
         private int _cubesCount = 100;
+        private int _totalCubes;
 
         public override void Start()
         {
@@ -23,8 +25,8 @@ namespace DragAndDrop
 
             _cubesGenerator = new CubesGenerator(Services);
 
-            CreateWindow("Main Window");
-            CreateWindow($"Window {_windowId++}", new Vector3(0.02f));
+            _mainCanvas.Children.Add(CreateMainWindow());
+            _mainCanvas.Children.Add(CreateWindow($"Window {_windowId++}", new Vector3(0.02f)));
 
             Entity.Add(new UIComponent()
             {
@@ -35,36 +37,56 @@ namespace DragAndDrop
         private SpriteFont? LoadDefaultFont()
             => Game.Content.Load<SpriteFont>("StrideDefaultFont");
 
-        private void CreateWindow(string title, Vector3? position = null)
+        private DragAndDropCanvas CreateMainWindow()
         {
-            var panel = new DragAndDropCanvas(title, Font!, position);
-            panel.SetPanelZIndex(_mainCanvas.GetNewZIndex());
+            var canvas = CreateWindow("Main Window");
+
+            _textBlock = GetTextBlock(GetTotal());
+            _textBlock.Margin = new Thickness(10, 140, 0, 0);
+
+            canvas.Children.Add(_textBlock);
+
+            return canvas;
+        }
+
+        private string GetTotal() => $"Total Cubes: {_totalCubes}";
+
+        private DragAndDropCanvas CreateWindow(string title, Vector3? position = null)
+        {
+            var canvas = new DragAndDropCanvas(title, Font!, position);
+            canvas.SetPanelZIndex(_mainCanvas.GetNewZIndex());
 
             var newWindowButton = GetButton("New Window", new Vector2(10, 50));
             newWindowButton.PreviewTouchUp += NewWindowButton_PreviewTouchUp;
-            panel.Children.Add(newWindowButton);
+            canvas.Children.Add(newWindowButton);
 
             var generateItemsButton = GetButton("Generate Items", new Vector2(10, 90));
             generateItemsButton.PreviewTouchUp += GenerateItemsButton_PreviewTouchUp;
-            panel.Children.Add(generateItemsButton);
+            canvas.Children.Add(generateItemsButton);
 
-            _mainCanvas.Children.Add(panel);
+            return canvas;
         }
 
         private void GenerateItemsButton_PreviewTouchUp(object? sender, TouchEventArgs e)
-            => GenerateCubes(_cubesCount);
+        {
+            GenerateCubes(_cubesCount);
+
+            if (_textBlock is null) return;
+
+            _textBlock.Text = GetTotal();
+        }
 
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
-            => CreateWindow($"Window {_windowId++}");
+            => _mainCanvas.Children.Add(CreateWindow($"Window {_windowId++}"));
 
         private UIElement GetButton(string title, Vector2 position) => new Button
         {
-            Content = GetButtonTitle(title),
+            Content = GetTextBlock(title),
             BackgroundColor = new Color(100, 100, 100, 200),
             Margin = new Thickness(position.X, position.Y, 0, 0),
         };
 
-        private UIElement GetButtonTitle(string title) => new TextBlock
+        private TextBlock GetTextBlock(string title) => new TextBlock
         {
             Text = title,
             TextColor = Color.White,
@@ -82,6 +104,8 @@ namespace DragAndDrop
             {
                 Entity.AddChild(_cubesGenerator.GetCube());
             }
+
+            _totalCubes += count;
         }
     }
 }
