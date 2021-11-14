@@ -39,15 +39,13 @@ namespace DragAndDrop
         {
             var panel = new DragAndDropCanvas(title, Font!, position);
             panel.SetPanelZIndex(_mainCanvas.GetNewZIndex());
-            panel.PreviewTouchDown += Panel_PreviewTouchDown;
 
             var newWindowButton = GetButton("New Window", new Vector2(10, 50));
             newWindowButton.PreviewTouchUp += NewWindowButton_PreviewTouchUp;
+            panel.Children.Add(newWindowButton);
 
             var generateItemsButton = GetButton("Generate Items", new Vector2(10, 90));
             generateItemsButton.PreviewTouchUp += GenerateItemsButton_PreviewTouchUp;
-
-            panel.Children.Add(newWindowButton);
             panel.Children.Add(generateItemsButton);
 
             _mainCanvas.Children.Add(panel);
@@ -58,18 +56,6 @@ namespace DragAndDrop
 
         private void NewWindowButton_PreviewTouchUp(object? sender, TouchEventArgs e)
             => CreateWindow($"Window {_windowId++}");
-
-        // Move this to the WindowPanel
-        private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
-        {
-            if (sender is not UIElement dragElement) return;
-
-            dragElement.SetPanelZIndex(_mainCanvas.GetNewZIndex());
-
-            _mainCanvas.SetDragElement(dragElement);
-
-            _mainCanvas.SetOffset(e.ScreenPosition - (Vector2)dragElement.GetCanvasRelativePosition());
-        }
 
         private UIElement GetButton(string title, Vector2 position) => new Button
         {

@@ -28,26 +28,18 @@ namespace DragAndDrop
             AddTitle(title);
             AddLine();
             AddCloseButton();
+
+            PreviewTouchDown += Panel_PreviewTouchDown;
         }
 
-        private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
+        private void AddTitle(string title) => Children.Add(new TextBlock
         {
-            if (Parent is not Canvas parent) return;
-
-            parent.Children.Remove(this);
-        }
-
-        private void AddTitle(string title)
-        {
-            Children.Add(new TextBlock
-            {
-                Text = title,
-                TextColor = Color.White,
-                TextSize = 20,
-                Font = _font,
-                Margin = new Thickness(3, 3, 3, 0),
-            });
-        }
+            Text = title,
+            TextColor = Color.White,
+            TextSize = 20,
+            Font = _font,
+            Margin = new Thickness(3, 3, 3, 0),
+        });
 
         private void AddLine() => Children.Add(new Border
         {
@@ -84,5 +76,25 @@ namespace DragAndDrop
             TextAlignment = TextAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
+
+        private void CloseButton_PreviewTouchUp(object? sender, TouchEventArgs e)
+        {
+            if (Parent is not Canvas parent) return;
+
+            parent.Children.Remove(this);
+        }
+
+        private void Panel_PreviewTouchDown(object? sender, TouchEventArgs e)
+        {
+            if (sender is not UIElement dragElement) return;
+
+            if (dragElement.Parent is not DragAndDropContainer dragAndDropContainer) return;
+
+            dragElement.SetPanelZIndex(dragAndDropContainer.GetNewZIndex());
+
+            dragAndDropContainer.SetDragElement(dragElement);
+
+            dragAndDropContainer.SetOffset(e.ScreenPosition - (Vector2)dragElement.GetCanvasRelativePosition());
+        }
     }
 }
