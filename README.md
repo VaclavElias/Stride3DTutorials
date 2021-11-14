@@ -18,7 +18,7 @@ Minimal API | ![Research](https://img.shields.io/badge/status-research-blue?styl
 Very basic implementation of drag and drop window, using Canvas.
 
 #### Q1: The font is not sharp and white?
-Additional set up is needed https://github.com/stride3d/stride/issues/1154.
+Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues/1154.
 
 #### Q2: Why are cubes moving funny once landed?
 - The first issue was that I set collider size the same as entity scale, that means also collider was scaled.
