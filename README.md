@@ -29,9 +29,8 @@ Additional set up is needed https://github.com/stride3d/stride/issues/1154.
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
 ## Other Stride3D tutorials and examples
- - Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
-
+- Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
 - Stride Tutorials from Jorn Theunissen https://www.youtube.com/playlist?list=PLM8hj-JyVnYr-usNqX5aeXG0IwTY9FVge
-
 - Stride Tutorials from Marian Dziubiak https://www.youtube.com/playlist?list=PL3KxSbsaNqqvlio_mwy0CIMZcYQugcRIc
+- And more here https://github.com/stride3d/stride/wiki/StrideCommunityProjects
 
