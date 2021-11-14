@@ -10,12 +10,15 @@ All examples are in .NET 5 and C# 9.0.
 
 Example/Tutorial|Status
 ---------|----------
-Drag and Drop|![Research](https://img.shields.io/badge/status-review-orange?style=for-the-badge)
+Drag and Drop|![Research](https://img.shields.io/badge/status-done-green?style=for-the-badge)
 Minimal API | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
 
 ### Drag And Drop
 
-Very basic implementation of drag and drop window, using Canvas.
+Very basic implementation of drag and drop window, using Canvas. This demo is using:
+- DragAndDropContainer and DragAndDropCanvas
+- Multiple drag and drop windows
+- Window button triggering entity creation
 
 #### Q1: The font is not sharp and white?
 Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues/1154.
