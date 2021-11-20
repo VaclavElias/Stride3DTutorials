@@ -26,6 +26,7 @@ namespace Minimal
 
             cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
+            // How do we attach a Sync script? 
             // This is causing an error
             // Error: Service [IContentManager] not found'
             //cubeEntity.Add(new TestComponent());
