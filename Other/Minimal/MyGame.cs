@@ -1,3 +1,4 @@
+using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Games;
@@ -10,6 +11,36 @@ using System.Threading.Tasks;
 
 namespace Minimal
 {
+    public class MyGame2 : Game
+    {
+        public MyGame2()
+        {
+            GameStarted += MyGame2_GameStarted;
+        }
+
+        private void MyGame2_GameStarted(object? sender, EventArgs e)
+        {
+            Log.Warning("Hello");
+
+            var model = new Model();
+            var cube = new CubeProceduralModel();
+
+            cube.Generate(Services, model);
+
+            var cubeEntity = new Entity();
+            cubeEntity.Transform.Scale = new Vector3(1);
+            cubeEntity.Transform.Position = new Vector3(1);
+
+            cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+
+            cubeEntity.Add(new TestComponent());
+
+            SceneSystem.SceneInstance = new SceneInstance(Services, new Scene());
+
+            SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
+        }
+    }
+
     public class MyGame : Game
     {
         private Matrix view = Matrix.LookAtRH(new Vector3(0, 0, 5), new Vector3(0, 0, 0), Vector3.UnitY);

@@ -1,8 +1,3 @@
-using Stride.Core.Mathematics;
-using Stride.Engine;
-using Stride.Rendering;
-using Stride.Rendering.ProceduralModels;
-
 namespace Minimal
 {
     // This opens black screen
@@ -10,30 +5,30 @@ namespace Minimal
     {
         static void Main(string[] args)
         {
-            using var game = new Game();
+            using var game = new MyGame2();
 
             // How do we create programatically a new scene and attatch to Game?
-            Scene scene = new Scene();
+            //Scene scene = new Scene();
 
-            var model = new Model();
-            var cube = new CubeProceduralModel();
+            //var model = new Model();
+            //var cube = new CubeProceduralModel();
 
-            cube.Generate(game.Services, model);
+            //cube.Generate(game.Services, model);
 
-            var cubeEntity = new Entity();
-            cubeEntity.Transform.Scale = new Vector3(1);
-            cubeEntity.Transform.Position = new Vector3(1);
+            //var cubeEntity = new Entity();
+            //cubeEntity.Transform.Scale = new Vector3(1);
+            //cubeEntity.Transform.Position = new Vector3(1);
 
-            cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+            //cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
             // How do we attach a Sync script? 
             // This is causing an error
             // Error: Service [IContentManager] not found'
             //cubeEntity.Add(new TestComponent());
 
-            scene.Entities.Add(cubeEntity);
+            //scene.Entities.Add(cubeEntity);
 
-            game.SceneSystem.SceneInstance = new SceneInstance(game.Services, scene);
+            //game.SceneSystem.SceneInstance = new SceneInstance(game.Services, scene);
 
             game.Run();
         }
