@@ -1,4 +1,4 @@
-﻿using Stride.Core.Diagnostics;
+using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Engine.Processors;
@@ -17,13 +17,24 @@ namespace Minimal
             GameStarted += MyGame2_GameStarted;
         }
 
+        protected override void BeginRun()
+        {
+            this.Window.AllowUserResizing = true;
+
+            //SceneSystem.SceneInstance = new SceneInstance(Services, new());
+        }
+
         private void MyGame2_GameStarted(object? sender, EventArgs e)
         {
             Log.Warning("Hello");
 
+            SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
+
             var scene = new Scene();
 
-            scene.Entities.Add(GetCamera());
+            SceneSystem.SceneInstance = new SceneInstance(Services, scene);
+
+            scene.Entities.Add(GetCamera(SceneSystem));
             scene.Entities.Add(GetLight());
 
             var model = new Model();
@@ -41,15 +52,15 @@ namespace Minimal
 
             scene.Entities.Add(cubeEntity);
 
-            SceneSystem.SceneInstance = new SceneInstance(Services, scene);
 
             //SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
         }
 
-        public Entity GetCamera()
+        public Entity GetCamera(SceneSystem sceneSystem)
         {
             var camera = new CameraComponent();
             camera.Projection = CameraProjectionMode.Perspective;
+            camera.Slot = sceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
 
             var cameraEntity = new Entity();
             cameraEntity.Transform.Position = new Vector3(0, 25, 50);
