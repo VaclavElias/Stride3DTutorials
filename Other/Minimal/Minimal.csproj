@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
@@ -10,7 +10,7 @@
         <PackageReference Include="Stride.Engine" Version="4.1.0.1459-beta" />
         <PackageReference Include="Stride.Particles" Version="4.1.0.1459-beta" />
         <PackageReference Include="Stride.UI" Version="4.1.0.1459-beta" />
-        <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive" />
+        <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive" />-->
         
         <!--<PackageReference Include="Stride.Video" Version="4.1.0.1459-beta" />
         <PackageReference Include="Stride.Physics" Version="4.1.0.1459-beta" />
