@@ -10,6 +10,7 @@ using Stride.Rendering.UI;
 
 namespace Stride.Engine.Builder
 {
+    // Credit https://github.com/IceReaper/StrideTest
     public static class GraphicsCompositorBuilder
     {
         public static GraphicsCompositor Create()

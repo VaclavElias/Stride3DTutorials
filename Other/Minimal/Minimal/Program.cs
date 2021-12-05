@@ -1,8 +1,34 @@
+using Stride.Core.Mathematics;
 using Stride.Engine.Builder;
+using Stride.Rendering;
+using Stride.Rendering.ProceduralModels;
 
 var builder = GameApplication.CreateBuilder();
 
-builder.Run();
+ // Adds boilerplate
+var game = builder.Build();
+
+builder.AddAction(() => AddCube(game));
+
+game.Run();
+
+void AddCube(Game game)
+{
+    var model = new Model();
+    var cube = new CubeProceduralModel();
+
+    cube.Generate(game.Services, model);
+
+    var cubeEntity = new Entity();
+    cubeEntity.Transform.Scale = new Vector3(1);
+    cubeEntity.Transform.Position = new Vector3(1);
+
+    cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+
+    //cubeEntity.Add(new TestComponent());
+
+    game.SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
+}
 
 //using var game = new MinimalGame2();
 

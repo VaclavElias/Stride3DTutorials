@@ -8,75 +8,77 @@ using Stride.Rendering.ProceduralModels;
 
 namespace Stride.Engine.Builder
 {
-    public class MinimalGame2 : Game
+    public class MinimalGame : Game
     {
-        public MinimalGame2()
+        public Action? SomeAction { get; set; }
+
+        public MinimalGame()
         {
-            //GameStarted += MyGame2_GameStarted;
+            GameStarted += OnGameStarted;
         }
 
         protected override void BeginRun()
         {
-            this.Window.AllowUserResizing = true;
+            base.BeginRun();
 
-            this.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
+            Window.AllowUserResizing = true;
 
-            this.SceneSystem.SceneInstance = new(this.Services, new());
-            this.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(this.SceneSystem));
+            //this.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
+            //this.SceneSystem.SceneInstance = new(this.Services, new());
 
             var scene = this.SceneSystem.SceneInstance.RootScene;
 
-            //scene.Entities.Add(GetCamera(SceneSystem));
-            //scene.Entities.Add(GetLight());
-            scene.Entities.Add(GetAmbientLight());
-
-            var model = new Model();
-            var cube = new CubeProceduralModel();
-
-            cube.Generate(Services, model);
-
-            var cubeEntity = new Entity();
-            cubeEntity.Transform.Scale = new Vector3(1);
-            cubeEntity.Transform.Position = new Vector3(1);
-
-            cubeEntity.GetOrCreate<ModelComponent>().Model = model;
-
-            //cubeEntity.Add(new TestComponent());
-
-            scene.Entities.Add(cubeEntity);
-        }
-
-        private void MyGame2_GameStarted(object? sender, EventArgs e)
-        {
-            Log.Warning("Hello");
-
-            SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
-
-            var scene = new Scene();
-
-            SceneSystem.SceneInstance = new SceneInstance(Services, scene);
-
             scene.Entities.Add(GetCamera(SceneSystem));
-            scene.Entities.Add(GetLight());
             scene.Entities.Add(GetAmbientLight());
 
-            var model = new Model();
-            var cube = new CubeProceduralModel();
+            RunTheMethod(SomeAction);
 
-            cube.Generate(Services, model);
+            //var model = new Model();
+            //var cube = new CubeProceduralModel();
 
-            var cubeEntity = new Entity();
-            cubeEntity.Transform.Scale = new Vector3(1);
-            cubeEntity.Transform.Position = new Vector3(1);
+            //cube.Generate(Services, model);
 
-            cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+            //var cubeEntity = new Entity();
+            //cubeEntity.Transform.Scale = new Vector3(1);
+            //cubeEntity.Transform.Position = new Vector3(1);
 
-            //cubeEntity.Add(new TestComponent());
+            //cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
-            scene.Entities.Add(cubeEntity);
-
+            ////cubeEntity.Add(new TestComponent());
 
             //SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
+        }
+
+        public void RunTheMethod(Action? myMethodName)
+        {
+            myMethodName?.Invoke();
+        }
+
+        private void OnGameStarted(object? sender, EventArgs e)
+        {
+            Log.Info("Game Started");
+
+            //scene.Entities.Add(GetCamera(SceneSystem));
+            //scene.Entities.Add(GetLight());
+            //scene.Entities.Add(GetAmbientLight());
+
+            //var model = new Model();
+            //var cube = new CubeProceduralModel();
+
+            //cube.Generate(Services, model);
+
+            //var cubeEntity = new Entity();
+            //cubeEntity.Transform.Scale = new Vector3(1);
+            //cubeEntity.Transform.Position = new Vector3(1);
+
+            //cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+
+            ////cubeEntity.Add(new TestComponent());
+
+            //scene.Entities.Add(cubeEntity);
+
+
+            ////SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
         }
 
         public Entity GetCamera(SceneSystem sceneSystem)
