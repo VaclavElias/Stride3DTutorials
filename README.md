@@ -42,6 +42,9 @@ Minimal APIs are architectd to create APIs with minimal dependencies (improved i
 
 Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 
+#### Used Resources
+https://github.com/IceReaper/StrideTest
+
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
 ## Other Stride3D tutorials and examples
