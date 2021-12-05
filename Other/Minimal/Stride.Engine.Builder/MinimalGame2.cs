@@ -1,19 +1,16 @@
 using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
-using Stride.Engine;
-using Stride.Engine.Builder;
 using Stride.Engine.Processors;
 using Stride.Rendering;
 using Stride.Rendering.Colors;
 using Stride.Rendering.Lights;
 using Stride.Rendering.ProceduralModels;
-using System;
 
-namespace Minimal
+namespace Stride.Engine.Builder
 {
-    public class MinimalGame : Game
+    public class MinimalGame2 : Game
     {
-        public MinimalGame()
+        public MinimalGame2()
         {
             //GameStarted += MyGame2_GameStarted;
         }
@@ -44,7 +41,7 @@ namespace Minimal
 
             cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
-            cubeEntity.Add(new TestComponent());
+            //cubeEntity.Add(new TestComponent());
 
             scene.Entities.Add(cubeEntity);
         }
@@ -74,7 +71,7 @@ namespace Minimal
 
             cubeEntity.GetOrCreate<ModelComponent>().Model = model;
 
-            cubeEntity.Add(new TestComponent());
+            //cubeEntity.Add(new TestComponent());
 
             scene.Entities.Add(cubeEntity);
 

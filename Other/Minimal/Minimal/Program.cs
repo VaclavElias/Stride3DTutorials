@@ -1,16 +1,12 @@
-namespace Minimal
-{
-    // This opens black screen
-    static class Program
-    {
-        static void Main(string[] args)
-        {
-            using var game = new MinimalGame();
+using Stride.Engine.Builder;
 
-            game.Run();
-        }
-    }
-}
+var builder = GameApplication.CreateBuilder();
+
+builder.Run();
+
+//using var game = new MinimalGame2();
+
+//game.Run();
 
 //var game = new Game();
 
