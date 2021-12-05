@@ -12,6 +12,7 @@ Example/Tutorial|Status
 ---------|----------
 Drag and Drop|![Research](https://img.shields.io/badge/status-done-green?style=for-the-badge)
 Minimal API | ![Research](https://img.shields.io/badge/status-testing-orange?style=for-the-badge)
+Multi Screen | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
 
 ### Drag And Drop
 
