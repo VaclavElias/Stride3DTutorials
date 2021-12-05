@@ -42,6 +42,14 @@ Minimal APIs are architectd to create APIs with minimal dependencies (improved i
 
 Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 
+#### Why would you use Minimal APIs and not Stride Editor?
+There might be many reasons, including:
+- You don't want to install anything on your computer
+- You want to start quickly
+- You want to learn C# programming with a nice visual output instead of console
+- You want to learn game programming in the most simple way, without using the editor
+- You find coding and tools very complex to understand
+
 #### Used Resources
 https://github.com/IceReaper/StrideTest
 
