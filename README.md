@@ -33,6 +33,13 @@ Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues
 ### Minimal Stride API
 Minimal APIs are architectd to create APIs with minimal dependencies (improved in .NET 6). They are ideal for apps that want to indlude onlyl the mininum files, features and dependencies.
 
+**ToDos**
+- Make some examples
+- Minimal API for 2D
+- Minimal API for 3D
+  - Minimal API pure
+  - Miniaml API with nice set up (lights, sky, ..) out of the box
+
 Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
