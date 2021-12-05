@@ -48,7 +48,9 @@ There might be many reasons, including:
 - You want to start quickly
 - You want to learn C# programming with a nice visual output instead of console
 - You want to learn game programming in the most simple way, without using the editor
-- You find coding and tools very complex to understand
+- You find coding and tools very complex to understand and navigate around
+
+Please, let me know through Issues if you find any other reasons.
 
 #### Used Resources
 https://github.com/IceReaper/StrideTest
