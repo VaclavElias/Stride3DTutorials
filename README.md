@@ -58,6 +58,9 @@ https://github.com/IceReaper/StrideTest
 
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
+### Multi Screen
+This will be an example of using SignalR and Stride, to use a browser for a game output, simple interaction from a browser with a game. I wish we had multi screen games where the other screens could be used as a Dashboard or Control Panels or anything you would like to see but not have it in the main game window, still some interactions from these side screens would be nice.
+
 ## Other Stride3D tutorials and examples
 - Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
 - Stride Tutorials from Jorn Theunissen https://www.youtube.com/playlist?list=PLM8hj-JyVnYr-usNqX5aeXG0IwTY9FVge
