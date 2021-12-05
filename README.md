@@ -11,7 +11,7 @@ All examples are in .NET 5 and C# 9.0.
 Example/Tutorial|Status
 ---------|----------
 Drag and Drop|![Research](https://img.shields.io/badge/status-done-green?style=for-the-badge)
-Minimal API | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
+Minimal API | ![Research](https://img.shields.io/badge/status-testing-orange?style=for-the-badge)
 
 ### Drag And Drop
 
@@ -28,6 +28,12 @@ Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues
 - The second issue was that Static Collider - Infinity Plane is causing sliding, also in Unity. I changed it to Box type and it seems ok
 
 #### Q3: Why the application gets problem with 10,000 boxes?
+- Probably there is a better way to instance boxes
+
+### Minimal Stride API
+Minimal APIs are architectd to create APIs with minimal dependencies (improved in .NET 6). They are ideal for apps that want to indlude onlyl the mininum files, features and dependencies.
+
+Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
 
