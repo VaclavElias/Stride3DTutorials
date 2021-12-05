@@ -31,7 +31,7 @@ Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues
 - Probably there is a better way to instance boxes
 
 ### Minimal Stride API
-Minimal APIs are architectd to create APIs with minimal dependencies (improved in .NET 6). They are ideal for apps that want to indlude onlyl the mininum files, features and dependencies.
+Minimal APIs are architectd to create APIs with minimal dependencies (improved in .NET 6). They are ideal for apps that want to include only the mininum files, features and dependencies.
 
 **ToDos**
 - Make some examples
