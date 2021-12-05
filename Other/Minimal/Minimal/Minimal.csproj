@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1459-beta" IncludeAssets="build;buildTransitive" />-->
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Stride.Engine.Builder\Stride.Engine.Builder.csproj" />
     </ItemGroup>
 
