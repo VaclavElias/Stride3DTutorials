@@ -10,7 +10,7 @@ using Stride.Rendering.UI;
 
 namespace Minimal
 {
-    public class GraphicsCompositorBuilder
+    public static class GraphicsCompositorBuilder
     {
         public static GraphicsCompositor Create()
         {
