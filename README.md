@@ -4,7 +4,7 @@ This repo is going to list some tutorials and examples for Stride - Open-source 
 
 https://www.stride3d.net/
 
-All examples are in .NET 5 and C# 9.0.
+All examples are in .NET 5 using C# 9.0 or .NET 6 using C# 10. 
 
 ## Stride3D tutorials and examples
 
