@@ -5,9 +5,9 @@ using Stride.Rendering.ProceduralModels;
 
 var builder = GameApplication.CreateBuilder();
 
- // Adds boilerplate
 var game = builder.Build();
 
+// Should be before but we don't have a game till here
 builder.AddAction(() => AddCube(game));
 
 game.Run();

@@ -54,6 +54,7 @@ namespace Stride.Engine.Builder
             myMethodName?.Invoke();
         }
 
+        // Probably we don't need this?
         private void OnGameStarted(object? sender, EventArgs e)
         {
             Log.Info("Game Started");
