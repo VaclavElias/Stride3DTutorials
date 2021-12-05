@@ -1,6 +1,7 @@
 using Stride.Core.Diagnostics;
 using Stride.Core.Mathematics;
 using Stride.Engine;
+using Stride.Engine.Builder;
 using Stride.Engine.Processors;
 using Stride.Rendering;
 using Stride.Rendering.Colors;
