@@ -12,6 +12,7 @@ Example/Tutorial|Status
 ---------|----------
 Drag and Drop|![Research](https://img.shields.io/badge/status-done-green?style=for-the-badge)
 Minimal API | ![Research](https://img.shields.io/badge/status-testing-orange?style=for-the-badge)
+Multi Screen | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
 
 ### Drag And Drop
 
@@ -42,10 +43,25 @@ Minimal APIs are architectd to create APIs with minimal dependencies (improved i
 
 Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
 
+#### Why would you use Minimal APIs and not Stride Editor?
+There might be many reasons, including:
+- You don't want to install anything on your computer
+- You want to start quickly
+- You want to learn C# programming with a nice visual output instead of console
+- You want to learn game programming in the most simple way, without using the editor
+- You find coding and tools very complex to understand and navigate around
+
+Please, let me know through Issues if you find any other reasons.
+
 #### Used Resources
 https://github.com/IceReaper/StrideTest
 
 <!-- https://img.shields.io/badge/status-in%20progress-green?style=for-the-badge -->
+
+### Multi Screen
+This will be an example of using SignalR and Stride, to use a browser for a game output, simple interaction from a browser with a game. I wish we had multi screen games where the other screens could be used as a Dashboard or Control Panels or anything you would like to see but not have it in the main game window, still some interactions from these side screens would be nice.
+
+I have got a working prototype just need to make is more user friendly to move here.
 
 ## Other Stride3D tutorials and examples
 - Stride YouTube Channel - C# Beginner https://www.youtube.com/playlist?list=PLRZx2y7uC8mNySUMfOQf-TLNVnnHkLfPi
