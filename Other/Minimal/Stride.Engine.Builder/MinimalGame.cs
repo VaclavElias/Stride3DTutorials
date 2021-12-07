@@ -12,138 +12,18 @@ namespace Stride.Engine.Builder
     {
         public Action? SomeAction { get; set; }
 
-        public MinimalGame()
-        {
-            GameStarted += OnGameStarted;
-        }
-
         protected override void BeginRun()
         {
             base.BeginRun();
 
             Window.AllowUserResizing = true;
 
-            //this.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
-            //this.SceneSystem.SceneInstance = new(this.Services, new());
-
-            var scene = this.SceneSystem.SceneInstance.RootScene;
-
-            scene.Entities.Add(GetCamera(SceneSystem));
-            scene.Entities.Add(GetAmbientLight());
-
             RunTheMethod(SomeAction);
-
-            //var model = new Model();
-            //var cube = new CubeProceduralModel();
-
-            //cube.Generate(Services, model);
-
-            //var cubeEntity = new Entity();
-            //cubeEntity.Transform.Scale = new Vector3(1);
-            //cubeEntity.Transform.Position = new Vector3(1);
-
-            //cubeEntity.GetOrCreate<ModelComponent>().Model = model;
-
-            ////cubeEntity.Add(new TestComponent());
-
-            //SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
         }
 
         public void RunTheMethod(Action? myMethodName)
         {
             myMethodName?.Invoke();
-        }
-
-        // Probably we don't need this?
-        private void OnGameStarted(object? sender, EventArgs e)
-        {
-            Log.Info("Game Started");
-
-            //scene.Entities.Add(GetCamera(SceneSystem));
-            //scene.Entities.Add(GetLight());
-            //scene.Entities.Add(GetAmbientLight());
-
-            //var model = new Model();
-            //var cube = new CubeProceduralModel();
-
-            //cube.Generate(Services, model);
-
-            //var cubeEntity = new Entity();
-            //cubeEntity.Transform.Scale = new Vector3(1);
-            //cubeEntity.Transform.Position = new Vector3(1);
-
-            //cubeEntity.GetOrCreate<ModelComponent>().Model = model;
-
-            ////cubeEntity.Add(new TestComponent());
-
-            //scene.Entities.Add(cubeEntity);
-
-
-            ////SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
-        }
-
-        public Entity GetCamera(SceneSystem sceneSystem)
-        {
-            var camera = new CameraComponent();
-            camera.Projection = CameraProjectionMode.Perspective;
-            camera.Slot = sceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
-
-            var cameraEntity = new Entity();
-            cameraEntity.Transform.Position = new(6, 6, 6);
-
-            cameraEntity.Transform.Rotation = Quaternion.RotationYawPitchRoll(
-                MathUtil.DegreesToRadians(45),
-                MathUtil.DegreesToRadians(-30),
-                MathUtil.DegreesToRadians(0)
-            );
-            //cameraEntity.Transform.Position = new Vector3(0, 25, 50);
-            //cameraEntity.Transform.Scale = new Vector3(1);
-            //cameraEntity.Transform.Rotation = new Quaternion(-0.34202012f, 0, 0, 0.9396926f);
-            //cameraEntity.Transform.Scale = new Vector3(1);
-            cameraEntity.Add(camera);
-
-            return cameraEntity;
-        }
-
-        public Entity GetAmbientLight()
-        {
-            var directionalLightEntity = new Entity();
-            //directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
-            //directionalLightEntity.Transform.Rotation = new Quaternion(0.11697774f, 0.88302225f, 0.32139382f, 0.3213937f);
-            //directionalLightEntity.Transform.Scale = new Vector3(0);
-
-            var directionalLightComponent = directionalLightEntity.GetOrCreate<LightComponent>();
-
-            //scene.Entities.Add(directionalLightEntity);
-
-            var light = new LightAmbient();
-            light.Color = new ColorRgbProvider(Color.White);
-
-            directionalLightComponent.Type = light;
-            directionalLightComponent.Intensity = 0.5f;
-
-            return directionalLightEntity;
-        }
-
-        public Entity GetLight()
-        {
-            var directionalLightEntity = new Entity();
-            directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
-            directionalLightEntity.Transform.Rotation = new Quaternion(0.11697774f, 0.88302225f, 0.32139382f, 0.3213937f);
-            directionalLightEntity.Transform.Scale = new Vector3(0);
-
-            var directionalLightComponent = directionalLightEntity.GetOrCreate<LightComponent>();
-
-            //scene.Entities.Add(directionalLightEntity);
-
-            var light = new LightPoint();
-            light.Color = new ColorRgbProvider(new Color(1, 1, 1));
-            light.Radius = 200;
-
-            directionalLightComponent.Type = light;
-            directionalLightComponent.Intensity = 0.5f;
-
-            return directionalLightEntity;
         }
     }
 }

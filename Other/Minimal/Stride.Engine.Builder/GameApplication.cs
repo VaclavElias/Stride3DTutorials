@@ -17,22 +17,55 @@ namespace Stride.Engine.Builder
     public class GameApplication
     {
         public static GameApplication CreateBuilder() => new GameApplication();
-        private MinimalGame? _game;
+        private MinimalGame? _game = new();
+        public Action? SomeAction2 { get; set; }
 
-        public Game Build()
+        public GameApplication()
         {
-            _game = new MinimalGame();
-
             // These can be here or in BeginRun()
             _game.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
             _game.SceneSystem.SceneInstance = new(_game.Services, new());
+        }
+
+        public Game Build()
+        {
+            _game.WindowCreated += OnWindowCreated;
 
             return _game;
+        }
+
+        private void OnWindowCreated(object? sender, EventArgs e)
+        {
+            // This could be in BeginRun or GameStarted
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetAmbientLight());
+
+            //SomeAction2?.Invoke();
+        }
+        public void AddEntity(Entity entity)
+        {
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
 
         public void AddAction(Action? action)
         {
             _game.SomeAction = action;
+        }
+
+        public void AddAction2(Action? action)
+        {
+            _game.SomeAction = action;
+        }
+
+        public Model GetCube()
+        {
+            var model = new Model();
+
+            var cube = new CubeProceduralModel();
+
+            cube.Generate(_game.Services, model);
+
+            return model;
         }
 
         public Entity GetCamera(SceneSystem sceneSystem)

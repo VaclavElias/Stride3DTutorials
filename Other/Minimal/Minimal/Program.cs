@@ -5,12 +5,39 @@ using Stride.Rendering.ProceduralModels;
 
 var builder = GameApplication.CreateBuilder();
 
+//builder.AddEntity(GetCube());
+
 var game = builder.Build();
+
+//builder.SomeAction2 = () => GetCube();
 
 // Should be before but we don't have a game till here
 builder.AddAction(() => AddCube(game));
+//builder.AddAction(() => GetCube());
 
 game.Run();
+
+Entity GetCube()
+{
+
+    var model = builder.GetCube();
+    //var model = new Model();
+    //var cube = new CubeProceduralModel();
+
+    //cube.Generate(game.Services, model);
+
+    var cubeEntity = new Entity();
+    cubeEntity.Transform.Scale = new Vector3(1);
+    cubeEntity.Transform.Position = new Vector3(1);
+
+    cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+
+    return cubeEntity;
+
+    //cubeEntity.Add(new TestComponent());
+
+    //game.SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
+}
 
 void AddCube(Game game)
 {
