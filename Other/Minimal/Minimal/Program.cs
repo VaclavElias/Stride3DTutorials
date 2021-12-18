@@ -12,27 +12,30 @@ var game = builder.Build();
 //builder.SomeAction2 = () => GetCube();
 
 // Should be before but we don't have a game till here
+
 builder.AddAction(() => AddCube(game));
+builder.AddAction(() => builder.AddGround(game));
+
+// Not working
 //builder.AddAction(() => GetCube());
 
 game.Run();
 
 Entity GetCube()
 {
-
     var model = builder.GetCube();
     //var model = new Model();
     //var cube = new CubeProceduralModel();
 
     //cube.Generate(game.Services, model);
 
-    var cubeEntity = new Entity();
-    cubeEntity.Transform.Scale = new Vector3(1);
-    cubeEntity.Transform.Position = new Vector3(1);
+    var entity = new Entity();
+    entity.Transform.Scale = new Vector3(1);
+    entity.Transform.Position = new Vector3(1);
 
-    cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+    entity.GetOrCreate<ModelComponent>().Model = model;
 
-    return cubeEntity;
+    return entity;
 
     //cubeEntity.Add(new TestComponent());
 
@@ -46,15 +49,15 @@ void AddCube(Game game)
 
     cube.Generate(game.Services, model);
 
-    var cubeEntity = new Entity();
-    cubeEntity.Transform.Scale = new Vector3(1);
-    cubeEntity.Transform.Position = new Vector3(1);
+    var entity = new Entity();
+    entity.Transform.Scale = new Vector3(1);
+    entity.Transform.Position = new Vector3(1);
 
-    cubeEntity.GetOrCreate<ModelComponent>().Model = model;
+    entity.GetOrCreate<ModelComponent>().Model = model;
 
     //cubeEntity.Add(new TestComponent());
 
-    game.SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
+    game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 }
 
 //using var game = new MinimalGame2();

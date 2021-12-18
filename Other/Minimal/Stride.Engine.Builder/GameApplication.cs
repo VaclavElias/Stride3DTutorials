@@ -1,8 +1,12 @@
 using Stride.Core.Mathematics;
 using Stride.Engine.Processors;
+using Stride.Graphics;
+using Stride.Graphics.GeometricPrimitives;
 using Stride.Rendering;
 using Stride.Rendering.Colors;
 using Stride.Rendering.Lights;
+using Stride.Rendering.Materials;
+using Stride.Rendering.Materials.ComputeColors;
 using Stride.Rendering.ProceduralModels;
 
 namespace Stride.Engine.Builder
@@ -49,12 +53,43 @@ namespace Stride.Engine.Builder
 
         public void AddAction(Action? action)
         {
-            _game.SomeAction = action;
+            _game.Actions.Add(action);
         }
 
         public void AddAction2(Action? action)
         {
-            _game.SomeAction = action;
+            _game.Actions.Add(action);
+        }
+
+        public void AddGround(Game game)
+        {
+            var model = new Model();
+
+            var plane = new PlaneProceduralModel();
+
+            plane.Size = new Vector2(10, 10);
+
+            var materialDescription = new MaterialDescriptor
+            {
+                Attributes = {
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor { Key = MaterialKeys.DiffuseValue })
+                }
+            };
+
+            var material = Material.New(game.GraphicsDevice, materialDescription);
+
+            material.Passes[0].Parameters.Set(MaterialKeys.DiffuseValue, Color.Red);
+
+            model.Materials.Add(material);
+
+            plane.Generate(game.Services, model);
+
+            var entity = new Entity();
+            entity.Transform.Position = new Vector3(0, -2, 0);
+            entity.GetOrCreate<ModelComponent>().Model = model;
+
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
 
         public Model GetCube()

@@ -10,7 +10,7 @@ namespace Stride.Engine.Builder
 {
     public class MinimalGame : Game
     {
-        public Action? SomeAction { get; set; }
+        public List<Action> Actions { get; set; } = new();
 
         protected override void BeginRun()
         {
@@ -18,12 +18,15 @@ namespace Stride.Engine.Builder
 
             Window.AllowUserResizing = true;
 
-            RunTheMethod(SomeAction);
+            foreach (var action in Actions)
+            {
+                action.Invoke();
+            }
         }
 
-        public void RunTheMethod(Action? myMethodName)
-        {
-            myMethodName?.Invoke();
-        }
+        //public void RunTheMethod(Action? myMethodName)
+        //{
+        //    myMethodName?.Invoke();
+        //}
     }
 }
