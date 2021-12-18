@@ -14,7 +14,7 @@ var game = builder.Build();
 // Should be before but we don't have a game till here
 
 builder.AddAction(() => AddCube(game));
-builder.AddAction(() => builder.AddGround(game));
+builder.AddGround();
 
 // Not working
 //builder.AddAction(() => GetCube());

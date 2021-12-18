@@ -20,8 +20,10 @@ namespace Stride.Engine.Builder
     //  - where this would bring better lighting, added ground and sky box
     public class GameApplication
     {
-        public static GameApplication CreateBuilder() => new GameApplication();
-        private MinimalGame? _game = new();
+        public static GameApplication CreateBuilder() => new();
+
+        private readonly MinimalGame _game = new();
+
         public Action? SomeAction2 { get; set; }
 
         public GameApplication()
@@ -61,7 +63,12 @@ namespace Stride.Engine.Builder
             _game.Actions.Add(action);
         }
 
-        public void AddGround(Game game)
+        public void AddGround()
+        {
+            _game.Actions.Add(() => GetGround());
+        }
+
+        public void GetGround()
         {
             var model = new Model();
 
@@ -77,13 +84,13 @@ namespace Stride.Engine.Builder
                 }
             };
 
-            var material = Material.New(game.GraphicsDevice, materialDescription);
+            var material = Material.New(_game.GraphicsDevice, materialDescription);
 
             material.Passes[0].Parameters.Set(MaterialKeys.DiffuseValue, Color.Red);
 
             model.Materials.Add(material);
 
-            plane.Generate(game.Services, model);
+            plane.Generate(_game.Services, model);
 
             var entity = new Entity();
             entity.Transform.Position = new Vector3(0, -2, 0);
