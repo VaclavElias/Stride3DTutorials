@@ -13,7 +13,7 @@ namespace Stride.Engine.Builder
 {
     // Or GameEngine?
     // I am following a bit this https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
-    // This will bootstrap all boilerplate
+    // This will bootstrap some boilerplate
     // Maybe it could have these options
     // GameType.2D, GameType.3D (Default)
     // GameWorldType.Simple (Default), GameWorldType.Ocean, GameWordlType.Grass
@@ -40,18 +40,23 @@ namespace Stride.Engine.Builder
             return _game;
         }
 
-        private void OnWindowCreated(object? sender, EventArgs e)
+        /// <summary>
+        /// Creates an Entity, adds to model to the entity and adds the entity to the Scene
+        /// </summary>
+        /// <param name="primitiveModel"></param>
+        public void Add(PrimitiveProceduralModelBase primitiveModel)
         {
-            // This could be in BeginRun or GameStarted
-            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
-            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetAmbientLight());
-
-            //SomeAction2?.Invoke();
+            _game.Actions.Add(() => GenerateModel(new Entity(), primitiveModel));
         }
 
-        public void AddEntity(Entity entity)
+        /// <summary>
+        /// Adds the model to the entity and adds the entity to the Scene
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="primitiveModel"></param>
+        public void Add(Entity entity, PrimitiveProceduralModelBase primitiveModel)
         {
-            _game.Actions.Add(() => AddEntityAction(entity));
+            _game.Actions.Add(() => GenerateModel(entity, primitiveModel));
         }
 
         private void AddEntityAction(Entity entity)
@@ -64,38 +69,9 @@ namespace Stride.Engine.Builder
             _game.Actions.Add(action);
         }
 
-        //public void AddAction2(Action? action)
-        //{
-        //    _game.Actions.Add(action);
-        //}
-
-        public void AddCube(Entity entity)
-        {
-            _game.Actions.Add(() => AddCubeEntity(entity));
-        }
-
         public void AddGround()
         {
             _game.Actions.Add(() => AddGroundEntity());
-        }
-
-        public void AddGroundEntity()
-        {
-            var model = new Model();
-
-            var plane = new PlaneProceduralModel();
-
-            plane.Size = new Vector2(10, 10);
-
-            model.Materials.Add(GetMaterial(Color.Red));
-
-            plane.Generate(_game.Services, model);
-
-            var entity = new Entity();
-            entity.Transform.Position = new Vector3(0, -2, 0);
-            entity.GetOrCreate<ModelComponent>().Model = model;
-
-            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
 
         public Material GetMaterial(Color? color)
@@ -115,20 +91,13 @@ namespace Stride.Engine.Builder
             return material;
         }
 
-        public void AddCubeEntity(Entity entity)
-        {
-            var model = new Model();
+        // Simple Skybox
+        public void AddSkybox() { }
 
-            var cube = new CubeProceduralModel();
+        // Simple Camera Movement
+        public void AddCameraController() { }
 
-            cube.Generate(_game.Services, model);
-
-            entity.GetOrCreate<ModelComponent>().Model = model;
-
-            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-        }
-
-        public Entity GetCamera(SceneSystem sceneSystem)
+        private Entity GetCamera(SceneSystem sceneSystem)
         {
             var camera = new CameraComponent();
             camera.Projection = CameraProjectionMode.Perspective;
@@ -142,16 +111,18 @@ namespace Stride.Engine.Builder
                 MathUtil.DegreesToRadians(-30),
                 MathUtil.DegreesToRadians(0)
             );
+
             //cameraEntity.Transform.Position = new Vector3(0, 25, 50);
             //cameraEntity.Transform.Scale = new Vector3(1);
             //cameraEntity.Transform.Rotation = new Quaternion(-0.34202012f, 0, 0, 0.9396926f);
             //cameraEntity.Transform.Scale = new Vector3(1);
+
             cameraEntity.Add(camera);
 
             return cameraEntity;
         }
 
-        public Entity GetAmbientLight()
+        private Entity GetAmbientLight()
         {
             var directionalLightEntity = new Entity();
             //directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
@@ -171,7 +142,7 @@ namespace Stride.Engine.Builder
             return directionalLightEntity;
         }
 
-        public Entity GetLight()
+        private Entity GetLight()
         {
             var directionalLightEntity = new Entity();
             directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
@@ -190,6 +161,50 @@ namespace Stride.Engine.Builder
             directionalLightComponent.Intensity = 0.5f;
 
             return directionalLightEntity;
+        }
+
+        private void AddGroundEntity()
+        {
+            var model = new Model();
+
+            var plane = new PlaneProceduralModel();
+
+            plane.Size = new Vector2(10, 10);
+
+            model.Materials.Add(GetMaterial(Color.Red));
+
+            plane.Generate(_game.Services, model);
+
+            var entity = new Entity();
+            entity.Transform.Position = new Vector3(0, -2, 0);
+            entity.GetOrCreate<ModelComponent>().Model = model;
+
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+        }
+
+        private void OnWindowCreated(object? sender, EventArgs e)
+        {
+            // This could be in BeginRun or GameStarted
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetAmbientLight());
+        }
+
+        private Model GeneratePrimitiveModel(PrimitiveProceduralModelBase proceduralModel)
+        {
+            var model = new Model();
+
+            proceduralModel.Generate(_game.Services, model);
+
+            return model;
+        }
+
+        private void GenerateModel(Entity entity, PrimitiveProceduralModelBase primitiveModel)
+        {
+            var model = GeneratePrimitiveModel(primitiveModel);
+
+            entity.GetOrCreate<ModelComponent>().Model = model;
+
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
     }
 }

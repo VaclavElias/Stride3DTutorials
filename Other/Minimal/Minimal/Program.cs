@@ -5,42 +5,27 @@ using Stride.Rendering.ProceduralModels;
 
 var builder = GameApplication.CreateBuilder();
 
-//builder.AddEntity(GetCube());
-
+// Here we could set 2D or 3D to position the default camera
 var game = builder.Build();
 
-//builder.SomeAction2 = () => GetCube();
-
-// Should be before but we don't have a game till here
-
-//builder.AddAction(() => AddCube(game));
+// Maybe these should be before the Build() but we don't have a game till here
 builder.AddGround();
-builder.AddCube(GetCube());
-
-// Not working
-//builder.AddAction(() => GetCube());
+builder.AddSkybox();
+builder.AddCameraController();
+builder.Add(GetCubeEntity(),new CubeProceduralModel());
+builder.Add(new SphereProceduralModel());
 
 game.Run();
 
-Entity GetCube()
+Entity GetCubeEntity()
 {
-    //var model = builder.GetCube();
-    //var model = new Model();
-    //var cube = new CubeProceduralModel();
-
-    //cube.Generate(game.Services, model);
-
     var entity = new Entity();
-    entity.Transform.Scale = new Vector3(1);
-    entity.Transform.Position = new Vector3(1);
 
-    //entity.GetOrCreate<ModelComponent>().Model = model;
+    entity.Transform.Position = new Vector3(1,0,3);
 
     return entity;
 
     //cubeEntity.Add(new TestComponent());
-
-    //game.SceneSystem.SceneInstance.RootScene.Entities.Add(cubeEntity);
 }
 
 Entity GetCube2()
