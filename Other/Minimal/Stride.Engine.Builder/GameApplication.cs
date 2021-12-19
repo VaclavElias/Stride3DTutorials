@@ -24,8 +24,6 @@ namespace Stride.Engine.Builder
 
         private readonly MinimalGame _game = new();
 
-        public Action? SomeAction2 { get; set; }
-
         public GameApplication()
         {
             // These can be here or in BeginRun()

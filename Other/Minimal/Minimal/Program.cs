@@ -1,4 +1,10 @@
-using Minimal;
+// Can we make it simplier?
+// Can we make GameApplication simplier?
+// What name adjustments would you suggest?
+// Could we add this as a new optional official Stride NuGet once finalised maybe as a preview package?
+// Could we extend Stride Game object to simplify my implementation, I am not sure about the MinimalGame class, Ideally I wouldn't have MinimalGame but we might need some other Event in Game object to hook to add Entities easier? I would probably add new Game() directly in the GameApplication but then I am not able to do BeginRun override unless there is some other option I am not aware of?
+// Can anyone help/suggest how to improve the visual output which, could be as default or optional but I would prefer something much visually nicer, so anyone working with this NuGet would be very impressed by Stride
+// What else could we add as optional? e.g. like AddSkybox, better ligtning and so on.
 
 var builder = GameApplication.CreateBuilder();
 
