@@ -1,17 +1,17 @@
-using Stride.Core.Mathematics;
-using Stride.Engine.Builder;
-using Stride.Rendering;
-using Stride.Rendering.ProceduralModels;
+using Minimal;
 
 var builder = GameApplication.CreateBuilder();
 
-// Here we could set 2D or 3D to position the default camera
-var game = builder.Build();
+// Here we could set 2D or 3D as parameter to position the default camera
+var game = builder.Build(); // or Build2D(), Build3D()
 
-// Maybe these should be before the Build() but we don't have a game till here
-builder.AddGround();
+// Maybe these below should be before the Build() but we don't have a game object till here, unless there is another solution or we could expose some new event from Game object?
+
+// These 3 could be inside Build() with an option to overwrite?
+builder.AddGround(); //  GameWorldType.Simple (Default), GameWorldType.Ocean, GameWordlType.Grass, Stone
 builder.AddSkybox();
 builder.AddCameraController();
+
 builder.Add(GetCubeEntity(),new CubeProceduralModel());
 builder.Add(new SphereProceduralModel());
 
@@ -23,52 +23,31 @@ Entity GetCubeEntity()
 
     entity.Transform.Position = new Vector3(1,0,3);
 
-    return entity;
-
-    //cubeEntity.Add(new TestComponent());
-}
-
-Entity GetCube2()
-{
-    var model = new Model();
-    var cube = new CubeProceduralModel();
-
-    cube.Generate(game.Services, model);
-
-    var entity = new Entity();
-    entity.Transform.Scale = new Vector3(1);
-    entity.Transform.Position = new Vector3(1);
-
-    entity.GetOrCreate<ModelComponent>().Model = model;
+    entity.Add(new MotionComponent());
 
     return entity;
-
-    //cubeEntity.Add(new TestComponent());
-
-    //game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 }
 
-//using var game = new MinimalGame2();
+// Ideally the above should look as simple as this
 
-//game.Run();
-
-//var game = new Game();
+//using var game = new Game();
 
 //// Example 1 - Learn basic Stride shapes
-//var cube = Cube.New();
+//var cube = new CubeProceduralModel();
 //var entity = new Entity();
 //entity.AddChild(cube);
 
 //game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
-//// Example 2 - Learn for loop
+
+//// Example 2 - Learn "for" loop in C#
 //for (int i = 0; i < 4; i++)
 //{
-//    var cube2 = Cube.New();
+//    var model = new CubeProceduralModel();
 //    var entity2 = new Entity();
 
 //    entity2.Transform.Position.X = 5 * i;
-//    entity2.AddChild(cube2);
+//    entity2.AddChild(model);
 
 //    game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity2);
 //}

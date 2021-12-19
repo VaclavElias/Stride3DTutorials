@@ -1,3 +1,5 @@
 //global using Minimal;
 global using Stride.Engine;
-global using static Stride.Graphics.GeometricPrimitives.GeometricPrimitive;
+global using Stride.Core.Mathematics;
+global using Stride.Engine.Builder;
+global using Stride.Rendering.ProceduralModels;
