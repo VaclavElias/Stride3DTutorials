@@ -20,6 +20,7 @@ public class GameApplication
         _game.SceneSystem.SceneInstance = new(_game.Services, new());
     }
 
+    // Here we could set 2D or 3D as a parameter to position the default camera or we could use Build2D(), Build3D()
     public Game Build()
     {
         _game.WindowCreated += OnWindowCreated;
