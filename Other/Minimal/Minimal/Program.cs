@@ -1,4 +1,4 @@
-// Can we make it simplier?
+// Can we make it simplier, cleaner and elegant?
 // Can we make GameApplication simplier?
 // What name adjustments would you suggest?
 // Could we add this as a new optional official Stride NuGet once finalised maybe as a preview package?
