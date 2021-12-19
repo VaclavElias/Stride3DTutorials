@@ -1,46 +1,36 @@
-using Stride.Core.Mathematics;
-using Stride.Particles.Rendering;
-using Stride.Rendering;
-using Stride.Rendering.Compositing;
-using Stride.Rendering.Images;
-using Stride.Rendering.Lights;
-using Stride.Rendering.Materials;
-using Stride.Rendering.Shadows;
-using Stride.Rendering.UI;
+namespace Stride.Engine.Builder;
 
-namespace Stride.Engine.Builder
+// Credit https://github.com/IceReaper/StrideTest
+public static class GraphicsCompositorBuilder
 {
-    // Credit https://github.com/IceReaper/StrideTest
-    public static class GraphicsCompositorBuilder
+    public static GraphicsCompositor Create()
     {
-        public static GraphicsCompositor Create()
+        var opaqueRenderStage = new RenderStage("Opaque", "Main") { SortMode = new StateChangeSortMode() };
+        var transparentRenderStage = new RenderStage("Transparent", "Main") { SortMode = new BackToFrontSortMode() };
+        var shadowCasterRenderStage = new RenderStage("ShadowMapCaster", "ShadowMapCaster") { SortMode = new FrontToBackSortMode() };
+        var shadowCasterCubeMapRenderStage = new RenderStage("ShadowMapCasterCubeMap", "ShadowMapCasterCubeMap") { SortMode = new FrontToBackSortMode() };
+
+        var shadowCasterParaboloidRenderStage =
+            new RenderStage("ShadowMapCasterParaboloid", "ShadowMapCasterParaboloid") { SortMode = new FrontToBackSortMode() };
+
+        var postProcessingEffects = new PostProcessingEffects();
+        postProcessingEffects.DisableAll();
+
+        var renderer = new ForwardRenderer
         {
-            var opaqueRenderStage = new RenderStage("Opaque", "Main") { SortMode = new StateChangeSortMode() };
-            var transparentRenderStage = new RenderStage("Transparent", "Main") { SortMode = new BackToFrontSortMode() };
-            var shadowCasterRenderStage = new RenderStage("ShadowMapCaster", "ShadowMapCaster") { SortMode = new FrontToBackSortMode() };
-            var shadowCasterCubeMapRenderStage = new RenderStage("ShadowMapCasterCubeMap", "ShadowMapCasterCubeMap") { SortMode = new FrontToBackSortMode() };
+            Clear = { Color = Color.Black },
+            OpaqueRenderStage = opaqueRenderStage,
+            TransparentRenderStage = transparentRenderStage,
+            ShadowMapRenderStages = { shadowCasterRenderStage, shadowCasterParaboloidRenderStage, shadowCasterCubeMapRenderStage },
+            PostEffects = postProcessingEffects
+        };
 
-            var shadowCasterParaboloidRenderStage =
-                new RenderStage("ShadowMapCasterParaboloid", "ShadowMapCasterParaboloid") { SortMode = new FrontToBackSortMode() };
+        var cameraSlot = new SceneCameraSlot { Name = "Main" };
 
-            var postProcessingEffects = new PostProcessingEffects();
-            postProcessingEffects.DisableAll();
-
-            var renderer = new ForwardRenderer
-            {
-                Clear = { Color = Color.Black },
-                OpaqueRenderStage = opaqueRenderStage,
-                TransparentRenderStage = transparentRenderStage,
-                ShadowMapRenderStages = { shadowCasterRenderStage, shadowCasterParaboloidRenderStage, shadowCasterCubeMapRenderStage },
-                PostEffects = postProcessingEffects
-            };
-
-            var cameraSlot = new SceneCameraSlot { Name = "Main" };
-
-            return new()
-            {
-                Cameras = { cameraSlot },
-                RenderStages =
+        return new()
+        {
+            Cameras = { cameraSlot },
+            RenderStages =
                 {
                     opaqueRenderStage,
                     transparentRenderStage,
@@ -48,7 +38,7 @@ namespace Stride.Engine.Builder
                     shadowCasterParaboloidRenderStage,
                     shadowCasterCubeMapRenderStage
                 },
-                RenderFeatures =
+            RenderFeatures =
                 {
                     new MeshRenderFeature
                     {
@@ -141,10 +131,10 @@ namespace Stride.Engine.Builder
                         }
                     }
                 },
-                Game = new SceneCameraRenderer { Child = renderer, Camera = cameraSlot },
-                Editor = renderer,
-                SingleView = renderer
-            };
-        }
+            Game = new SceneCameraRenderer { Child = renderer, Camera = cameraSlot },
+            Editor = renderer,
+            SingleView = renderer
+        };
     }
 }
+

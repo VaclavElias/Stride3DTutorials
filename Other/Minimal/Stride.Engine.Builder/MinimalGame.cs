@@ -1,32 +1,19 @@
-using Stride.Core.Diagnostics;
-using Stride.Core.Mathematics;
-using Stride.Engine.Processors;
-using Stride.Rendering;
-using Stride.Rendering.Colors;
-using Stride.Rendering.Lights;
-using Stride.Rendering.ProceduralModels;
+namespace Stride.Engine.Builder;
 
-namespace Stride.Engine.Builder
+public class MinimalGame : Game
 {
-    public class MinimalGame : Game
+    public List<Action> Actions { get; set; } = new();
+
+    protected override void BeginRun()
     {
-        public List<Action> Actions { get; set; } = new();
+        base.BeginRun();
 
-        protected override void BeginRun()
+        Window.AllowUserResizing = true;
+
+        foreach (var action in Actions)
         {
-            base.BeginRun();
-
-            Window.AllowUserResizing = true;
-
-            foreach (var action in Actions)
-            {
-                action.Invoke();
-            }
+            action.Invoke();
         }
-
-        //public void RunTheMethod(Action? myMethodName)
-        //{
-        //    myMethodName?.Invoke();
-        //}
     }
 }
+

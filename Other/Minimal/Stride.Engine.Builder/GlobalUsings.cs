@@ -1,0 +1,13 @@
+global using Stride.Core.Mathematics;
+global using Stride.Engine.Processors;
+global using Stride.Particles.Rendering;
+global using Stride.Rendering.Colors;
+global using Stride.Rendering.Compositing;
+global using Stride.Rendering.Images;
+global using Stride.Rendering.Lights;
+global using Stride.Rendering.Materials.ComputeColors;
+global using Stride.Rendering.Materials;
+global using Stride.Rendering.ProceduralModels;
+global using Stride.Rendering.Shadows;
+global using Stride.Rendering;
+global using Stride.Rendering.UI;
