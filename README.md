@@ -49,8 +49,8 @@ There might be many reasons, including:
 - You want to start very quickly
 - You want to learn C# programming with a nice visual output instead of console
 - You want to learn game programming in the most simple way, without using the game editor
-- You find coding and tools very complex to understand and navigate around
-- You want to start with game develepment basics before you even start exploring the game editor
+- You find coding and coding tools very complex to understand and navigate around
+- You want to start with game development basics before you even start exploring the game editor
 
 Please, let me know through Issues if you find any other reasons.
 
