@@ -48,27 +48,38 @@ namespace Stride.Engine.Builder
 
             //SomeAction2?.Invoke();
         }
+
         public void AddEntity(Entity entity)
         {
-            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+            _game.Actions.Add(() => AddEntityAction(entity));
         }
+
+        private void AddEntityAction(Entity entity)
+            => _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
         public void AddAction(Action? action)
         {
+            if (action == null) return;
+
             _game.Actions.Add(action);
         }
 
-        public void AddAction2(Action? action)
+        //public void AddAction2(Action? action)
+        //{
+        //    _game.Actions.Add(action);
+        //}
+
+        public void AddCube(Entity entity)
         {
-            _game.Actions.Add(action);
+            _game.Actions.Add(() => AddCubeEntity(entity));
         }
 
         public void AddGround()
         {
-            _game.Actions.Add(() => GetGround());
+            _game.Actions.Add(() => AddGroundEntity());
         }
 
-        public void GetGround()
+        public void AddGroundEntity()
         {
             var model = new Model();
 
@@ -76,19 +87,7 @@ namespace Stride.Engine.Builder
 
             plane.Size = new Vector2(10, 10);
 
-            var materialDescription = new MaterialDescriptor
-            {
-                Attributes = {
-                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
-                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor { Key = MaterialKeys.DiffuseValue })
-                }
-            };
-
-            var material = Material.New(_game.GraphicsDevice, materialDescription);
-
-            material.Passes[0].Parameters.Set(MaterialKeys.DiffuseValue, Color.Red);
-
-            model.Materials.Add(material);
+            model.Materials.Add(GetMaterial(Color.Red));
 
             plane.Generate(_game.Services, model);
 
@@ -99,7 +98,24 @@ namespace Stride.Engine.Builder
             _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
 
-        public Model GetCube()
+        public Material GetMaterial(Color? color)
+        {
+            var materialDescription = new MaterialDescriptor
+            {
+                Attributes = {
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor { Key = MaterialKeys.DiffuseValue })
+                }
+            };
+
+            var material = Material.New(_game.GraphicsDevice, materialDescription);
+
+            material.Passes[0].Parameters.Set(MaterialKeys.DiffuseValue, color ?? Color.White);
+
+            return material;
+        }
+
+        public void AddCubeEntity(Entity entity)
         {
             var model = new Model();
 
@@ -107,7 +123,9 @@ namespace Stride.Engine.Builder
 
             cube.Generate(_game.Services, model);
 
-            return model;
+            entity.GetOrCreate<ModelComponent>().Model = model;
+
+            _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
         }
 
         public Entity GetCamera(SceneSystem sceneSystem)
