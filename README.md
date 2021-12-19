@@ -46,10 +46,11 @@ Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=
 #### Why would you use Minimal APIs and not Stride Editor?
 There might be many reasons, including:
 - You don't want to install anything on your computer
-- You want to start quickly
+- You want to start very quickly
 - You want to learn C# programming with a nice visual output instead of console
-- You want to learn game programming in the most simple way, without using the editor
+- You want to learn game programming in the most simple way, without using the game editor
 - You find coding and tools very complex to understand and navigate around
+- You want to start with game develepment basics before you even start exploring the game editor
 
 Please, let me know through Issues if you find any other reasons.
 
