@@ -2,7 +2,7 @@ namespace Minimal;
 
 public class MotionComponent : SyncScript
 {
-    Vector3 _initialPosition = Vector3.Zero;
+    private Vector3 _initialPosition = Vector3.Zero;
 
     public override void Start()
     {
