@@ -1,3 +1,8 @@
+using Stride.Core.IO;
+using Stride.Core.Serialization;
+using Stride.Graphics;
+using Stride.Rendering.Skyboxes;
+
 namespace Stride.Engine.Builder;
 
 // Or GameEngine?
@@ -9,6 +14,10 @@ namespace Stride.Engine.Builder;
 //  - where this would bring better lighting, added ground and sky box
 public class GameApplication
 {
+    public const string SkyboxEntityName = "Skybox";
+    public const string CameraEntityName = "Camera";
+    public const string SunEntityName = "Directional light";
+
     public static GameApplication CreateBuilder() => new();
 
     private readonly MinimalGame _game = new();
@@ -60,6 +69,73 @@ public class GameApplication
     public void AddGround()
     {
         _game.Actions.Add(() => AddGroundEntity());
+        _game.Actions.Add(() => GetSpecialSphere(null));
+    }
+
+    public void GetSpecialSphere(Color? color)
+    {
+        var materialDescription = new MaterialDescriptor
+        {
+            Attributes =
+                {
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(Color.FromBgra(0xFF8C8C8C))),
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(1.0f)),
+                    SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
+                    MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.65f))
+                }
+        };
+
+        var material = Material.New(_game.GraphicsDevice, materialDescription);
+
+        var model = new Model();
+
+        var sphereModel = new SphereProceduralModel
+        {
+            MaterialInstance = { Material = material },
+            Tessellation = 30,
+        };
+
+        sphereModel.Generate(_game.Services, model);
+
+        var entity = new Entity("Sphere") { new ModelComponent(model) };
+
+        entity.Transform.Position = new Vector3(1, 0, 4);
+
+        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        var skyboxFilename = "skybox_texture_hdr.dds";
+
+        using (FileStream fsSource = new FileStream("Resources\\skybox_texture_hdr.dds",
+            FileMode.Open, FileAccess.Read))
+        {
+            var texture = Texture.Load(_game.GraphicsDevice, fsSource);
+        }
+
+        var skyboxEntity = new Entity(SkyboxEntityName)
+            {
+                new BackgroundComponent { Intensity = 1.0f },
+            };
+        skyboxEntity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
+
+        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(skyboxEntity);
+
+        var lightEntity = new Entity(SunEntityName) { new LightComponent
+            {
+                Intensity = 20.0f,
+                Type = new LightDirectional
+                {
+                    Shadow =
+                    {
+                        Enabled = true,
+                        Size = LightShadowMapSize.Large,
+                        Filter = new LightShadowMapFilterTypePcf { FilterSize = LightShadowMapFilterTypePcfSize.Filter5x5 },
+                    }
+                }
+            } };
+
+        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(lightEntity);
+
     }
 
     public Material GetMaterial(Color? color)
@@ -83,7 +159,16 @@ public class GameApplication
     public void AddSkybox() { }
 
     // Simple Camera Movement
-    public void AddCameraController() { }
+    public void AddCameraController()
+    {
+        _game.Actions.Add(() =>
+        {
+
+            var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Where(w => w.Name == CameraEntityName).Single();
+
+            cameraEntity.Add(new BasicCameraController());
+        });
+    }
 
     private Entity GetCamera(SceneSystem sceneSystem)
     {
@@ -91,7 +176,7 @@ public class GameApplication
         camera.Projection = CameraProjectionMode.Perspective;
         camera.Slot = sceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
 
-        var cameraEntity = new Entity();
+        var cameraEntity = new Entity(CameraEntityName);
         cameraEntity.Transform.Position = new(6, 6, 6);
 
         cameraEntity.Transform.Rotation = Quaternion.RotationYawPitchRoll(
