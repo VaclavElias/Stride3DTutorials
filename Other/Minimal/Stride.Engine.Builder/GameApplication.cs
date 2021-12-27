@@ -26,7 +26,19 @@ public class GameApplication
     {
         // These can be here or in BeginRun()
         _game.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
-        _game.SceneSystem.SceneInstance = new(_game.Services, new());
+
+        CreateAndSetNewScene();
+    }
+
+    private void CreateAndSetNewScene()
+    {
+        var scene = SceneHDRFactory.Create();
+
+        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
+
+        cameraEntity.Components.Get<CameraComponent>().Slot = _game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
+
+        _game.SceneSystem.SceneInstance = new(_game.Services, scene);
     }
 
     // Here we could set 2D or 3D as a parameter to position the default camera or we could use Build2D(), Build3D()
@@ -43,7 +55,7 @@ public class GameApplication
     /// <param name="primitiveModel"></param>
     public void Add(PrimitiveProceduralModelBase primitiveModel)
     {
-        _game.Actions.Add(() => GenerateModel(new Entity(), primitiveModel));
+        _game.BeginRunActions.Add(() => GenerateModel(new Entity(), primitiveModel));
     }
 
     /// <summary>
@@ -53,7 +65,7 @@ public class GameApplication
     /// <param name="primitiveModel"></param>
     public void Add(Entity entity, PrimitiveProceduralModelBase primitiveModel)
     {
-        _game.Actions.Add(() => GenerateModel(entity, primitiveModel));
+        _game.BeginRunActions.Add(() => GenerateModel(entity, primitiveModel));
     }
 
     private void AddEntityAction(Entity entity)
@@ -63,13 +75,13 @@ public class GameApplication
     {
         if (action == null) return;
 
-        _game.Actions.Add(action);
+        _game.BeginRunActions.Add(action);
     }
 
     public void AddGround()
     {
-        _game.Actions.Add(() => AddGroundEntity());
-        _game.Actions.Add(() => GetSpecialSphere(null));
+        _game.BeginRunActions.Add(() => AddGroundEntity());
+        _game.BeginRunActions.Add(() => GetSpecialSphere(null));
     }
 
     public void GetSpecialSphere(Color? color)
@@ -111,31 +123,6 @@ public class GameApplication
         {
             var texture = Texture.Load(_game.GraphicsDevice, fsSource);
         }
-
-        var skyboxEntity = new Entity(SkyboxEntityName)
-            {
-                new BackgroundComponent { Intensity = 1.0f },
-            };
-        skyboxEntity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
-
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(skyboxEntity);
-
-        var lightEntity = new Entity(SunEntityName) { new LightComponent
-            {
-                Intensity = 20.0f,
-                Type = new LightDirectional
-                {
-                    Shadow =
-                    {
-                        Enabled = true,
-                        Size = LightShadowMapSize.Large,
-                        Filter = new LightShadowMapFilterTypePcf { FilterSize = LightShadowMapFilterTypePcfSize.Filter5x5 },
-                    }
-                }
-            } };
-
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(lightEntity);
-
     }
 
     public Material GetMaterial(Color? color)
@@ -161,7 +148,7 @@ public class GameApplication
     // Simple Camera Movement
     public void AddCameraController()
     {
-        _game.Actions.Add(() =>
+        _game.BeginRunActions.Add(() =>
         {
 
             var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Where(w => w.Name == CameraEntityName).Single();
@@ -258,7 +245,7 @@ public class GameApplication
     private void OnWindowCreated(object? sender, EventArgs e)
     {
         // This could be in BeginRun or GameStarted
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
+        //_game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
         _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetAmbientLight());
     }
 

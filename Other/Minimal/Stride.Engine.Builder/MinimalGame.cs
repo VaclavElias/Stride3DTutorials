@@ -2,7 +2,7 @@ namespace Stride.Engine.Builder;
 
 public class MinimalGame : Game
 {
-    public List<Action> Actions { get; set; } = new();
+    public List<Action> BeginRunActions { get; set; } = new();
 
     protected override void BeginRun()
     {
@@ -10,7 +10,7 @@ public class MinimalGame : Game
 
         Window.AllowUserResizing = true;
 
-        foreach (var action in Actions)
+        foreach (var action in BeginRunActions)
         {
             action.Invoke();
         }
