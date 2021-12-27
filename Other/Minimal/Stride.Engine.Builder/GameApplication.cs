@@ -1,13 +1,7 @@
-using Stride.Core.IO;
-using Stride.Core.Serialization;
-using Stride.Graphics;
-using Stride.Rendering.Skyboxes;
-
+// Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
+// Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 namespace Stride.Engine.Builder;
 
-// Or GameEngine?
-// I am following a bit this https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
-// This will bootstrap some boilerplate
 // Maybe it could have these options
 // GameType.2D, GameType.3D (Default) or Build2D and Build3D.
 // GameWorldType.Simple (Default), GameWorldType.Ocean, GameWordlType.Grass
@@ -49,6 +43,19 @@ public class GameApplication
         return _game;
     }
 
+    public Game Build3D()
+    {
+        var game = Build();
+
+        _game.BeginRunActions.Add(() =>
+        {
+            CreateAndSetGround();
+            GetSpecialSphere(null);
+        });
+
+        return _game;
+    }
+
     /// <summary>
     /// Creates an Entity and a Model, adds the Model to the Entity and adds the Entity to the Scene
     /// </summary>
@@ -78,10 +85,11 @@ public class GameApplication
         _game.BeginRunActions.Add(action);
     }
 
-    public void AddGround()
+    public GameApplication AddGround()
     {
-        _game.BeginRunActions.Add(() => AddGroundEntity());
-        _game.BeginRunActions.Add(() => GetSpecialSphere(null));
+        _game.BeginRunActions.Add(() => CreateAndSetGround());
+
+        return this;
     }
 
     public void GetSpecialSphere(Color? color)
@@ -112,7 +120,7 @@ public class GameApplication
 
         var entity = new Entity("Sphere") { new ModelComponent(model) };
 
-        entity.Transform.Position = new Vector3(1, 0, 4);
+        entity.Transform.Position = new Vector3(1, 0.5f, 4);
 
         _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
@@ -223,6 +231,37 @@ public class GameApplication
         return directionalLightEntity;
     }
 
+    private void CreateAndSetGround()
+    {
+        var materialDescription = new MaterialDescriptor
+        {
+            Attributes =
+                {
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(Color.FromBgra(0xFF242424))),
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(0.0f)),
+                    SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
+                    MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.1f))
+                }
+        };
+
+        var material = Material.New(_game.GraphicsDevice, materialDescription);
+
+        var model = new Model();
+
+        var sphereModel = new PlaneProceduralModel
+        {
+            MaterialInstance = { Material = material },
+            Size = new Vector2(10.0f, 10.0f),
+        };
+
+        sphereModel.Generate(_game.Services, model);
+
+        var entity = new Entity("Ground") { new ModelComponent(model) };
+
+        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    }
+
     private void AddGroundEntity()
     {
         var model = new Model();
@@ -257,6 +296,7 @@ public class GameApplication
 
         _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
+
     private Model GeneratePrimitiveModel(PrimitiveProceduralModelBase proceduralModel)
     {
         var model = new Model();

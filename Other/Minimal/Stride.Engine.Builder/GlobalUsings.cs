@@ -1,5 +1,6 @@
 global using Stride.Core.Mathematics;
 global using Stride.Engine.Processors;
+global using Stride.Graphics;
 global using Stride.Particles.Rendering;
 global using Stride.Rendering.Colors;
 global using Stride.Rendering.Compositing;
