@@ -43,6 +43,10 @@ public class GameApplication
         return _game;
     }
 
+    /// <summary>
+    /// Adds Ground and CamereController
+    /// </summary>
+    /// <returns></returns>
     public Game Build3D()
     {
         var game = Build();
@@ -163,31 +167,6 @@ public class GameApplication
 
             cameraEntity.Add(new BasicCameraController());
         });
-    }
-
-    private Entity GetCamera(SceneSystem sceneSystem)
-    {
-        var camera = new CameraComponent();
-        camera.Projection = CameraProjectionMode.Perspective;
-        camera.Slot = sceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
-
-        var cameraEntity = new Entity(CameraEntityName);
-        cameraEntity.Transform.Position = new(6, 6, 6);
-
-        cameraEntity.Transform.Rotation = Quaternion.RotationYawPitchRoll(
-            MathUtil.DegreesToRadians(45),
-            MathUtil.DegreesToRadians(-30),
-            MathUtil.DegreesToRadians(0)
-        );
-
-        //cameraEntity.Transform.Position = new Vector3(0, 25, 50);
-        //cameraEntity.Transform.Scale = new Vector3(1);
-        //cameraEntity.Transform.Rotation = new Quaternion(-0.34202012f, 0, 0, 0.9396926f);
-        //cameraEntity.Transform.Scale = new Vector3(1);
-
-        cameraEntity.Add(camera);
-
-        return cameraEntity;
     }
 
     private Entity GetAmbientLight()
