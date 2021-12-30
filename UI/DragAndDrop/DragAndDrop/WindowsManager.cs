@@ -3,6 +3,7 @@ using Stride.Engine;
 using Stride.Graphics;
 using Stride.UI;
 using Stride.UI.Controls;
+using System.Linq;
 
 namespace DragAndDrop
 {
@@ -24,6 +25,8 @@ namespace DragAndDrop
             Font ??= LoadDefaultFont();
 
             _cubesGenerator = new CubesGenerator(Services);
+
+            var skyboxEntity = Entity.Scene.Entities.Single(x => x.Name == "Skybox");
 
             _mainCanvas.Children.Add(CreateMainWindow());
             _mainCanvas.Children.Add(CreateWindow($"Window {_windowId++}", new Vector3(0.02f)));
