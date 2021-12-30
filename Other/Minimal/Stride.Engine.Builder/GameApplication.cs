@@ -1,10 +1,5 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
-using Stride.Core;
-using Stride.Core.IO;
-using Stride.Graphics.GeometricPrimitives;
-using Stride.Rendering.Skyboxes;
-
 namespace Stride.Engine.Builder;
 
 // Maybe it could have these options
@@ -13,34 +8,23 @@ namespace Stride.Engine.Builder;
 //  - where this would bring better lighting, added ground and sky box
 public class GameApplication
 {
-    public const string SkyboxEntityName = "Skybox";
     public const string CameraEntityName = "Camera";
+    public const string GroundEntityName = "Ground";
+    public const string SkyboxEntityName = "Skybox";
     public const string SunEntityName = "Directional light";
 
-    public static GameApplication CreateBuilder() => new();
-
+    private const string SkyboxTexture = "skybox_texture_hdr.dds";
     private readonly MinimalGame _game = new();
 
     public GameApplication()
     {
-        // These can be here or in BeginRun()
         _game.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
 
         CreateAndSetNewScene();
     }
 
-    private void CreateAndSetNewScene()
-    {
-        var scene = SceneHDRFactory.Create();
+    public static GameApplication CreateBuilder() => new();
 
-        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
-
-        cameraEntity.Components.Get<CameraComponent>().Slot = _game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
-
-        _game.SceneSystem.SceneInstance = new(_game.Services, scene);
-    }
-
-    // Here we could set 2D or 3D as a parameter to position the default camera or we could use Build2D(), Build3D()
     public Game Build()
     {
         _game.WindowCreated += OnWindowCreated;
@@ -59,7 +43,7 @@ public class GameApplication
         _game.BeginRunActions.Add(() =>
         {
             CreateAndSetGround();
-            AddSkybox();
+            CreateAndSetSkybox();
             GetSpecialSphere(null);
         });
 
@@ -85,6 +69,17 @@ public class GameApplication
         _game.BeginRunActions.Add(() => GenerateModel(entity, primitiveModel));
     }
 
+    private void CreateAndSetNewScene()
+    {
+        var scene = SceneHDRFactory.Create();
+
+        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
+
+        cameraEntity.Components.Get<CameraComponent>().Slot = _game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
+
+        _game.SceneSystem.SceneInstance = new(_game.Services, scene);
+    }
+
     private void AddEntityAction(Entity entity)
         => _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
@@ -102,19 +97,26 @@ public class GameApplication
         return this;
     }
 
-    public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
+    public GameApplication AddSkybox()
     {
-        var newEntity = new Entity { Name = name };
-        newEntity.Components.Add(component);
-        if (additionalComponents != null)
-        {
-            foreach (var additionalComponent in additionalComponents)
-            {
-                newEntity.Components.Add(additionalComponent);
-            }
-        }
-        return Task.FromResult(newEntity);
+        _game.BeginRunActions.Add(() => CreateAndSetSkybox());
+
+        return this;
     }
+
+    //public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
+    //{
+    //    var newEntity = new Entity { Name = name };
+    //    newEntity.Components.Add(component);
+    //    if (additionalComponents != null)
+    //    {
+    //        foreach (var additionalComponent in additionalComponents)
+    //        {
+    //            newEntity.Components.Add(additionalComponent);
+    //        }
+    //    }
+    //    return Task.FromResult(newEntity);
+    //}
 
     public void GetSpecialSphere(Color? color)
     {
@@ -166,21 +168,6 @@ public class GameApplication
         return material;
     }
 
-    // Simple Skybox
-    public void AddSkybox()
-    {
-        var skyboxFilename = "skybox_texture_hdr.dds";
-
-        using var stream = new FileStream($"Resources\\{skyboxFilename}", FileMode.Open, FileAccess.Read);
-
-        var texture = Texture.Load(_game.GraphicsDevice, stream);
-
-        var skyboxEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
-
-        skyboxEntity.Get<BackgroundComponent>().Texture = texture;
-    }
-
-    // Simple Camera Movement
     public void AddCameraController()
     {
         _game.BeginRunActions.Add(() =>
@@ -210,17 +197,39 @@ public class GameApplication
 
         var model = new Model();
 
-        var sphereModel = new PlaneProceduralModel
+        var groundModel = new PlaneProceduralModel
         {
-            MaterialInstance = { Material = material },
             Size = new Vector2(10.0f, 10.0f),
+            MaterialInstance = { Material = material }
         };
 
-        sphereModel.Generate(_game.Services, model);
+        groundModel.Generate(_game.Services, model);
 
-        var entity = new Entity("Ground") { new ModelComponent(model) };
+        var entity = new Entity(GroundEntityName) { new ModelComponent(model) };
 
         _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    }
+
+    private void CreateAndSetSkybox()
+    {
+        using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
+
+        var texture = Texture.Load(_game.GraphicsDevice, stream,TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
+
+        var skyboxEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
+
+        skyboxEntity.Get<BackgroundComponent>().Texture = texture;
+
+        var skyboxGeneratorContext = new SkyboxGeneratorContext(_game);
+
+        var skybox = new Skybox();
+
+        skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
+
+        skyboxEntity.Get<LightComponent>().Type = new LightSkybox
+        {
+            Skybox = skybox,
+        };
     }
 
     private Entity GetAmbientLight()
@@ -263,7 +272,6 @@ public class GameApplication
 
         return directionalLightEntity;
     }
-
 
     private void AddGroundEntity()
     {

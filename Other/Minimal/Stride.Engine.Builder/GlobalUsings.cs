@@ -1,7 +1,11 @@
+global using Stride.Core;
+global using Stride.Core.IO;
+global using Stride.Rendering.Skyboxes;
 global using Stride.Core.Mathematics;
 global using Stride.Engine.Processors;
 global using Stride.Graphics;
 global using Stride.Particles.Rendering;
+global using Stride.Rendering.Background;
 global using Stride.Rendering.Colors;
 global using Stride.Rendering.Compositing;
 global using Stride.Rendering.Images;

@@ -1,5 +1,3 @@
-using Stride.Rendering.Background;
-
 namespace Stride.Engine.Builder;
 
 // Credit https://github.com/IceReaper/StrideTest
