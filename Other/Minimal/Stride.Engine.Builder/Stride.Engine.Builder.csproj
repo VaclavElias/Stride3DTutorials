@@ -14,9 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="Assets\Skybox texture.sdtex">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
         <None Update="Resources\skybox_texture_hdr.dds">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

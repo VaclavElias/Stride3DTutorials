@@ -174,27 +174,10 @@ public class GameApplication
         using var stream = new FileStream($"Resources\\{skyboxFilename}", FileMode.Open, FileAccess.Read);
 
         var texture = Texture.Load(_game.GraphicsDevice, stream);
-        
+
         var skyboxEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
 
-        var texture2 = CubemapFromTextureRenderer.GenerateCubemap(_game.Services, new RenderDrawContext(_game.Services, RenderContext.GetShared(_game.Services), _game.GraphicsContext), texture, 32);
-
         skyboxEntity.Get<BackgroundComponent>().Texture = texture;
-
-        var test = Texture.NewCube(_game.GraphicsDevice, 256, 1, PixelFormat.R8G8B8A8_UNorm, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
-
-
-        //var skyboxGeneratorContext = new SkyboxGeneratorContext(_game.GraphicsDevice, _game.Services, _game.GraphicsContext, _game.Services?.GetSafeServiceAs<IDatabaseFileProviderService>());
-
-        //var skybox = new Skybox();
-
-        //skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
-
-        //skyboxEntity.Get<LightComponent>().Type = new LightSkybox
-        //{
-        //    Skybox = skybox,
-
-        //};
     }
 
     // Simple Camera Movement
@@ -207,6 +190,37 @@ public class GameApplication
 
             cameraEntity.Add(new BasicCameraController());
         });
+    }
+
+    private void CreateAndSetGround()
+    {
+        var materialDescription = new MaterialDescriptor
+        {
+            Attributes =
+                {
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(Color.FromBgra(0xFF242424))),
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(0.0f)),
+                    SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
+                    MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.1f))
+                }
+        };
+
+        var material = Material.New(_game.GraphicsDevice, materialDescription);
+
+        var model = new Model();
+
+        var sphereModel = new PlaneProceduralModel
+        {
+            MaterialInstance = { Material = material },
+            Size = new Vector2(10.0f, 10.0f),
+        };
+
+        sphereModel.Generate(_game.Services, model);
+
+        var entity = new Entity("Ground") { new ModelComponent(model) };
+
+        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
 
     private Entity GetAmbientLight()
@@ -250,36 +264,6 @@ public class GameApplication
         return directionalLightEntity;
     }
 
-    private void CreateAndSetGround()
-    {
-        var materialDescription = new MaterialDescriptor
-        {
-            Attributes =
-                {
-                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(Color.FromBgra(0xFF242424))),
-                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
-                    Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(0.0f)),
-                    SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
-                    MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.1f))
-                }
-        };
-
-        var material = Material.New(_game.GraphicsDevice, materialDescription);
-
-        var model = new Model();
-
-        var sphereModel = new PlaneProceduralModel
-        {
-            MaterialInstance = { Material = material },
-            Size = new Vector2(10.0f, 10.0f),
-        };
-
-        sphereModel.Generate(_game.Services, model);
-
-        var entity = new Entity("Ground") { new ModelComponent(model) };
-
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-    }
 
     private void AddGroundEntity()
     {

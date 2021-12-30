@@ -15,13 +15,4 @@
         <ProjectReference Include="..\Stride.Engine.Builder\Stride.Engine.Builder.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <None Update="Resources\skybox_texture_hdr.dds">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="Resources\small_uv.png">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>

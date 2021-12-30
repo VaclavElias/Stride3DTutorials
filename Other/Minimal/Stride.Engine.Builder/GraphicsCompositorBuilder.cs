@@ -1,3 +1,5 @@
+using Stride.Rendering.Background;
+
 namespace Stride.Engine.Builder;
 
 // Credit https://github.com/IceReaper/StrideTest
@@ -124,6 +126,13 @@ public static class GraphicsCompositorBuilder
                         }
                     },
                     new UIRenderFeature
+                    {
+                        RenderStageSelectors =
+                        {
+                            new SimpleGroupToRenderStageSelector { RenderStage = transparentRenderStage, EffectName = "Test" }
+                        }
+                    },
+                    new BackgroundRenderFeature
                     {
                         RenderStageSelectors =
                         {
