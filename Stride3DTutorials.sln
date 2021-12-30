@@ -20,12 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride.Engine.Builder", "Ot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minimal", "Other\Minimal\Minimal\Minimal.csproj", "{5D6EF792-E359-4EB6-8CE5-C416BDC5451F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride.Assets", "..\stride\sources\engine\Stride.Assets\Stride.Assets.csproj", "{7609A2BD-2D66-4A1C-B5B6-B8CAE3CA5037}"
-EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\stride\sources\shared\Stride.Core.ShellHelper\Stride.Core.ShellHelper.projitems*{7609a2bd-2d66-4a1c-b5b6-b8cae3ca5037}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -47,10 +42,6 @@ Global
 		{5D6EF792-E359-4EB6-8CE5-C416BDC5451F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D6EF792-E359-4EB6-8CE5-C416BDC5451F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D6EF792-E359-4EB6-8CE5-C416BDC5451F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7609A2BD-2D66-4A1C-B5B6-B8CAE3CA5037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7609A2BD-2D66-4A1C-B5B6-B8CAE3CA5037}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7609A2BD-2D66-4A1C-B5B6-B8CAE3CA5037}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7609A2BD-2D66-4A1C-B5B6-B8CAE3CA5037}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

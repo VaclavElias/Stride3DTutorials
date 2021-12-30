@@ -1,5 +1,10 @@
 // Copyright (c) .NET Foundation and Contributors (https://dotnetfoundation.org/ & https://stride3d.net) and Silicon Studio Corp. (https://www.siliconstudio.co.jp)
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
+using Stride.Core;
+using Stride.Core.IO;
+using Stride.Graphics.GeometricPrimitives;
+using Stride.Rendering.Skyboxes;
+
 namespace Stride.Engine.Builder;
 
 // Maybe it could have these options
@@ -54,6 +59,7 @@ public class GameApplication
         _game.BeginRunActions.Add(() =>
         {
             CreateAndSetGround();
+            AddSkybox();
             GetSpecialSphere(null);
         });
 
@@ -96,6 +102,20 @@ public class GameApplication
         return this;
     }
 
+    public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
+    {
+        var newEntity = new Entity { Name = name };
+        newEntity.Components.Add(component);
+        if (additionalComponents != null)
+        {
+            foreach (var additionalComponent in additionalComponents)
+            {
+                newEntity.Components.Add(additionalComponent);
+            }
+        }
+        return Task.FromResult(newEntity);
+    }
+
     public void GetSpecialSphere(Color? color)
     {
         var materialDescription = new MaterialDescriptor
@@ -127,14 +147,6 @@ public class GameApplication
         entity.Transform.Position = new Vector3(1, 0.5f, 4);
 
         _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-
-        var skyboxFilename = "skybox_texture_hdr.dds";
-
-        using (FileStream fsSource = new FileStream("Resources\\skybox_texture_hdr.dds",
-            FileMode.Open, FileAccess.Read))
-        {
-            var texture = Texture.Load(_game.GraphicsDevice, fsSource);
-        }
     }
 
     public Material GetMaterial(Color? color)
@@ -155,7 +167,35 @@ public class GameApplication
     }
 
     // Simple Skybox
-    public void AddSkybox() { }
+    public void AddSkybox()
+    {
+        var skyboxFilename = "skybox_texture_hdr.dds";
+
+        using var stream = new FileStream($"Resources\\{skyboxFilename}", FileMode.Open, FileAccess.Read);
+
+        var texture = Texture.Load(_game.GraphicsDevice, stream);
+        
+        var skyboxEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
+
+        var texture2 = CubemapFromTextureRenderer.GenerateCubemap(_game.Services, new RenderDrawContext(_game.Services, RenderContext.GetShared(_game.Services), _game.GraphicsContext), texture, 32);
+
+        skyboxEntity.Get<BackgroundComponent>().Texture = texture;
+
+        var test = Texture.NewCube(_game.GraphicsDevice, 256, 1, PixelFormat.R8G8B8A8_UNorm, TextureFlags.RenderTarget | TextureFlags.ShaderResource);
+
+
+        //var skyboxGeneratorContext = new SkyboxGeneratorContext(_game.GraphicsDevice, _game.Services, _game.GraphicsContext, _game.Services?.GetSafeServiceAs<IDatabaseFileProviderService>());
+
+        //var skybox = new Skybox();
+
+        //skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
+
+        //skyboxEntity.Get<LightComponent>().Type = new LightSkybox
+        //{
+        //    Skybox = skybox,
+
+        //};
+    }
 
     // Simple Camera Movement
     public void AddCameraController()
@@ -163,7 +203,7 @@ public class GameApplication
         _game.BeginRunActions.Add(() =>
         {
 
-            var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Where(w => w.Name == CameraEntityName).Single();
+            var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
 
             cameraEntity.Add(new BasicCameraController());
         });

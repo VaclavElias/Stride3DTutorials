@@ -18,8 +18,7 @@ public abstract class SceneBaseFactory
     /// <returns></returns>
     protected static Scene CreateBase(float skyIntensity, float sunIntensity)
     {
-        var skyboxEntity = new Entity(SkyboxEntityName)
-            {
+        var skyboxEntity = new Entity(SkyboxEntityName) {
                 new BackgroundComponent { Intensity = skyIntensity },
             };
         skyboxEntity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
