@@ -1,22 +1,20 @@
-using Stride.Core;
-using Stride.Core.IO;
-using Stride.Core.MicroThreading;
-using Stride.Core.Serialization.Contents;
-using Stride.Games;
 using Stride.Graphics.Data;
 using Stride.Rendering.ComputeEffect.GGXPrefiltering;
 using Stride.Rendering.ComputeEffect.LambertianPrefiltering;
-using Stride.Rendering.Skyboxes;
 using Stride.Shaders;
-using Stride.Shaders.Compiler;
 
 namespace Stride.Engine.Builder
 {
     // This seems doing nothing
+    // Taken from Stride.Assets.Skyboxes
     public class SkyboxGenerator
     {
         public static Skybox Generate(Skybox skybox, SkyboxGeneratorContext context, Texture skyboxTexture)
         {
+            //using var stream = new FileStream($"Resources\\skybox_texture_hdr.dds", FileMode.Open, FileAccess.Read);
+
+            //var skyboxTexture = Texture.Load(context.GraphicsDevice, stream);
+
             var cubemapSize = (int)Math.Pow(2, Math.Ceiling(Math.Log(skyboxTexture.Width / 4) / Math.Log(2))); // maximum resolution is around horizontal middle line which composes 4 images.
 
             skyboxTexture = CubemapFromTextureRenderer.GenerateCubemap(context.Services, context.RenderDrawContext, skyboxTexture, cubemapSize);
@@ -37,10 +35,11 @@ namespace Stride.Engine.Builder
             skybox.DiffuseLightingParameters.Set(SkyboxKeys.Shader, new ShaderClassSource("SphericalHarmonicsEnvironmentColor", lamberFiltering.HarmonicOrder));
             skybox.DiffuseLightingParameters.Set(SphericalHarmonicsEnvironmentColorKeys.SphericalColors, coefficients);
 
-
             var specularRadiancePrefilterGGX = new RadiancePrefilteringGGXNoCompute(context.RenderContext);
 
-            var textureSize = 256;
+            //var textureSize = asset.SpecularCubeMapSize <= 0 ? 64 : asset.SpecularCubeMapSize;
+            // Not sure what should be here
+            var textureSize = 64;
 
             textureSize = (int)Math.Pow(2, Math.Round(Math.Log(textureSize, 2)));
             if (textureSize < 64) textureSize = 64;
@@ -66,29 +65,8 @@ namespace Stride.Engine.Builder
         }
     }
 
-    //public static class MicrothreadLocalDatabases
-    //{
-    //    private static readonly MicroThreadLocal<DatabaseFileProvider> MicroThreadLocalDatabaseFileProvider;
-
-    //    static MicrothreadLocalDatabases()
-    //    {
-    //        MicroThreadLocalDatabaseFileProvider = new MicroThreadLocal<DatabaseFileProvider>();
-
-    //        ProviderService = new MicroThreadLocalProviderService();
-    //    }
-
-    //    public static IDatabaseFileProviderService ProviderService { get; }
-
-    //    private class MicroThreadLocalProviderService : IDatabaseFileProviderService
-    //    {
-    //        public DatabaseFileProvider FileProvider => MicroThreadLocalDatabaseFileProvider.Value;
-    //    }
-    //}
-
     public class SkyboxGeneratorContext : ShaderGeneratorContext
     {
-        //private const string SharedImageEffectContextKey = "__SharedRenderContext__";
-
         public IServiceRegistry Services { get; private set; }
 
         //public EffectSystem EffectSystem { get; private set; }

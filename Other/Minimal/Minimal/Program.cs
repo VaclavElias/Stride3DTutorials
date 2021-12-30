@@ -2,12 +2,9 @@ var builder = GameApplication.CreateBuilder();
 
 //builder.AddGround();
 //builder.AddSkybox();
+//builder.AddCameraScript();
 
 var game = builder.Build3D();
-
-// Maybe these below should be before the Build() but we don't have a game object till here, unless there is another solution or we could expose some new event from Game object?
-
-builder.AddCameraController();
 
 builder.Add(GetCubeEntity(),new CubeProceduralModel());
 builder.Add(new SphereProceduralModel());

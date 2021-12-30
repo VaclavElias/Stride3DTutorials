@@ -44,6 +44,7 @@ public class GameApplication
         {
             CreateAndSetGround();
             CreateAndSetSkybox();
+            CreateAndSetCameraScript();
             GetSpecialSphere(null);
         });
 
@@ -103,7 +104,6 @@ public class GameApplication
 
         return this;
     }
-
     //public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
     //{
     //    var newEntity = new Entity { Name = name };
@@ -117,7 +117,6 @@ public class GameApplication
     //    }
     //    return Task.FromResult(newEntity);
     //}
-
     public void GetSpecialSphere(Color? color)
     {
         var materialDescription = new MaterialDescriptor
@@ -168,15 +167,9 @@ public class GameApplication
         return material;
     }
 
-    public void AddCameraController()
+    public void AddCameraScript()
     {
-        _game.BeginRunActions.Add(() =>
-        {
-
-            var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
-
-            cameraEntity.Add(new BasicCameraController());
-        });
+        _game.BeginRunActions.Add(() => CreateAndSetCameraScript());
     }
 
     private void CreateAndSetGround()
@@ -214,12 +207,13 @@ public class GameApplication
     {
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
-        var texture = Texture.Load(_game.GraphicsDevice, stream,TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
+        var texture = Texture.Load(_game.GraphicsDevice, stream, TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
 
         var skyboxEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
 
         skyboxEntity.Get<BackgroundComponent>().Texture = texture;
 
+        // This seems doing nothing
         var skyboxGeneratorContext = new SkyboxGeneratorContext(_game);
 
         var skybox = new Skybox();
@@ -230,6 +224,13 @@ public class GameApplication
         {
             Skybox = skybox,
         };
+    }
+
+    private void CreateAndSetCameraScript()
+    {
+        var cameraEntity = _game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
+
+        cameraEntity.Add(new BasicCameraController());
     }
 
     private Entity GetAmbientLight()
