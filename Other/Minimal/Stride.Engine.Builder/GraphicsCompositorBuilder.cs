@@ -1,6 +1,3 @@
-using Stride.Rendering.LightProbes;
-using Stride.Rendering.Sprites;
-
 namespace Stride.Engine.Builder;
 
 // Taken from Stride.Rendering.Compositing GraphicsCompositorHelper 

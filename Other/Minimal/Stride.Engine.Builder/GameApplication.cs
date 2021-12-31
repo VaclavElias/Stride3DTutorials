@@ -2,10 +2,6 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 namespace Stride.Engine.Builder;
 
-// Maybe it could have these options
-// GameType.2D, GameType.3D (Default) or Build2D and Build3D.
-// GameWorldType.Simple (Default), GameWorldType.Ocean, GameWordlType.Grass
-//  - where this would bring better lighting, added ground and sky box
 public class GameApplication
 {
     public const string CameraEntityName = "Camera";
@@ -94,7 +90,6 @@ public class GameApplication
         _game.BeginRunActions.Add(() => GenerateModel(entity, primitiveModel));
     }
 
-
     private void AddEntityAction(Entity entity)
         => _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
@@ -104,7 +99,6 @@ public class GameApplication
 
         _game.BeginRunActions.Add(action);
     }
-
     //public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
     //{
     //    var newEntity = new Entity { Name = name };
@@ -220,7 +214,6 @@ public class GameApplication
 
         skyboxEntity.Get<BackgroundComponent>().Texture = texture;
 
-        // This seems doing nothing
         var skyboxGeneratorContext = new SkyboxGeneratorContext(_game);
 
         var skybox = new Skybox();
@@ -240,53 +233,7 @@ public class GameApplication
         cameraEntity.Add(new BasicCameraController());
     }
 
-    private Entity GetAmbientLight()
-    {
-        var directionalLightEntity = new Entity();
-        //directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
-        //directionalLightEntity.Transform.Rotation = new Quaternion(0.11697774f, 0.88302225f, 0.32139382f, 0.3213937f);
-        //directionalLightEntity.Transform.Scale = new Vector3(0);
-
-        var directionalLightComponent = directionalLightEntity.GetOrCreate<LightComponent>();
-
-        //scene.Entities.Add(directionalLightEntity);
-
-        var light = new LightAmbient();
-        light.Color = new ColorRgbProvider(Color.White);
-
-        directionalLightComponent.Type = light;
-        directionalLightComponent.Intensity = 0.5f;
-
-        return directionalLightEntity;
-    }
-
-    private Entity GetLight()
-    {
-        var directionalLightEntity = new Entity();
-        directionalLightEntity.Transform.Position = new Vector3(11.803946f, 50.0f, 0.65027833f);
-        directionalLightEntity.Transform.Rotation = new Quaternion(0.11697774f, 0.88302225f, 0.32139382f, 0.3213937f);
-        directionalLightEntity.Transform.Scale = new Vector3(0);
-
-        var directionalLightComponent = directionalLightEntity.GetOrCreate<LightComponent>();
-
-        //scene.Entities.Add(directionalLightEntity);
-
-        var light = new LightPoint();
-        light.Color = new ColorRgbProvider(new Color(1, 1, 1));
-        light.Radius = 200;
-
-        directionalLightComponent.Type = light;
-        directionalLightComponent.Intensity = 0.5f;
-
-        return directionalLightEntity;
-    }
-
-    private void OnWindowCreated(object? sender, EventArgs e)
-    {
-        // This could be in BeginRun or GameStarted
-        //_game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetCamera(_game.SceneSystem));
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(GetAmbientLight());
-    }
+    private void OnWindowCreated(object? sender, EventArgs e) { }
 
     private void GenerateModel(Entity entity, PrimitiveProceduralModelBase primitiveModel)
     {

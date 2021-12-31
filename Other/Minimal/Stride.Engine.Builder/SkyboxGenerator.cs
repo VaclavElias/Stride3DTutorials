@@ -5,16 +5,11 @@ using Stride.Shaders;
 
 namespace Stride.Engine.Builder
 {
-    // This seems doing nothing
     // Taken from Stride.Assets.Skyboxes
     public class SkyboxGenerator
     {
         public static Skybox Generate(Skybox skybox, SkyboxGeneratorContext context, Texture skyboxTexture)
         {
-            //using var stream = new FileStream($"Resources\\skybox_texture_hdr.dds", FileMode.Open, FileAccess.Read);
-
-            //var skyboxTexture = Texture.Load(context.GraphicsDevice, stream);
-
             var cubemapSize = (int)Math.Pow(2, Math.Ceiling(Math.Log(skyboxTexture.Width / 4) / Math.Log(2))); // maximum resolution is around horizontal middle line which composes 4 images.
 
             skyboxTexture = CubemapFromTextureRenderer.GenerateCubemap(context.Services, context.RenderDrawContext, skyboxTexture, cubemapSize);
@@ -29,7 +24,7 @@ namespace Stride.Engine.Builder
             var coefficients = lamberFiltering.PrefilteredLambertianSH.Coefficients;
             for (int i = 0; i < coefficients.Length; i++)
             {
-                coefficients[i] = coefficients[i] * SphericalHarmonics.BaseCoefficients[i];
+                coefficients[i] *= SphericalHarmonics.BaseCoefficients[i];
             }
 
             skybox.DiffuseLightingParameters.Set(SkyboxKeys.Shader, new ShaderClassSource("SphericalHarmonicsEnvironmentColor", lamberFiltering.HarmonicOrder));
