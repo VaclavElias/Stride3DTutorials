@@ -1,24 +1,35 @@
+using Stride.Rendering.LightProbes;
+using Stride.Rendering.Sprites;
+
 namespace Stride.Engine.Builder;
 
 // Credit https://github.com/IceReaper/StrideTest
 public static class GraphicsCompositorBuilder
 {
-    public static GraphicsCompositor Create()
+    public static GraphicsCompositor Create(Color4? clearColor = null)
     {
+        var groupMask = RenderGroupMask.All;
         var opaqueRenderStage = new RenderStage("Opaque", "Main") { SortMode = new StateChangeSortMode() };
         var transparentRenderStage = new RenderStage("Transparent", "Main") { SortMode = new BackToFrontSortMode() };
         var shadowCasterRenderStage = new RenderStage("ShadowMapCaster", "ShadowMapCaster") { SortMode = new FrontToBackSortMode() };
         var shadowCasterCubeMapRenderStage = new RenderStage("ShadowMapCasterCubeMap", "ShadowMapCasterCubeMap") { SortMode = new FrontToBackSortMode() };
+        var shadowCasterParaboloidRenderStage = new RenderStage("ShadowMapCasterParaboloid", "ShadowMapCasterParaboloid") { SortMode = new FrontToBackSortMode() };
 
-        var shadowCasterParaboloidRenderStage =
-            new RenderStage("ShadowMapCasterParaboloid", "ShadowMapCasterParaboloid") { SortMode = new FrontToBackSortMode() };
-
-        var postProcessingEffects = new PostProcessingEffects();
-        postProcessingEffects.DisableAll();
+        var postProcessingEffects = new PostProcessingEffects
+        {
+            ColorTransforms =
+                    {
+                        Transforms =
+                        {
+                            new ToneMap(),
+                        },
+                    },
+        };
+        //postProcessingEffects.DisableAll();
 
         var renderer = new ForwardRenderer
         {
-            Clear = { Color = Color.Black },
+            Clear = { Color = clearColor ?? Color.CornflowerBlue },
             OpaqueRenderStage = opaqueRenderStage,
             TransparentRenderStage = transparentRenderStage,
             ShadowMapRenderStages = { shadowCasterRenderStage, shadowCasterParaboloidRenderStage, shadowCasterCubeMapRenderStage },
@@ -57,7 +68,8 @@ public static class GraphicsCompositorBuilder
                                     new LightDirectionalGroupRenderer(),
                                     new LightPointGroupRenderer(),
                                     new LightSpotGroupRenderer(),
-                                    new LightClusteredPointSpotGroupRenderer()
+                                    new LightClusteredPointSpotGroupRenderer(),
+                                    new LightProbeRenderer()
                                 },
                                 ShadowMapRenderer = new ShadowMapRenderer
                                 {
@@ -65,17 +77,12 @@ public static class GraphicsCompositorBuilder
                                     {
                                         new LightDirectionalShadowMapRenderer { ShadowCasterRenderStage = shadowCasterRenderStage },
                                         new LightSpotShadowMapRenderer { ShadowCasterRenderStage = shadowCasterRenderStage },
-                                        new LightPointShadowMapRendererParaboloid
-                                        {
-                                            ShadowCasterRenderStage = shadowCasterParaboloidRenderStage
-                                        },
-                                        new LightPointShadowMapRendererCubeMap
-                                        {
-                                            ShadowCasterRenderStage = shadowCasterCubeMapRenderStage
-                                        }
+                                        new LightPointShadowMapRendererParaboloid { ShadowCasterRenderStage = shadowCasterParaboloidRenderStage },
+                                        new LightPointShadowMapRendererCubeMap { ShadowCasterRenderStage = shadowCasterCubeMapRenderStage }
                                     }
                                 }
-                            }
+                            },
+                            new InstancingRenderFeature()
                         },
                         RenderStageSelectors =
                         {
@@ -84,25 +91,25 @@ public static class GraphicsCompositorBuilder
                                 EffectName = "StrideForwardShadingEffect",
                                 OpaqueRenderStage = opaqueRenderStage,
                                 TransparentRenderStage = transparentRenderStage,
-                                RenderGroup = RenderGroupMask.All
+                                RenderGroup = groupMask
                             },
                             new ShadowMapRenderStageSelector
                             {
                                 EffectName = "StrideForwardShadingEffect.ShadowMapCaster",
                                 ShadowMapRenderStage = shadowCasterRenderStage,
-                                RenderGroup = RenderGroupMask.All
+                                RenderGroup = groupMask
                             },
                             new ShadowMapRenderStageSelector
                             {
                                 EffectName = "StrideForwardShadingEffect.ShadowMapCasterParaboloid",
                                 ShadowMapRenderStage = shadowCasterParaboloidRenderStage,
-                                RenderGroup = RenderGroupMask.All
+                                RenderGroup = groupMask
                             },
                             new ShadowMapRenderStageSelector
                             {
                                 EffectName = "StrideForwardShadingEffect.ShadowMapCasterCubeMap",
                                 ShadowMapRenderStage = shadowCasterCubeMapRenderStage,
-                                RenderGroup = RenderGroupMask.All
+                                RenderGroup = groupMask
                             }
                         },
                         PipelineProcessors =
@@ -130,13 +137,31 @@ public static class GraphicsCompositorBuilder
                             new SimpleGroupToRenderStageSelector { RenderStage = transparentRenderStage, EffectName = "Test" }
                         }
                     },
+                    new SpriteRenderFeature
+                    {
+                        RenderStageSelectors =
+                        {
+                            new SpriteTransparentRenderStageSelector
+                            {
+                                EffectName = "Test",
+                                OpaqueRenderStage = opaqueRenderStage,
+                                TransparentRenderStage = transparentRenderStage,
+                                RenderGroup = groupMask,
+                            },
+                        },
+                    },
                     new BackgroundRenderFeature
                     {
                         RenderStageSelectors =
                         {
-                            new SimpleGroupToRenderStageSelector { RenderStage = transparentRenderStage, EffectName = "Test" }
-                        }
-                    }
+                            new SimpleGroupToRenderStageSelector
+                            {
+                                RenderStage = opaqueRenderStage,
+                                EffectName = "Test",
+                                RenderGroup = groupMask,
+                            },
+                        },
+                    },
                 },
             Game = new SceneCameraRenderer { Child = renderer, Camera = cameraSlot },
             Editor = renderer,
