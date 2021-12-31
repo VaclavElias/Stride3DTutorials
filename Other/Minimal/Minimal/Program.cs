@@ -9,13 +9,8 @@ game.Run();
 
 Entity GetCubeEntity()
 {
-    var entity = new Entity(new Vector3(1, 0, 3));
-
-    entity.Add(new MotionComponent());
-
-    return entity;
+    return new Entity(new Vector3(1, 0, 3))
+    {
+        new MotionComponent()
+    };
 }
-
-//builder.AddGround();
-//builder.AddSkybox();
-//builder.AddCameraScript();
