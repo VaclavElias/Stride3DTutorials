@@ -33,7 +33,7 @@ public class GameApplication
     }
 
     /// <summary>
-    /// Adds Ground and CamereController
+    /// Adds Ground, SkyBox, CameraScript
     /// </summary>
     /// <returns></returns>
     public Game Build3D()
@@ -49,6 +49,29 @@ public class GameApplication
         });
 
         return _game;
+    }
+
+    public Game Build2D() => throw new NotImplementedException();
+
+    public GameApplication AddGround()
+    {
+        _game.BeginRunActions.Add(() => CreateAndSetGround());
+
+        return this;
+    }
+
+    public GameApplication AddSkybox()
+    {
+        _game.BeginRunActions.Add(() => CreateAndSetSkybox());
+
+        return this;
+    }
+
+    public GameApplication AddCameraScript()
+    {
+        _game.BeginRunActions.Add(() => CreateAndSetCameraScript());
+
+        return this;
     }
 
     /// <summary>
@@ -70,16 +93,6 @@ public class GameApplication
         _game.BeginRunActions.Add(() => GenerateModel(entity, primitiveModel));
     }
 
-    private void CreateAndSetNewScene()
-    {
-        var scene = SceneHDRFactory.Create();
-
-        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
-
-        cameraEntity.Components.Get<CameraComponent>().Slot = _game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
-
-        _game.SceneSystem.SceneInstance = new(_game.Services, scene);
-    }
 
     private void AddEntityAction(Entity entity)
         => _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
@@ -91,19 +104,6 @@ public class GameApplication
         _game.BeginRunActions.Add(action);
     }
 
-    public GameApplication AddGround()
-    {
-        _game.BeginRunActions.Add(() => CreateAndSetGround());
-
-        return this;
-    }
-
-    public GameApplication AddSkybox()
-    {
-        _game.BeginRunActions.Add(() => CreateAndSetSkybox());
-
-        return this;
-    }
     //public static Task<Entity> CreateEntityWithComponent(string name, EntityComponent component, params EntityComponent[] additionalComponents)
     //{
     //    var newEntity = new Entity { Name = name };
@@ -167,9 +167,15 @@ public class GameApplication
         return material;
     }
 
-    public void AddCameraScript()
+    private void CreateAndSetNewScene()
     {
-        _game.BeginRunActions.Add(() => CreateAndSetCameraScript());
+        var scene = SceneHDRFactory.Create();
+
+        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
+
+        cameraEntity.Components.Get<CameraComponent>().Slot = _game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
+
+        _game.SceneSystem.SceneInstance = new(_game.Services, scene);
     }
 
     private void CreateAndSetGround()
@@ -272,25 +278,6 @@ public class GameApplication
         directionalLightComponent.Intensity = 0.5f;
 
         return directionalLightEntity;
-    }
-
-    private void AddGroundEntity()
-    {
-        var model = new Model();
-
-        var plane = new PlaneProceduralModel();
-
-        plane.Size = new Vector2(10, 10);
-
-        model.Materials.Add(GetMaterial(Color.Red));
-
-        plane.Generate(_game.Services, model);
-
-        var entity = new Entity();
-        entity.Transform.Position = new Vector3(0, -2, 0);
-        entity.GetOrCreate<ModelComponent>().Model = model;
-
-        _game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
 
     private void OnWindowCreated(object? sender, EventArgs e)
