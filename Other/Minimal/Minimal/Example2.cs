@@ -7,11 +7,7 @@ public class Example2
 
         var game = builder.Build3D();
 
-        builder.AddAction(() => GameEntities());
-
-        game.Run();
-
-        void GameEntities()
+        game.AddAction(() =>
         {
             var entity = new Entity(new Vector3(1, 0.5f, 3))
             {
@@ -20,6 +16,8 @@ public class Example2
             };
 
             game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-        }
+        });
+
+        game.Run();
     }
 }

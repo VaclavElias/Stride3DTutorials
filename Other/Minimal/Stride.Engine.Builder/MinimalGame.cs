@@ -12,7 +12,7 @@ public class MinimalGame : Game
 
         foreach (var action in BeginRunActions)
         {
-            action.Invoke();
+            action?.Invoke();
         }
     }
 
