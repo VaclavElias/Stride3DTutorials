@@ -45,7 +45,7 @@ namespace Stride.Engine.Builder
             {
                 specularRadiancePrefilterGGX.RadianceMap = skyboxTexture;
                 specularRadiancePrefilterGGX.PrefilteredRadiance = outputTexture;
-                specularRadiancePrefilterGGX.Draw(context.RenderDrawContext);
+                //specularRadiancePrefilterGGX.Draw(context.RenderDrawContext);
 
                 var cubeTexture = Texture.NewCube(context.GraphicsDevice, textureSize, true, filteringTextureFormat);
                 context.RenderDrawContext.CommandList.Copy(outputTexture, cubeTexture);

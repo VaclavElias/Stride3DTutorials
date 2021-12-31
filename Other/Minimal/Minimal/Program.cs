@@ -1,16 +1,25 @@
 var builder = GameApplication.CreateBuilder();
 
-builder.Add(GetCubeEntity(),new CubeProceduralModel());
-builder.Add(new SphereProceduralModel());
-
 var game = builder.Build3D();
+
+//builder.AddAction(() => GameEntities());
+
+game.OnBeginRun += StartGame;
+
+void StartGame(object? sender, EventArgs e)
+{
+    GameEntities();
+}
 
 game.Run();
 
-Entity GetCubeEntity()
+void GameEntities()
 {
-    return new Entity(new Vector3(1, 0, 3))
+    var entity = new Entity(new Vector3(1, 0.5f, 3))
     {
+        new ModelComponent(builder.GetCube()),
         new MotionComponent()
     };
+
+    builder.AddEntity(entity);
 }
