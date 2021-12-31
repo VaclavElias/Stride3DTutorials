@@ -23,11 +23,14 @@ public static class GraphicsCompositorBuilder
                         {
                             new ToneMap(),
                         },
+                        Enabled = true
                     },
         };
-        //postProcessingEffects.DisableAll();
 
-        var renderer = new ForwardRenderer
+        postProcessingEffects.DisableAll();
+        postProcessingEffects.ColorTransforms.Enabled = true;
+
+        var singleView = new ForwardRenderer
         {
             Clear = { Color = clearColor ?? Color.CornflowerBlue },
             OpaqueRenderStage = opaqueRenderStage,
@@ -163,9 +166,9 @@ public static class GraphicsCompositorBuilder
                         },
                     },
                 },
-            Game = new SceneCameraRenderer { Child = renderer, Camera = cameraSlot },
-            Editor = renderer,
-            SingleView = renderer
+            Game = new SceneCameraRenderer { Child = singleView, Camera = cameraSlot },
+            Editor = singleView,
+            SingleView = singleView
         };
     }
 }

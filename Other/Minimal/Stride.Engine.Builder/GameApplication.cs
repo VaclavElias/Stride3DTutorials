@@ -18,8 +18,8 @@ public class GameApplication
 
     public GameApplication()
     {
-        _game.SceneSystem.GraphicsCompositor = GraphicsCompositorHelper.CreateDefault(true, clearColor: Color.Green, graphicsProfile: GraphicsProfile.Level_11_2);
-        //_game.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
+        //_game.SceneSystem.GraphicsCompositor = GraphicsCompositorHelper.CreateDefault(true, clearColor: Color.Green, graphicsProfile: GraphicsProfile.Level_11_2);
+        _game.SceneSystem.GraphicsCompositor = GraphicsCompositorBuilder.Create();
 
         CreateAndSetNewScene();
     }
