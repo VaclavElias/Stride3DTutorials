@@ -3,7 +3,7 @@ using Stride.Rendering.Sprites;
 
 namespace Stride.Engine.Builder;
 
-// Credit https://github.com/IceReaper/StrideTest
+// Taken from Stride.Rendering.Compositing GraphicsCompositorHelper 
 public static class GraphicsCompositorBuilder
 {
     public static GraphicsCompositor Create(Color4? clearColor = null)
@@ -17,18 +17,19 @@ public static class GraphicsCompositorBuilder
 
         var postProcessingEffects = new PostProcessingEffects
         {
-            ColorTransforms =
-                    {
-                        Transforms =
-                        {
-                            new ToneMap(),
-                        },
-                        Enabled = true
-                    },
+            //Outline = { Enabled = false },
+            //Fog = { Enabled = false },
+            //AmbientOcclusion = { Enabled = false },
+            //LocalReflections = { Enabled = false },
+            DepthOfField = { Enabled = false },
+            //BrightFilter = { Enabled = true },
+            //Bloom = {  Enabled = true },
+            //LightStreak = {  Attenuation = 0.7f },
+            ColorTransforms = { Transforms = { new ToneMap() } },
         };
 
-        postProcessingEffects.DisableAll();
-        postProcessingEffects.ColorTransforms.Enabled = true;
+        //postProcessingEffects.DisableAll();
+        //postProcessingEffects.ColorTransforms.Enabled = true;
 
         var singleView = new ForwardRenderer
         {
