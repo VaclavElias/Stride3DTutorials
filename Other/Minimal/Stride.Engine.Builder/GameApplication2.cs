@@ -2,7 +2,7 @@
 // Distributed under the MIT license. See the LICENSE.md file in the project root for more information.
 namespace Stride.Engine.Builder;
 
-public class GameApplication
+public class GameApplication2
 {
     public const string CameraEntityName = "Camera";
     public const string GroundEntityName = "Ground";
@@ -10,10 +10,14 @@ public class GameApplication
     public const string SunEntityName = "Directional light";
 
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
-    private readonly MinimalGame _game = new();
+    private readonly MinimalGame2 _game = new();
     private Material _defaultMaterial = new Material();
+    private bool _isGround;
+    private bool _isSkybox;
+    private bool _isCameraScript;
+    private bool _isSphere;
 
-    public GameApplication()
+    public GameApplication2()
     {
         //var graphicsCompositor = GraphicsCompositorHelper.CreateDefault(true);
         var graphicsCompositor = GraphicsCompositorBuilder.Create();
@@ -24,70 +28,65 @@ public class GameApplication
         //    ColorTransforms = { Transforms = { new ToneMap() } },
         //};
 
+        _game.OnBeginRun += OnBeginRun;
         _game.SceneSystem.GraphicsCompositor = graphicsCompositor;
 
         CreateAndSetNewScene();
     }
 
-    public static GameApplication CreateBuilder() => new();
+    public static GameApplication2 CreateBuilder() => new();
 
-    public MinimalGame Build()
+    public MinimalGame2 Build()
     {
-        _game.BeginRunActions.Add(() =>
-        {
-            SetDefaultMaterial();
-        });
-
         return _game;
+    }
+
+    private void OnBeginRun(object? sender, EventArgs e)
+    {
+        SetDefaultMaterial();
+        if (_isGround) CreateAndSetGround();
+        if (_isSkybox) CreateAndSetSkybox();
+        if (_isCameraScript) CreateAndSetCameraScript();
+        if (_isSphere) CreateAndSetDefaultSphere();
     }
 
     /// <summary>
     /// Adds Ground, SkyBox, CameraScript
     /// </summary>
     /// <returns></returns>
-    public MinimalGame Build3D()
+    public MinimalGame2 Build3D()
     {
         var game = Build();
 
-        game.BeginRunActions.Add(() =>
-        {
-            CreateAndSetGround();
-            CreateAndSetSkybox();
-            CreateAndSetCameraScript();
-            CreateAndSetDefaultSphere();
-        });
+        _isGround = true;
+        _isSkybox = true;
+        _isCameraScript = true;
+        _isSphere = true;
 
         return game;
     }
 
-    public Game Build2D() => throw new NotImplementedException();
+    public MinimalGame2 Build2D() => throw new NotImplementedException();
 
-    public GameApplication AddGround()
+    public GameApplication2 AddGround()
     {
-        _game.BeginRunActions.Add(() => CreateAndSetGround());
+        _isGround = true;
 
         return this;
     }
 
-    public GameApplication AddSkybox()
+    public GameApplication2 AddSkybox()
     {
-        _game.BeginRunActions.Add(() => CreateAndSetSkybox());
+        _isSkybox = true;
 
         return this;
     }
 
-    public GameApplication AddCameraScript()
+    public GameApplication2 AddCameraScript()
     {
-        _game.BeginRunActions.Add(() => CreateAndSetCameraScript());
+        _isCameraScript = true;
 
         return this;
-    }
-
-    public void AddAction(Action? action)
-    {
-        if (action == null) return;
-
-        _game.BeginRunActions.Add(action);
     }
 
     public void CreateAndSetDefaultSphere(Color? color = null)

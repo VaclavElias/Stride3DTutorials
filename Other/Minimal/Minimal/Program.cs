@@ -1,19 +1,8 @@
-var builder = GameApplication.CreateBuilder();
+var builder = GameApplication2.CreateBuilder();
 
 var game = builder.Build3D();
 
-//builder.AddAction(() => GameEntities());
-
-game.OnBeginRun += StartGame;
-
-void StartGame(object? sender, EventArgs e)
-{
-    GameEntities();
-}
-
-game.Run();
-
-void GameEntities()
+game.OnBeginRun += (s, e) =>
 {
     var entity = new Entity(new Vector3(1, 0.5f, 3))
     {
@@ -21,5 +10,7 @@ void GameEntities()
         new MotionComponent()
     };
 
-    builder.AddEntity(entity);
-}
+    game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+};
+
+game.Run();
