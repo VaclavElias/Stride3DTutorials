@@ -63,7 +63,7 @@ public class MinimalGame3 : Game
     {
         var gameDefaults = new GameDefaults(this);
 
-        gameDefaults.Set3D();
+        gameDefaults.Set3DBeforeStart();
 
         return gameDefaults;
     }

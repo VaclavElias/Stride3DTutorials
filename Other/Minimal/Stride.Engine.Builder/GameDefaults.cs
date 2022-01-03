@@ -29,7 +29,7 @@ public class GameDefaults
     /// Adds Ground, SkyBox, CameraScript
     /// </summary>
     /// <returns></returns>
-    public GameDefaults Set3D()
+    public GameDefaults Set3DBeforeStart()
     {
         Set();
 
@@ -47,7 +47,7 @@ public class GameDefaults
         CreateAndSetNewScene();
     }
 
-    public GameDefaults Set3D_2()
+    public GameDefaults Set3DAfterStart()
     {
         Set();
 
