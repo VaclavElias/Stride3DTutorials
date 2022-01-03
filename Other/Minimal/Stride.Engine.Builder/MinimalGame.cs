@@ -38,3 +38,23 @@ public class MinimalGame2 : Game
     }
 }
 
+public class MinimalGame3 : Game
+{
+    public event EventHandler<EventArgs>? OnBeginRun;
+
+    public void SetDefaults()
+    {
+        var gameDefaults = new GameDefaults(this);
+
+        gameDefaults.Set3D();
+    }
+
+    protected override void BeginRun()
+    {
+        base.BeginRun();
+
+        Window.AllowUserResizing = true;
+
+        OnBeginRun?.Invoke(this, EventArgs.Empty);
+    }
+}
