@@ -1,6 +1,6 @@
 namespace Minimal;
 
-public class MotionComponent : SyncScript
+public class MotionComponentScript : SyncScript
 {
     private Vector3 _initialPosition = Vector3.Zero;
 

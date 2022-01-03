@@ -11,7 +11,7 @@ public class StartExamples
             var entity = new Entity(new Vector3(1, 0.5f, 3))
             {
                 new ModelComponent(builder.GetCube()),
-                new MotionComponent()
+                new MotionComponentScript()
             };
 
             game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
@@ -31,7 +31,7 @@ public class StartExamples
             var entity = new Entity(new Vector3(1, 0.5f, 3))
             {
                 new ModelComponent(builder.GetCube()),
-                new MotionComponent()
+                new MotionComponentScript()
             };
 
             game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);

@@ -44,9 +44,24 @@ public class GameDefaults
     public void Set()
     {
         CreateAndSetDefaultGraphicsCompositor();
-
         CreateAndSetNewScene();
     }
+
+    public GameDefaults Set3D_2()
+    {
+        Set();
+
+        CreateAndSetSkybox();
+        CreateAndSetCameraScript();
+        CreateAndSetGround();
+
+        SetDefaultMaterial();
+        CreateAndSetDefaultSphere();
+
+        return this;
+    }
+
+    public GameDefaults Set2D() => throw new NotImplementedException();
 
     private void CreateAndSetDefaultGraphicsCompositor()
     {
@@ -71,13 +86,11 @@ public class GameDefaults
     private void OnBeginRun(object? sender, EventArgs e)
     {
         SetDefaultMaterial();
-        if (_isGround) CreateAndSetGround();
         if (_isSkybox) CreateAndSetSkybox();
         if (_isCameraScript) CreateAndSetCameraScript();
+        if (_isGround) CreateAndSetGround();
         if (_isSphere) CreateAndSetDefaultSphere();
     }
-
-    public void Set2D() => throw new NotImplementedException();
 
     public GameDefaults AddGround()
     {
@@ -100,7 +113,7 @@ public class GameDefaults
         return this;
     }
 
-    public void CreateAndSetDefaultSphere(Color? color = null)
+    private void CreateAndSetDefaultSphere(Color? color = null)
     {
         var model = new Model();
 
