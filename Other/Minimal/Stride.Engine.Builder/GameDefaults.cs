@@ -8,10 +8,11 @@ public class GameDefaults
     public const string GroundEntityName = "Ground";
     public const string SkyboxEntityName = "Skybox";
     public const string SunEntityName = "Directional light";
-
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
+
+    public Material DefaultMaterial { get; set; } = new();
+
     private readonly MinimalGame3 _game;
-    private Material _defaultMaterial = new Material();
     private bool _isGround;
     private bool _isSkybox;
     private bool _isCameraScript;
@@ -28,7 +29,7 @@ public class GameDefaults
     /// Adds Ground, SkyBox, CameraScript
     /// </summary>
     /// <returns></returns>
-    public void Set3D()
+    public GameDefaults Set3D()
     {
         Set();
 
@@ -36,6 +37,8 @@ public class GameDefaults
         _isSkybox = true;
         _isCameraScript = true;
         _isSphere = true;
+
+        return this;
     }
 
     public void Set()
@@ -103,7 +106,7 @@ public class GameDefaults
 
         var sphereModel = new SphereProceduralModel
         {
-            MaterialInstance = { Material = _defaultMaterial },
+            MaterialInstance = { Material = DefaultMaterial },
             Tessellation = 30,
         };
 
@@ -122,7 +125,7 @@ public class GameDefaults
 
         var proceduralModel = new CubeProceduralModel
         {
-            MaterialInstance = { Material = _defaultMaterial }
+            MaterialInstance = { Material = DefaultMaterial }
         };
 
         proceduralModel.Generate(_game.Services, model);
@@ -131,7 +134,7 @@ public class GameDefaults
     }
 
     private void SetDefaultMaterial(Color? color = null)
-        => _defaultMaterial = new DefaultMaterial(_game.GraphicsDevice).Get(color);
+        => DefaultMaterial = new DefaultMaterial(_game.GraphicsDevice).Get(color);
 
     private void CreateAndSetNewScene()
     {

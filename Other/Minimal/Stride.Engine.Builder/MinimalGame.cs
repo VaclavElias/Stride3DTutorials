@@ -42,19 +42,40 @@ public class MinimalGame3 : Game
 {
     public event EventHandler<EventArgs>? OnBeginRun;
 
-    public void SetDefaults()
+    private Action? _startAction2;
+    private Action<Scene, ServiceRegistry>? _startAction;
+
+    public void Run(Action start)
+    {
+        _startAction2 = start;
+
+        base.Run();
+    }
+
+    public void Run(Action<Scene, ServiceRegistry> start)
+    {
+        _startAction = start;
+
+        base.Run();
+    }
+
+    public GameDefaults SetDefaults()
     {
         var gameDefaults = new GameDefaults(this);
 
         gameDefaults.Set3D();
+
+        return gameDefaults;
     }
 
     protected override void BeginRun()
     {
         base.BeginRun();
 
-        Window.AllowUserResizing = true;
-
         OnBeginRun?.Invoke(this, EventArgs.Empty);
+
+        _startAction?.Invoke(SceneSystem.SceneInstance.RootScene, Services);
+
+        _startAction2?.Invoke();
     }
 }

@@ -1,23 +1,63 @@
-//var builder = GameDefaults.CreateBuilder();
+using (var game = new MinimalGame3())
+{
+    // adds default camera, camera script, skybox, ground, ..like through UI
+    game.SetDefaults();
 
-//var game = builder.Build3D();
+    // or this option to access other defaults, e.g default Material
+    // var defaults = game.SetDefaults();
 
-//game.OnBeginRun += (s, e) =>
-//{
-//    var entity = new Entity(new Vector3(1, 0.5f, 3))
-//    {
-//        new ModelComponent(builder.GetCube()),
-//        new MotionComponent()
-//    };
+    game.Run(start: Start);
 
-//    game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-//};
+    void Start()
+    {
+        var model = new Model();
 
-//game.Run();
+        var proceduralModel = new CubeProceduralModel();
+
+        proceduralModel.Generate(game.Services, model);
+
+        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+        {
+            new ModelComponent(model),
+            new MotionComponent()
+        };
+
+        entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+    }
+}
 
 using (var game = new MinimalGame3())
 {
-    game.SetDefaults(); // adds default camera, camera script, skybox, ground like through UI 
+    // adds default camera, camera script, skybox, ground, ..like through UI
+    var defaults = new GameDefaults(game).Set3D();
 
-    game.Run();
+    game.Run(start: Start);
+
+    void Start(Scene rootScene, ServiceRegistry services)
+    {
+        var model = new Model();
+
+        var proceduralModel = new CubeProceduralModel
+        {
+            MaterialInstance = { Material = defaults.DefaultMaterial }
+        };
+
+        proceduralModel.Generate(game.Services, model);
+
+        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+        {
+            new ModelComponent(model),
+            new MotionComponent()
+        };
+
+        entity.Scene = rootScene;
+
+        var entity2 = new Entity(new Vector3(1, 0.5f, 1))
+            {
+                new ModelComponent(defaults.GetCube()),
+                new MotionComponent()
+            };
+
+        entity2.Scene = rootScene;
+    }
 }
