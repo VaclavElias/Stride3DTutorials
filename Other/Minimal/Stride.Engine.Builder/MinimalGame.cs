@@ -42,22 +42,22 @@ public class MinimalGame3 : Game
 {
     public event EventHandler<EventArgs>? OnBeginRun;
 
-    private Action? _startAction2;
-    private Action<Scene, ServiceRegistry>? _startAction;
+    //private Action? _startAction2;
+    //private Action<Scene, ServiceRegistry>? _startAction;
 
-    public void Run(Action start)
-    {
-        _startAction2 = start;
+    //public void Run(Action start)
+    //{
+    //    _startAction2 = start;
 
-        base.Run();
-    }
+    //    base.Run();
+    //}
 
-    public void Run(Action<Scene, ServiceRegistry> start)
-    {
-        _startAction = start;
+    //public void Run(Action<Scene, ServiceRegistry> start)
+    //{
+    //    _startAction = start;
 
-        base.Run();
-    }
+    //    base.Run();
+    //}
 
     public GameDefaults SetDefaults()
     {
@@ -70,12 +70,12 @@ public class MinimalGame3 : Game
 
     protected override void BeginRun()
     {
-        base.BeginRun();
-
         OnBeginRun?.Invoke(this, EventArgs.Empty);
 
-        _startAction?.Invoke(SceneSystem.SceneInstance.RootScene, Services);
+        base.BeginRun();
 
-        _startAction2?.Invoke();
+        //_startAction?.Invoke(SceneSystem.SceneInstance.RootScene, Services);
+
+        //_startAction2?.Invoke();
     }
 }

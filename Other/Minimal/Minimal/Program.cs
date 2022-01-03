@@ -2,7 +2,7 @@ using (var game = new MinimalGame3())
 {
     // Option 1 - Defaults set here
     // adds default camera, camera script, skybox, ground, ..like through UI
-    //game.SetDefaults();
+    game.SetDefaults();
 
     // Option 2 - Defaults set as optional parameter
     game.Run(/*new GameDefaults(),*/ start: Start);
@@ -10,17 +10,11 @@ using (var game = new MinimalGame3())
     void Start()
     {
         // Option 3 - Defaults set here
-        var defaults = new GameDefaults(game).Set3D_2();
-
-        var model = new Model();
-
-        var proceduralModel = new CubeProceduralModel();
-
-        proceduralModel.Generate(game.Services, model);
+        //var defaults = new GameDefaults(game).Set3D_2();
 
         var entity = new Entity(new Vector3(1f, 0.5f, 3f))
         {
-            new ModelComponent(model),
+            new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
             new MotionComponentScript()
         };
 
@@ -35,16 +29,11 @@ using (var game = new MinimalGame3())
 
     game.Run(start: Start);
 
-    void Start(Scene rootScene, ServiceRegistry services)
+    void Start()
     {
-        var model = new Model();
+        var model = new CubeProceduralModel().Generate(game.Services);
 
-        var proceduralModel = new CubeProceduralModel
-        {
-            MaterialInstance = { Material = defaults.DefaultMaterial }
-        };
-
-        proceduralModel.Generate(services, model);
+        model.Materials.Add(defaults.DefaultMaterial);
 
         var entity = new Entity(new Vector3(1f, 0.5f, -3f))
         {
@@ -52,7 +41,7 @@ using (var game = new MinimalGame3())
             new MotionComponentScript()
         };
 
-        entity.Scene = rootScene;
+        entity.Scene = game.SceneSystem.SceneInstance.RootScene;
 
         var entity2 = new Entity(new Vector3(1, 0.5f, 3))
             {
@@ -60,6 +49,6 @@ using (var game = new MinimalGame3())
                 new MotionComponentScript()
             };
 
-        entity2.Scene = rootScene;
+        entity2.Scene = game.SceneSystem.SceneInstance.RootScene;
     }
 }
