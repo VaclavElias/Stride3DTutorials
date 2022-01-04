@@ -5,20 +5,34 @@ using (var game = new MinimalGame3())
     //game.SetDefaults();
 
     // Option 2 - Defaults set as optional parameter
-    game.Run(/*new GameDefaults(),*/ start: Start);
+    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
+    var initialPosition = entity.Transform.Position;
+
+    game.Run(/*new GameDefaults(),*/ start: Start, update: Update);
 
     void Start()
     {
         // Option 3 - Defaults set here
         var defaults = new GameDefaults(game).Set3DAfterStart();
 
-        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
-        {
-            new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
-            new MotionComponentScript()
-        };
+        entity.Components.Add(new ModelComponent(new CubeProceduralModel().Generate(game.Services)));
+        entity.Components.Add(new MotionComponentScript());
+
+        //var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+        //{
+        //    new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
+        //    new MotionComponentScript()
+        //};
 
         entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+    }
+
+    void Update()
+    {
+        if (Vector3.Distance(initialPosition, entity.Transform.Position) <= 2)
+        {
+            entity.Transform.Position.Z += 0.03f;
+        }
     }
 }
 
