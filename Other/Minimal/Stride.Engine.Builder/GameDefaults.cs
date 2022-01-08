@@ -47,7 +47,7 @@ public class GameDefaults
         CreateAndSetNewScene();
     }
 
-    public GameDefaults Set3DAfterStart()
+    public GameDefaults Set3D()
     {
         Set();
 
@@ -110,6 +110,11 @@ public class GameDefaults
     {
         _isCameraScript = true;
 
+        return this;
+    }
+
+    public GameDefaults AddGameProfiler()
+    {
         return this;
     }
 

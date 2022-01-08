@@ -13,9 +13,6 @@ public class MotionComponentScript : SyncScript
 
     public override void Update()
     {
-
-        Log.Warning("Update Logging");
-
         if (Vector3.Distance(_initialPosition, Entity.Transform.Position) <= 1)
         {
             Entity.Transform.Position.X += 0.03f;
