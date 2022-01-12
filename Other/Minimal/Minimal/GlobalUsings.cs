@@ -5,3 +5,4 @@ global using Stride.Engine.Builder;
 global using Stride.Rendering.ProceduralModels;
 global using Stride.Rendering;
 global using Minimal;
+global using Stride.Games;
