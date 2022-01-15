@@ -1,8 +1,8 @@
 using (var game = new Game())
 {
-    var _entity = new Entity(new Vector3(1f, 0.5f, 3f));
-    var _angle = 0f;
-    var initialPosition = _entity.Transform.Position;
+    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
+    var angle = 0f;
+    var initialPosition = entity.Transform.Position;
 
     game.OnInitialize += () => System.Console.WriteLine("Hello, manio143");
 
@@ -10,26 +10,24 @@ using (var game = new Game())
 
     void Start(Scene rootScene, IServiceRegistry services)
     {
-        //game.Window.AllowUserResizing = true;
-
         game.SetupBase3DScene();
 
         var model = new CubeProceduralModel().Generate(services);
 
         model.Materials.Add(game.NewDefaultMaterial());
 
-        _entity.Components.Add(new ModelComponent(model));
+        entity.Components.Add(new ModelComponent(model));
 
-        _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+        entity.Scene = game.SceneSystem.SceneInstance.RootScene;
     }
 
     void Update(Scene rootScene, IServiceRegistry services, GameTime time)
     {
-        _angle += 1f * (float)time.Elapsed.TotalSeconds;
+        angle += 1f * (float)time.Elapsed.TotalSeconds;
 
-        var offset = new Vector3((float)Math.Sin(_angle), 0, (float)Math.Cos(_angle)) * 1f;
+        var offset = new Vector3((float)Math.Sin(angle), 0, (float)Math.Cos(angle)) * 1f;
 
-        _entity.Transform.Position = initialPosition + offset;
+        entity.Transform.Position = initialPosition + offset;
     }
 }
 
@@ -38,8 +36,8 @@ using (var game = new Game())
     game.Run(start: Start, update: null);
 
     void Start(Scene rootScene, IServiceRegistry services)
-    // adds default camera, camera script, skybox, ground, ..like through UI
     {
+        // adds default camera, camera script, skybox, ground, ..like through UI
         game.SetupBase3DScene();
 
         var model = new CubeProceduralModel().Generate(game.Services);

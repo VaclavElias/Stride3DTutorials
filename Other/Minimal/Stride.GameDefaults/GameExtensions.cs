@@ -8,7 +8,6 @@ public static class GameExtensions
     public const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
 
-
     public static void Run(this Game game, Action<Scene, IServiceRegistry>? start, Action<Scene, IServiceRegistry, GameTime>? update)
     {
         if (start != null || update != null)
@@ -31,9 +30,8 @@ public static class GameExtensions
     {
         game.SetupBase();
 
-        AddSkybox(game);
-        AddMouseLookCamera(game);
-
+        game.AddSkybox();
+        game.AddMouseLookCamera();
         game.AddGround();
         game.AddSphere();
     }
@@ -100,7 +98,7 @@ public static class GameExtensions
         return entity;
     }
 
-    private static void AddSkybox(Game game)
+    public static void AddSkybox(this Game game)
     {
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
@@ -122,7 +120,7 @@ public static class GameExtensions
         };
     }
 
-    private static void AddMouseLookCamera(Game game)
+    public static void AddMouseLookCamera(this Game game)
     {
         var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
 
@@ -151,7 +149,7 @@ public static class GameExtensions
         return entity;
     }
 
-    private static void AddGameProfiler(this Game game) {
+    public static void AddProfiler(this Game game) {
 
         var entity = new Entity("Profiler") { new GameProfiler() };
 
