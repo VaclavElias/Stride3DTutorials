@@ -4,8 +4,8 @@ public static class GameExtensions
 {
     public const string CameraEntityName = "Camera";
     public const string GroundEntityName = "Ground";
-    public const string SkyboxEntityName = "Skybox";
-    public const string SunEntityName = "Directional light";
+    //public const string SkyboxEntityName = "Skybox";
+    //public const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
 
     public static void Run(this Game game, Action<Scene, IServiceRegistry>? start, Action<Scene, IServiceRegistry, GameTime>? update)
