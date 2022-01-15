@@ -2,10 +2,10 @@ namespace Stride.GameDefaults;
 
 public class RootScript : SyncScript
 {
-    private readonly Action<Scene, Core.IServiceRegistry>? startAction;
-    private readonly Action<Scene, Core.IServiceRegistry, GameTime>? updateAction;
+    private readonly Action<Scene, IServiceRegistry>? startAction;
+    private readonly Action<Scene, IServiceRegistry, GameTime>? updateAction;
 
-    public RootScript(Action<Scene, Core.IServiceRegistry>? start = null, Action<Scene, Core.IServiceRegistry, GameTime>? update = null)
+    public RootScript(Action<Scene, IServiceRegistry>? start = null, Action<Scene, IServiceRegistry, GameTime>? update = null)
     {
         startAction = start;
         updateAction = update;

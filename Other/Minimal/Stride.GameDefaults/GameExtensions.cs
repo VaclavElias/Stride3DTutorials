@@ -7,9 +7,9 @@ public static class GameExtensions
     public const string SkyboxEntityName = "Skybox";
     public const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
-    public static Material DefaultMaterial { get; set; } = new();
 
-    public static void Run(this Game game, Action<Scene, Core.IServiceRegistry>? start, Action<Scene, Core.IServiceRegistry, GameTime>? update)
+
+    public static void Run(this Game game, Action<Scene, IServiceRegistry>? start, Action<Scene, IServiceRegistry, GameTime>? update)
     {
         if (start != null || update != null)
         {
@@ -21,22 +21,24 @@ public static class GameExtensions
         game.Run();
     }
 
-    public static void SetupBase3DScene(this Game game)
+    public static void SetupBase(this Game game)
     {
-        CreateAndSetDefaultGraphicsCompositor(game);
-        CreateAndSetNewScene(game);
-
-        CreateAndSetSkybox(game);
-        CreateAndSetCameraScript(game);
-        CreateAndSetGround(game);
-
-        SetDefaultMaterial(game);
-        CreateAndSetDefaultSphere(game);
+        AddGraphicsCompositor(game);
+        AddScene(game);
     }
 
-    //public static void AddSplashScreen();
+    public static void SetupBase3DScene(this Game game)
+    {
+        game.SetupBase();
 
-    private static void CreateAndSetDefaultGraphicsCompositor(Game game)
+        AddSkybox(game);
+        AddMouseLookCamera(game);
+
+        game.AddGround();
+        game.AddSphere();
+    }
+
+    private static void AddGraphicsCompositor(Game game)
     {
         // This is already build in Stride engine
         //var graphicsCompositor = GraphicsCompositorHelper.CreateDefault(true);
@@ -56,7 +58,7 @@ public static class GameExtensions
         game.SceneSystem.GraphicsCompositor = graphicsCompositor;
     }
 
-    private static void CreateAndSetNewScene(Game game)
+    private static void AddScene(Game game)
     {
         var scene = SceneHDRFactory.Create();
 
@@ -67,7 +69,7 @@ public static class GameExtensions
         game.SceneSystem.SceneInstance = new(game.Services, scene);
     }
 
-    private static Entity CreateAndSetGround(Game game)
+    public static Entity AddGround(this Game game)
     {
         var materialDescription = new MaterialDescriptor
         {
@@ -83,15 +85,13 @@ public static class GameExtensions
 
         var material = Material.New(game.GraphicsDevice, materialDescription);
 
-        var model = new Model();
-
         var groundModel = new PlaneProceduralModel
         {
             Size = new Vector2(10.0f, 10.0f),
             MaterialInstance = { Material = material }
         };
 
-        groundModel.Generate(game.Services, model);
+        var model = groundModel.Generate(game.Services);
 
         var entity = new Entity(GroundEntityName) { new ModelComponent(model) };
 
@@ -100,7 +100,7 @@ public static class GameExtensions
         return entity;
     }
 
-    private static void CreateAndSetSkybox(Game game)
+    private static void AddSkybox(Game game)
     {
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
@@ -122,43 +122,46 @@ public static class GameExtensions
         };
     }
 
-    private static void CreateAndSetCameraScript(Game game)
+    private static void AddMouseLookCamera(Game game)
     {
         var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
 
-        cameraEntity.Add(new BasicCameraController());
+        cameraEntity?.Add(new BasicCameraController());
     }
 
-    public static void AddEntity(Game game, Entity entity)
-        => game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    public static Material NewDefaultMaterial(this Game game, Color? color = null)
+        => new DefaultMaterial(game.GraphicsDevice).Get(color);
 
-    private static void SetDefaultMaterial(Game game, Color? color = null)
-        => DefaultMaterial = new DefaultMaterial(game.GraphicsDevice).Get(color);
-
-    private static void CreateAndSetDefaultSphere(Game game, Color? color = null)
+    public static Entity AddSphere(this Game game, Color? color = null)
     {
-        var model = new Model();
-
         var sphereModel = new SphereProceduralModel
         {
-            MaterialInstance = { Material = DefaultMaterial },
+            MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
             Tessellation = 30,
         };
 
-        sphereModel.Generate(game.Services, model);
+        var model = sphereModel.Generate(game.Services);
 
         var entity = new Entity("Sphere") { new ModelComponent(model) };
 
         entity.Transform.Position = new Vector3(0, 0.5f, 0);
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
     }
 
-    private static void AddGameProfiler() { }
+    private static void AddGameProfiler(this Game game) {
 
-    public static Material NewDefaultMaterial(this Game game, Color? color = null)
-    {
-        return new DefaultMaterial(game.GraphicsDevice).Get(color);
+        var entity = new Entity("Profiler") { new GameProfiler() };
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
+
+    // Do we need theses?
+    public static void AddSplashScreen(this Game game) { }
+
+    public static void AddEntity(this Game game, Entity entity)
+        => game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 }
 

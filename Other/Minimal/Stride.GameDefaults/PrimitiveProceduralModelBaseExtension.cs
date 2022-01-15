@@ -1,6 +1,6 @@
 namespace Stride.GameDefaults
 {
-    // Ignore this, this is just for illustration
+    // Ignore this, this is just for illustration, will be added to Engine #1258
     public static class PrimitiveProceduralModelBaseExtension
     {
         public static Model Generate(this PrimitiveProceduralModelBase proceduralModel, IServiceRegistry services)
