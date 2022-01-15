@@ -12,11 +12,11 @@ public class StartExamples
 
             void Start(Scene rootScene, IServiceRegistry services)
             {
-                var defaults = new GameDefaults(game).SetupBase3DScene();
+                game.SetupBase3DScene();
 
                 var model = new CubeProceduralModel().Generate(game.Services);
 
-                model.Materials.Add(defaults.DefaultMaterial);
+                model.Materials.Add(game.NewDefaultMaterial());
 
                 _entity.Components.Add(new ModelComponent(model));
                 //_entity.Components.Add(new GameProfiler());

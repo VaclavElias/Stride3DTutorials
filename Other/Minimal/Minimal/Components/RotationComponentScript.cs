@@ -1,4 +1,4 @@
-namespace Minimal;
+namespace Minimal.Components;
 
 public class RotationComponentScript : SyncScript
 {

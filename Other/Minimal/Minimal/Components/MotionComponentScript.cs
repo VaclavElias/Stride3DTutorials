@@ -1,4 +1,4 @@
-namespace Minimal;
+namespace Minimal.Components;
 
 public class MotionComponentScript : SyncScript
 {
@@ -14,9 +14,7 @@ public class MotionComponentScript : SyncScript
     public override void Update()
     {
         if (Vector3.Distance(_initialPosition, Entity.Transform.Position) <= 1)
-        {
             Entity.Transform.Position.X += 0.03f;
-        }
     }
 }
 
