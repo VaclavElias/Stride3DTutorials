@@ -8,7 +8,7 @@ public class StartExamples
             var _angle = 0f;
             var initialPosition = _entity.Transform.Position;
 
-            game.Run3(start: Start, update: Update);
+            game.Run(start: Start, update: Update);
 
             void Start(Scene rootScene, IServiceRegistry services)
             {

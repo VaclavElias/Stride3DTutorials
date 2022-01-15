@@ -1,4 +1,4 @@
-namespace Minimal;
+namespace Stride.GameDefaults;
 
 public class GameProfiler : AsyncScript
 {

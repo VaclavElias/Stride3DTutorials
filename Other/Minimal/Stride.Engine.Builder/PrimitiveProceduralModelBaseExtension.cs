@@ -1,4 +1,4 @@
-namespace Stride.Engine.Builder
+namespace Stride.GameDefaults
 {
     // Ignore this, this is just for illustration
     public static class PrimitiveProceduralModelBaseExtension

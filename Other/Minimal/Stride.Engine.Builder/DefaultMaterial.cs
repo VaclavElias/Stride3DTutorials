@@ -1,4 +1,4 @@
-namespace Stride.Engine.Builder
+namespace Stride.GameDefaults
 {
     public class DefaultMaterial
     {

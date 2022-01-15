@@ -3,7 +3,7 @@ using Stride.Rendering.ComputeEffect.GGXPrefiltering;
 using Stride.Rendering.ComputeEffect.LambertianPrefiltering;
 using Stride.Shaders;
 
-namespace Stride.Engine.Builder
+namespace Stride.GameDefaults
 {
     // Taken from Stride.Assets.Skyboxes
     public class SkyboxGenerator

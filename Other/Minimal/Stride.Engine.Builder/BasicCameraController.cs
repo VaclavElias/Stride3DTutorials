@@ -1,4 +1,4 @@
-namespace Stride.Engine.Builder;
+namespace Stride.GameDefaults;
 
 /// <summary>
 /// A script that allows to move and rotate an entity through keyboard, mouse and touch input to provide basic camera navigation.

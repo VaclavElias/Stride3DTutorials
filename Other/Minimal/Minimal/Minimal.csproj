@@ -12,7 +12,7 @@
     </ItemGroup>-->
 
     <ItemGroup>
-        <ProjectReference Include="..\Stride.Engine.Builder\Stride.Engine.Builder.csproj" />
+        <ProjectReference Include="..\Stride.Engine.Builder\Stride.GameDefaults.csproj" />
     </ItemGroup>
 
 </Project>

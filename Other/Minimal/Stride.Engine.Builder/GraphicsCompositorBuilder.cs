@@ -1,4 +1,4 @@
-namespace Stride.Engine.Builder;
+namespace Stride.GameDefaults;
 
 // Taken from Stride.Rendering.Compositing GraphicsCompositorHelper 
 public static class GraphicsCompositorBuilder

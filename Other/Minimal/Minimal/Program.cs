@@ -7,7 +7,7 @@ using (var game = new Game())
     var _angle = 0f;
     var initialPosition = _entity.Transform.Position;
 
-    game.Run3(start: Start, update: Update);
+    game.Run(start: Start, update: Update);
 
     void Start(Scene rootScene, IServiceRegistry services)
     {
@@ -36,7 +36,7 @@ using (var game = new Game())
 
 using (var game = new Game())
 {
-    game.Run3(start: Start, update: null);
+    game.Run(start: Start, update: null);
 
     void Start(Scene rootScene, IServiceRegistry services)
     // adds default camera, camera script, skybox, ground, ..like through UI

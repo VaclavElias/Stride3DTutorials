@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride.Engine.Builder", "Other\Minimal\Stride.Engine.Builder\Stride.Engine.Builder.csproj", "{2A40FEFB-7470-4BBD-BB60-06000FDE5F29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stride.GameDefaults", "Other\Minimal\Stride.Engine.Builder\Stride.GameDefaults.csproj", "{2A40FEFB-7470-4BBD-BB60-06000FDE5F29}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Minimal", "Other\Minimal\Minimal\Minimal.csproj", "{5D6EF792-E359-4EB6-8CE5-C416BDC5451F}"
 EndProject
