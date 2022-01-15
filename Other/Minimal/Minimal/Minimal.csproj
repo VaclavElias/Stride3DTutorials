@@ -7,9 +7,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <ItemGroup>
-        <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />-->
-    </ItemGroup>
+    <!--<ItemGroup>
+        <PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />
+    </ItemGroup>-->
 
     <ItemGroup>
         <ProjectReference Include="..\Stride.Engine.Builder\Stride.Engine.Builder.csproj" />

@@ -160,17 +160,15 @@ public class GameDefaults
 
     public Material DefaultMaterial { get; set; } = new();
 
-    private readonly MinimalGame3 _game;
+    private readonly Game _game;
     private bool _isGround;
     private bool _isSkybox;
     private bool _isCameraScript;
     private bool _isSphere;
 
-    public GameDefaults(MinimalGame3 game)
+    public GameDefaults(Game game)
     {
         _game = game;
-
-        _game.OnBeginRun += OnBeginRun;
     }
 
     /// <summary>
