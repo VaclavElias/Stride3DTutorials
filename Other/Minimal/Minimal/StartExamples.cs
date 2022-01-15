@@ -1,5 +1,63 @@
 public class StartExamples
 {
+    public void Main1()
+    {
+        using var game = new Game();
+
+        game.Run(start: Start, update: null);
+
+        void Start(Scene rootScene, IServiceRegistry services)
+        {
+            game.SetupBase3DScene();
+
+            var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+            {
+                new ModelComponent(new CubeProceduralModel().Generate(services)),
+                new MotionComponentScript()
+            };
+
+            entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+        }
+    }
+
+    public void Main2()
+    {
+        using (var game = new Game())
+        {
+            var _entity = new Entity(new Vector3(1f, 0.5f, 3f));
+            var _angle = 0f;
+            var initialPosition = _entity.Transform.Position;
+
+            game.OnInitialize += () => System.Console.WriteLine("Hello, manio143");
+
+            game.Run(start: Start, update: Update);
+
+            void Start(Scene rootScene, IServiceRegistry services)
+            {
+                //game.Window.AllowUserResizing = true;
+
+                game.SetupBase3DScene();
+
+                var model = new CubeProceduralModel().Generate(services);
+
+                model.Materials.Add(game.NewDefaultMaterial());
+
+                _entity.Components.Add(new ModelComponent(model));
+
+                _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+            }
+
+            void Update(Scene rootScene, IServiceRegistry services, GameTime time)
+            {
+                _angle += 1f * (float)time.Elapsed.TotalSeconds;
+
+                var offset = new Vector3((float)Math.Sin(_angle), 0, (float)Math.Cos(_angle)) * 1f;
+
+                _entity.Transform.Position = initialPosition + offset;
+            }
+        }
+    }
+
     public void Main3()
     {
         using (var game = new Game())
@@ -45,15 +103,5 @@ public class StartExamples
                 //}
             }
         }
-    }
-
-    public void Main1()
-    {
-
-    }
-
-    public void Main2()
-    {
-
     }
 }

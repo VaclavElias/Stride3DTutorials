@@ -1,11 +1,10 @@
 using (var game = new Game())
 {
-    // Option 1 - Defaults set here
-    //game.SetupBase3DScene();
-
     var _entity = new Entity(new Vector3(1f, 0.5f, 3f));
     var _angle = 0f;
     var initialPosition = _entity.Transform.Position;
+
+    game.OnInitialize += () => System.Console.WriteLine("Hello, manio143");
 
     game.Run(start: Start, update: Update);
 
