@@ -6,13 +6,13 @@ public class StartExamples
 
         game.Run(start: Start, update: null);
 
-        void Start(Scene rootScene, IServiceRegistry services)
+        void Start(Scene rootScene)
         {
             game.SetupBase3DScene();
 
             var entity = new Entity(new Vector3(1f, 0.5f, 3f))
             {
-                new ModelComponent(new CubeProceduralModel().Generate(services)),
+                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
                 new MotionComponentScript()
             };
 
@@ -32,13 +32,13 @@ public class StartExamples
 
             game.Run(start: Start, update: Update);
 
-            void Start(Scene rootScene, IServiceRegistry services)
+            void Start(Scene rootScene)
             {
                 //game.Window.AllowUserResizing = true;
 
                 game.SetupBase3DScene();
 
-                var model = new CubeProceduralModel().Generate(services);
+                var model = new CubeProceduralModel().Generate(game.Services);
 
                 model.Materials.Add(game.NewDefaultMaterial());
 
@@ -47,7 +47,7 @@ public class StartExamples
                 _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
             }
 
-            void Update(Scene rootScene, IServiceRegistry services, GameTime time)
+            void Update(Scene rootScene, GameTime time)
             {
                 _angle += 1f * (float)time.Elapsed.TotalSeconds;
 
@@ -68,7 +68,7 @@ public class StartExamples
 
             game.Run(start: Start, update: Update);
 
-            void Start(Scene rootScene, IServiceRegistry services)
+            void Start(Scene rootScene)
             {
                 game.SetupBase3DScene();
 
@@ -89,7 +89,7 @@ public class StartExamples
                 _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
             }
 
-            void Update(Scene rootScene, IServiceRegistry services, GameTime time)
+            void Update(Scene rootScene, GameTime time)
             {
                 _angle += 5f * (float)time.Elapsed.TotalSeconds;
 

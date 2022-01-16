@@ -8,20 +8,21 @@ using (var game = new Game())
 
     game.Run(start: Start, update: Update);
 
-    void Start(Scene rootScene, IServiceRegistry services)
+    void Start(Scene rootScene)
     {
         game.SetupBase3DScene();
+        game.AddProfiler();
 
-        var model = new CubeProceduralModel().Generate(services);
+        var model = new CubeProceduralModel().Generate(game.Services);
 
         model.Materials.Add(game.NewDefaultMaterial());
 
         entity.Components.Add(new ModelComponent(model));
 
-        entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+        entity.Scene = rootScene;
     }
 
-    void Update(Scene rootScene, IServiceRegistry services, GameTime time)
+    void Update(Scene rootScene, GameTime time)
     {
         angle += 1f * (float)time.Elapsed.TotalSeconds;
 
@@ -35,10 +36,11 @@ using (var game = new Game())
 {
     game.Run(start: Start, update: null);
 
-    void Start(Scene rootScene, IServiceRegistry services)
+    void Start(Scene rootScene)
     {
         // adds default camera, camera script, skybox, ground, ..like through UI
         game.SetupBase3DScene();
+        game.AddProfiler();
 
         var model = new CubeProceduralModel().Generate(game.Services);
 
@@ -50,7 +52,7 @@ using (var game = new Game())
             new MotionComponentScript()
         };
 
-        entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+        entity.Scene = rootScene;
 
         var entity2 = new Entity(new Vector3(1, 0.5f, 3))
             {
@@ -58,6 +60,6 @@ using (var game = new Game())
                 new MotionComponentScript()
             };
 
-        entity2.Scene = game.SceneSystem.SceneInstance.RootScene;
+        entity2.Scene = rootScene;
     }
 }

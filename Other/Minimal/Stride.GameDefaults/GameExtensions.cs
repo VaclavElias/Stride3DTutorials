@@ -8,16 +8,27 @@ public static class GameExtensions
     //public const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
 
-    public static void Run(this Game game, Action<Scene, IServiceRegistry>? start, Action<Scene, IServiceRegistry, GameTime>? update)
+    public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
-        if (start != null || update != null)
-        {
-            var rootScript = new RootScript(start, update);
+        game.SceneSystem.SceneInstance ??= new SceneInstance(game.Services, new Scene());
 
-            game.OnInitialize += () => game.Script.Add(rootScript);
+        game.Script.Scheduler.Add(RootScript);
+
+        game.Run(context);
+
+        async Task RootScript()
+        {
+            start?.Invoke(GetRootScene());
+            if (update == null)
+                return;
+            do
+            {
+                update.Invoke(GetRootScene(), game.UpdateTime);
+                await game.Script.NextFrame();
+            } while (true);
         }
 
-        game.Run();
+        Scene GetRootScene() => game.SceneSystem.SceneInstance.RootScene;
     }
 
     public static void SetupBase(this Game game)
@@ -58,13 +69,13 @@ public static class GameExtensions
 
     private static void AddScene(Game game)
     {
-        var scene = SceneHDRFactory.Create();
+        var scene = SceneHDRFactory.Create(game.SceneSystem.SceneInstance.RootScene);
 
         var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
 
         cameraEntity.Components.Get<CameraComponent>().Slot = game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
 
-        game.SceneSystem.SceneInstance = new(game.Services, scene);
+        //game.SceneSystem.SceneInstance = new(game.Services, scene);
     }
 
     public static Entity AddGround(this Game game)

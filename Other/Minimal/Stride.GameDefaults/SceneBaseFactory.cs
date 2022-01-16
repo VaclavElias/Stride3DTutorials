@@ -15,7 +15,7 @@ public abstract class SceneBaseFactory
     /// <param name="skyIntensity"></param>
     /// <param name="sunIntensity"></param>
     /// <returns></returns>
-    protected static Scene CreateBase(float skyIntensity, float sunIntensity)
+    protected static Scene CreateBase(Scene? scene, float skyIntensity, float sunIntensity)
     {
         var skyboxEntity = new Entity(SkyboxEntityName) {
                 new BackgroundComponent { Intensity = skyIntensity },
@@ -45,7 +45,7 @@ public abstract class SceneBaseFactory
         lightEntity.Transform.Position = new Vector3(0, 2.0f, 0);
         lightEntity.Transform.Rotation = Quaternion.RotationX(MathUtil.DegreesToRadians(-30.0f)) * Quaternion.RotationY(MathUtil.DegreesToRadians(-180.0f));
 
-        var scene = new Scene();
+        scene ??= new Scene();
 
         scene.Entities.Add(cameraEntity);
         scene.Entities.Add(lightEntity);
@@ -60,9 +60,9 @@ public class SceneHDRFactory : SceneBaseFactory
     private const float SkyIntensity = 1.0f;
     private const float SunIntensity = 20.0f;
 
-    public static Scene Create()
+    public static Scene Create(Scene? scene)
     {
-        var sceneAsset = CreateBase(SkyIntensity, SunIntensity);
+        var sceneAsset = CreateBase(scene, SkyIntensity, SunIntensity);
 
         // Add a sky light to the scene
         var skyboxEntity = sceneAsset.Entities.Single(x => x.Name == SkyboxEntityName);

@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
         <PackageReference Include="Stride.Core.Yaml" Version="4.1.0.1-beta" />
     </ItemGroup>
 
