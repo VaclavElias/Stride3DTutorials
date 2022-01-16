@@ -10,13 +10,17 @@ public class StartExamples
         {
             game.SetupBase3DScene();
 
+            var model = new CubeProceduralModel().Generate(game.Services);
+
+            model.Materials.Add(new Material());
+
             var entity = new Entity(new Vector3(1f, 0.5f, 3f))
             {
                 new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
                 new MotionComponentScript()
             };
 
-            entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+            entity.Scene = rootScene;
         }
     }
 
@@ -42,7 +46,7 @@ public class StartExamples
 
                 _entity.Components.Add(new ModelComponent(model));
 
-                _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+                _entity.Scene = rootScene;
             }
 
             void Update(Scene rootScene, GameTime time)
@@ -84,7 +88,7 @@ public class StartExamples
                 //    new MotionComponentScript()
                 //};
 
-                _entity.Scene = game.SceneSystem.SceneInstance.RootScene;
+                _entity.Scene = rootScene;
             }
 
             void Update(Scene rootScene, GameTime time)
