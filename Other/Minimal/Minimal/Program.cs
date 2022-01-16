@@ -4,8 +4,6 @@ using (var game = new Game())
     var angle = 0f;
     var initialPosition = entity.Transform.Position;
 
-    game.OnInitialize += () => System.Console.WriteLine("Hello, manio143");
-
     game.Run(start: Start, update: Update);
 
     void Start(Scene rootScene)
