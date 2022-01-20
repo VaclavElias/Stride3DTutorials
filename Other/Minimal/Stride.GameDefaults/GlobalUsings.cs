@@ -1,6 +1,7 @@
 global using Stride.Core.Mathematics;
 global using Stride.Core;
 global using Stride.GameDefaults;
+global using Stride.GameDefaults.Scripts;
 global using Stride.Engine.Processors;
 global using Stride.Engine;
 global using Stride.Games;

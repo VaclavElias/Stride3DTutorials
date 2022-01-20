@@ -1,5 +1,6 @@
-namespace Stride.GameDefaults;
+namespace Stride.GameDefaults.Scripts;
 
+[Obsolete]
 public class RootScript : SyncScript
 {
     private readonly Action<Scene, IServiceRegistry>? startAction;

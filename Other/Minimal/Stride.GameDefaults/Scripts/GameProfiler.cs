@@ -1,4 +1,4 @@
-namespace Stride.GameDefaults;
+namespace Stride.GameDefaults.Scripts;
 
 public class GameProfiler : AsyncScript
 {
