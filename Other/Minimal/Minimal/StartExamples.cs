@@ -72,6 +72,7 @@ public class StartExamples
 
             void Start(Scene rootScene)
             {
+                // adds default camera, camera script, skybox, ground, ..like through UI
                 game.SetupBase3DScene();
 
                 var model = new CubeProceduralModel().Generate(game.Services);
@@ -106,4 +107,60 @@ public class StartExamples
             }
         }
     }
+
+    public void Main4()
+    {
+        using (var game = new Game())
+        {
+            var entity = new Entity(new Vector3(2f, 0, 2f));
+            var angle = 0f;
+            var initialPosition = entity.Transform.Position;
+
+            game.Run(start: Start);
+
+            void Start(Scene rootScene)
+            {
+                game.SetupBase3DScene();
+
+                //var gizmo = new TransformationGizmo
+
+                var vertices = new VertexPositionTexture[4];
+                vertices[0].Position = new Vector3(0f, 0f, 1f);
+                vertices[1].Position = new Vector3(0f, 1f, 0f);
+                vertices[2].Position = new Vector3(0f, 1f, 1f);
+                //vertices[3].Position = new Vector3(1f, 0f, 1f);
+                var vertexBuffer = Stride.Graphics.Buffer.Vertex.New(game.GraphicsDevice, vertices,
+                                                                     GraphicsResourceUsage.Dynamic);
+                int[] indices = { 0, 2, 1 };
+                var indexBuffer = Stride.Graphics.Buffer.Index.New(game.GraphicsDevice, indices);
+
+                var customMesh = new Mesh
+                {
+                    Draw = new MeshDraw
+                    {
+                        /* Vertex buffer and index buffer setup */
+                        PrimitiveType = PrimitiveType.TriangleList,
+                        DrawCount = indices.Length,
+                        IndexBuffer = new IndexBufferBinding(indexBuffer, true, indices.Length),
+                        VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer,
+                                  VertexPositionTexture.Layout, vertexBuffer.ElementCount) },
+                    }
+                };
+
+                var model = new Model();
+
+                model.Meshes.Add(customMesh);
+
+                model.Materials.Add(game.NewDefaultMaterial());
+
+                entity.Components.Add(new ModelComponent(model));
+
+                entity.Scene = rootScene;
+            }
+        }
+    }
+
+    //public class MyGizmo : TransformationGizmo
+    //{
+    //}
 }
