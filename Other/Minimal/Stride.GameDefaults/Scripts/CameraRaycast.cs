@@ -9,7 +9,7 @@ public class CameraRaycast : SyncScript
     {
         _camera = Entity.Get<CameraComponent>();
         _simulation = this.GetSimulation();
-        _simulation.ColliderShapesRendering = true;
+        //_simulation.ColliderShapesRendering = true;
     }
 
     public override void Update()
@@ -37,7 +37,6 @@ public class CameraRaycast : SyncScript
 
                 //HighlightItem(vehicle);
             }
-
         }
     }
 

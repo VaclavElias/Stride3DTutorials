@@ -121,11 +121,11 @@ public static class GameExtensions
     /// <param name="game"></param>
     public static void AddGroundCollider(this Game game)
     {
-        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
+        var ground = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
 
-        if (groundEntity is null) return;
+        if (ground is null) return;
 
-        var modelComponent = groundEntity.Get<ModelComponent>();
+        var modelComponent = ground.Get<ModelComponent>();
 
         if (modelComponent is null) return;
 
@@ -139,7 +139,7 @@ public static class GameExtensions
             LocalOffset = new Vector3(0, -0.5f, 0)
         });
 
-        groundEntity.Add(component);
+        ground.Add(component);
     }
 
     public static void AddSkybox(this Game game)
@@ -195,10 +195,18 @@ public static class GameExtensions
 
     public static void AddProfiler(this Game game)
     {
-
         var entity = new Entity("Profiler") { new GameProfiler() };
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    }
+
+    public static void AddRaycast(this Game game)
+    {
+        var camera = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == CameraEntityName);
+
+        if (camera is null) return;
+
+        camera.Add(new CameraRaycast());
     }
 
     // Do we need theses?

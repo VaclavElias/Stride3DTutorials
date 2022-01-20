@@ -9,7 +9,8 @@ using (var game = new Game())
     {
         game.SetupBase3DScene();
         game.AddGroundCollider();
-        game.AddProfiler();
+        //game.AddProfiler();
+        game.AddRaycast();
 
         var model = new CubeProceduralModel().Generate(game.Services);
 
@@ -19,7 +20,7 @@ using (var game = new Game())
 
         entity.Scene = rootScene;
 
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 1000; i++)
         {
             entity.AddChild(cubeGenerator.GetCube());
         }
