@@ -215,4 +215,3 @@ public static class GameExtensions
     public static void AddEntity(this Game game, Entity entity)
         => game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 }
-
