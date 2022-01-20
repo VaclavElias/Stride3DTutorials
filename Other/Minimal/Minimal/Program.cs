@@ -1,6 +1,39 @@
 using (var game = new Game())
 {
     var entity = new Entity(new Vector3(1f, 0.5f, 3f));
+    var cubeGenerator = new CubesGenerator(game.Services);
+
+    game.Run(start: Start, update: Update);
+
+    void Start(Scene rootScene)
+    {
+        game.SetupBase3DScene();
+        game.AddGroundCollider();
+        game.AddProfiler();
+
+        var model = new CubeProceduralModel().Generate(game.Services);
+
+        model.Materials.Add(game.NewDefaultMaterial());
+
+        entity.Components.Add(new ModelComponent(model));
+
+        entity.Scene = rootScene;
+
+        for (int i = 0; i < 100; i++)
+        {
+            entity.AddChild(cubeGenerator.GetCube());
+        }
+    }
+
+    void Update(Scene rootScene, GameTime time)
+    {
+        
+    }
+}
+
+using (var game = new Game())
+{
+    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
     var angle = 0f;
     var initialPosition = entity.Transform.Position;
 
@@ -30,9 +63,10 @@ using (var game = new Game())
     }
 }
 
+
 using (var game = new Game())
 {
-    game.Run(start: Start, update: null);
+    game.Run(start: Start);
 
     void Start(Scene rootScene)
     {

@@ -5,6 +5,7 @@ global using Stride.Engine.Processors;
 global using Stride.Engine;
 global using Stride.Games;
 global using Stride.Graphics;
+global using Stride.Physics;
 global using Stride.Input;
 global using Stride.Particles.Rendering;
 global using Stride.Profiling;

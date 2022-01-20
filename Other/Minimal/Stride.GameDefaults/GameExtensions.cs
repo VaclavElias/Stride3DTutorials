@@ -10,7 +10,7 @@ public static class GameExtensions
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
-        game.SceneSystem.SceneInstance ??= new SceneInstance(game.Services, new Scene());
+        //game.SceneSystem.SceneInstance ??= new SceneInstance(game.Services, new Scene());
 
         game.Script.Scheduler.Add(RootScript);
 
@@ -78,7 +78,13 @@ public static class GameExtensions
         //game.SceneSystem.SceneInstance = new(game.Services, scene);
     }
 
-    public static Entity AddGround(this Game game)
+    /// <summary>
+    /// Add ground with default Size 10,10
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="size"></param>
+    /// <returns></returns>
+    public static Entity AddGround(this Game game, Vector2? size = null)
     {
         var materialDescription = new MaterialDescriptor
         {
@@ -96,7 +102,7 @@ public static class GameExtensions
 
         var groundModel = new PlaneProceduralModel
         {
-            Size = new Vector2(10.0f, 10.0f),
+            Size = size ?? new Vector2(10.0f, 10.0f),
             MaterialInstance = { Material = material }
         };
 
@@ -107,6 +113,33 @@ public static class GameExtensions
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
         return entity;
+    }
+
+    /// <summary>
+    /// Adds static collider to default Ground
+    /// </summary>
+    /// <param name="game"></param>
+    public static void AddGroundCollider(this Game game)
+    {
+        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
+
+        if (groundEntity is null) return;
+
+        var modelComponent = groundEntity.Get<ModelComponent>();
+
+        if (modelComponent is null) return;
+
+        var distance = modelComponent.Model.BoundingBox.Maximum.X - modelComponent.Model.BoundingBox.Minimum.X;
+
+        var component = new StaticColliderComponent();
+
+        component.ColliderShapes.Add(new BoxColliderShapeDesc()
+        {
+            Size = new Vector3(distance, 1, distance),
+            LocalOffset = new Vector3(0, -0.5f, 0)
+        });
+
+        groundEntity.Add(component);
     }
 
     public static void AddSkybox(this Game game)
@@ -160,7 +193,8 @@ public static class GameExtensions
         return entity;
     }
 
-    public static void AddProfiler(this Game game) {
+    public static void AddProfiler(this Game game)
+    {
 
         var entity = new Entity("Profiler") { new GameProfiler() };
 
