@@ -1,10 +1,30 @@
 public class StartExamples
 {
+    public void Main0()
+    {
+        using var game = new Game();
+
+        game.Run(start: Start);
+
+        void Start(Scene rootScene)
+        {
+            game.SetupBase3DScene();
+
+            var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+            {
+                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
+                new RotationComponentScript()
+            };
+
+            entity.Scene = rootScene;
+        }
+    }
+
     public void Main1()
     {
         using var game = new Game();
 
-        game.Run(start: Start, update: null);
+        game.Run(start: Start);
 
         void Start(Scene rootScene)
         {

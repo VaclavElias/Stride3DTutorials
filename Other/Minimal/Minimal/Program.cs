@@ -1,5 +1,23 @@
 using (var game = new Game())
 {
+    game.Run(start: Start);
+
+    void Start(Scene rootScene)
+    {
+        game.SetupBase3DScene();
+
+        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+            {
+                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
+                new RotationComponentScript()
+            };
+
+        entity.Scene = rootScene;
+    }
+}
+
+using (var game = new Game())
+{
     var entity = new Entity(new Vector3(1f, 0.5f, 3f));
     var cubeGenerator = new CubesGenerator(game.Services);
 
@@ -28,7 +46,7 @@ using (var game = new Game())
 
     void Update(Scene rootScene, GameTime time)
     {
-        
+
     }
 }
 
