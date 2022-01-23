@@ -10,8 +10,6 @@ public static class GameExtensions
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
-        //game.SceneSystem.SceneInstance ??= new SceneInstance(game.Services, new Scene());
-
         game.Script.Scheduler.Add(RootScript);
 
         game.Run(context);
