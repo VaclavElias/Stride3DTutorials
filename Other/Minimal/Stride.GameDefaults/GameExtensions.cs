@@ -7,6 +7,7 @@ public static class GameExtensions
     //public const string SkyboxEntityName = "Skybox";
     //public const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
+    private const string Profiler = "Profiler";
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
@@ -42,7 +43,7 @@ public static class GameExtensions
         game.AddSkybox();
         game.AddMouseLookCamera();
         game.AddGround();
-        game.AddSphere();
+        game.AddSphere(); // Do we want this Sphere?
     }
 
     private static void AddGraphicsCompositor(Game game)
@@ -84,6 +85,10 @@ public static class GameExtensions
     /// <returns></returns>
     public static Entity AddGround(this Game game, Vector2? size = null)
     {
+        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
+
+        if (groundEntity is not null) return groundEntity;
+
         var materialDescription = new MaterialDescriptor
         {
             Attributes =
@@ -172,25 +177,7 @@ public static class GameExtensions
     public static Material NewDefaultMaterial(this Game game, Color? color = null)
         => new DefaultMaterial(game.GraphicsDevice).Get(color);
 
-    public static Entity AddSphere(this Game game, Color? color = null)
-    {
-        var sphereModel = new SphereProceduralModel
-        {
-            MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
-            Tessellation = 30,
-        };
-
-        var model = sphereModel.Generate(game.Services);
-
-        var entity = new Entity("Sphere") { new ModelComponent(model) };
-
-        entity.Transform.Position = new Vector3(0, 0.5f, 0);
-
-        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-
-        return entity;
-    }
-
+    // This is similar to one in Unity, which I think returns Entity
     public static Entity CreatePrimitive(this Game game, PrimtiveModelType type)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
@@ -250,7 +237,11 @@ public static class GameExtensions
 
     public static void AddProfiler(this Game game)
     {
-        var entity = new Entity("Profiler") { new GameProfiler() };
+        var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == Profiler);
+
+        if (profilerEntity is not null) return;
+
+        var entity = new Entity(Profiler) { new GameProfiler() };
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
@@ -264,9 +255,30 @@ public static class GameExtensions
         camera.Add(new CameraRaycast());
     }
 
-    // Do we need theses?
+
+    ////////////////////////////////////////////////
+    //                Do we need theses?          //   
+    ////////////////////////////////////////////////
+    
     public static void AddSplashScreen(this Game game) { }
 
-    public static void AddEntity(this Game game, Entity entity)
-        => game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    // If we want this, refactor with CreatePrimitive if that is approved
+    public static Entity AddSphere(this Game game, Color? color = null)
+    {
+        var sphereModel = new SphereProceduralModel
+        {
+            MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
+            Tessellation = 30,
+        };
+
+        var model = sphereModel.Generate(game.Services);
+
+        var entity = new Entity("Sphere") { new ModelComponent(model) };
+
+        entity.Transform.Position = new Vector3(0, 0.5f, 0);
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
+    }
 }
