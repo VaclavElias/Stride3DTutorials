@@ -68,13 +68,13 @@ public static class GameExtensions
 
     private static void AddScene(Game game)
     {
-        var scene = SceneHDRFactory.Create(game.SceneSystem.SceneInstance.RootScene);
+        var scene =  game.SceneSystem.SceneInstance.RootScene;
 
-        var cameraEntity = scene.Entities.Single(x => x.Name == SceneBaseFactory.CameraEntityName);
+        scene.AddBaseEntities();
+
+        var cameraEntity = scene.Entities.Single(x => x.Name == SceneExtensions.CameraEntityName);
 
         cameraEntity.Components.Get<CameraComponent>().Slot = game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
-
-        //game.SceneSystem.SceneInstance = new(game.Services, scene);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public static class GameExtensions
     /// <returns></returns>
     public static Entity AddGround(this Game game, Vector2? size = null)
     {
-        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
+        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == GroundEntityName);
 
         if (groundEntity is not null) return groundEntity;
 
@@ -124,7 +124,7 @@ public static class GameExtensions
     /// <param name="game"></param>
     public static void AddGroundCollider(this Game game)
     {
-        var ground = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == GroundEntityName);
+        var ground = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == GroundEntityName);
 
         if (ground is null) return;
 
@@ -147,13 +147,13 @@ public static class GameExtensions
 
     public static void AddSkybox(this Game game)
     {
+        var skyboxEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SceneExtensions.SkyboxEntityName);
+
+        if (skyboxEntity is not null) return;
+
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
         var texture = Texture.Load(game.GraphicsDevice, stream, TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
-
-        var skyboxEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == SceneBaseFactory.SkyboxEntityName);
-
-        skyboxEntity.Get<BackgroundComponent>().Texture = texture;
 
         var skyboxGeneratorContext = new SkyboxGeneratorContext(game);
 
@@ -161,10 +161,23 @@ public static class GameExtensions
 
         skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
 
-        skyboxEntity.Get<LightComponent>().Type = new LightSkybox
-        {
-            Skybox = skybox,
+        var entity = new Entity(SceneExtensions.SkyboxEntityName) {
+                new BackgroundComponent { Intensity = 1.0f, Texture = texture },
+                new LightComponent {
+                    Intensity = 1.0f,
+                    Type = new LightSkybox() { Skybox = skybox } }
         };
+
+        entity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        //skyboxEntity.Get<BackgroundComponent>().Texture = texture;
+
+        //entity.Get<LightComponent>().Type = new LightSkybox
+        //{
+        //    Skybox = skybox,
+        //};
     }
 
     public static void AddMouseLookCamera(this Game game)
@@ -237,7 +250,7 @@ public static class GameExtensions
 
     public static void AddProfiler(this Game game)
     {
-        var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == Profiler);
+        var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(w => w.Name == Profiler);
 
         if (profilerEntity is not null) return;
 
@@ -254,7 +267,6 @@ public static class GameExtensions
 
         camera.Add(new CameraRaycast());
     }
-
 
     ////////////////////////////////////////////////
     //                Do we need theses?          //   
