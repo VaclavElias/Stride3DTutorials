@@ -4,7 +4,10 @@ using (var game = new Game())
 
     void Start(Scene rootScene)
     {
-        game.SetupBase3DScene();
+        game.SetupBase();
+        game.AddSkybox();
+        game.AddMouseLookCamera();
+        game.AddGround();
 
         var entity = new Entity(new Vector3(1f, 0.5f, 3f))
             {
@@ -13,6 +16,10 @@ using (var game = new Game())
             };
 
         entity.Scene = rootScene;
+
+        var cylinder = game.CreatePrimitive(PrimtiveModelType.Torus);
+
+        cylinder.Scene = rootScene;
     }
 }
 
