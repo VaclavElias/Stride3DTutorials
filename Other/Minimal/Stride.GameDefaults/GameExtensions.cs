@@ -191,6 +191,63 @@ public static class GameExtensions
         return entity;
     }
 
+    public static Entity CreatePrimitive(this Game game, PrimtiveModelType type)
+    {
+        PrimitiveProceduralModelBase proceduralModel = type switch
+        {
+            PrimtiveModelType.Plane => new PlaneProceduralModel(),
+            PrimtiveModelType.Sphere => new SphereProceduralModel(),
+            PrimtiveModelType.Cube => new CubeProceduralModel(),
+            PrimtiveModelType.Cylinder => new CylinderProceduralModel(),
+            PrimtiveModelType.Torus => new TorusProceduralModel(),
+            PrimtiveModelType.Teapot => new TeapotProceduralModel(),
+            PrimtiveModelType.Cone => new ConeProceduralModel(),
+            PrimtiveModelType.Capsule => new CapsuleProceduralModel(),
+            _ => throw new NotImplementedException(),
+        };
+
+        var model = proceduralModel.Generate(game.Services);
+
+        return new Entity() { new ModelComponent(model) };
+
+        //switch (type)
+        //{
+        //    case PrimtiveModelType.Plane:
+        //        model = new PlaneProceduralModel
+        //        {
+        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
+        //            //Tessellation = 30,
+        //        };
+        //        break;
+        //    case PrimtiveModelType.Sphere:
+        //        model = new SphereProceduralModel
+        //        {
+        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
+        //            Tessellation = 30,
+        //        };
+        //        break;
+        //    case PrimtiveModelType.Cube:
+        //        model = new CubeProceduralModel
+        //        {
+        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
+        //            //Tessellation = 30,
+        //        };
+        //        break;
+        //    case PrimtiveModelType.Cylinder:
+        //        break;
+        //    case PrimtiveModelType.Torus:
+        //        break;
+        //    case PrimtiveModelType.Teapot:
+        //        break;
+        //    case PrimtiveModelType.Cone:
+        //        break;
+        //    case PrimtiveModelType.Capsule:
+        //        break;
+        //}
+
+
+    }
+
     public static void AddProfiler(this Game game)
     {
         var entity = new Entity("Profiler") { new GameProfiler() };
