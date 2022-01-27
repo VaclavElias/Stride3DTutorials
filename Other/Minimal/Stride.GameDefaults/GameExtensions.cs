@@ -296,7 +296,10 @@ public static class GameExtensions
 
     }
 
-
+    /// <summary>
+    /// Toggle profiling Left Shift + Left Ctrl + P, Toggle filtering mode F1
+    /// </summary>
+    /// <param name="game"></param>
     public static void AddProfiler(this Game game)
     {
         var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(w => w.Name == Profiler);

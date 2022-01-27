@@ -6,7 +6,7 @@ using Stride.Shaders;
 namespace Stride.GameDefaults
 {
     // Taken from Stride.Assets.Skyboxes
-    public class SkyboxGenerator
+    public static class SkyboxGenerator
     {
         public static Skybox Generate(Skybox skybox, SkyboxGeneratorContext context, Texture skyboxTexture)
         {

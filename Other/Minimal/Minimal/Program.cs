@@ -34,7 +34,7 @@ using (var game = new Game())
     {
         game.SetupBase3DScene();
         game.AddGroundCollider();
-        //game.AddProfiler();
+        game.AddProfiler();
         game.AddRaycast();
 
         var model = new CubeProceduralModel().Generate(game.Services);
