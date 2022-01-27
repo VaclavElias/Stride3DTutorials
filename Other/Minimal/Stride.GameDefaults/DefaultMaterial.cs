@@ -1,22 +1,22 @@
-namespace Stride.GameDefaults
+namespace Stride.GameDefaults;
+
+public class DefaultMaterial
 {
-    public class DefaultMaterial
+    private readonly GraphicsDevice _graphicsDevice;
+    private readonly Color _defaulColour = Color.FromBgra(0xFF8C8C8C);
+
+    public DefaultMaterial(GraphicsDevice graphicsDevice)
     {
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly Color _defaulColour = Color.FromBgra(0xFF8C8C8C);
+        if (graphicsDevice == null) throw new ArgumentNullException(nameof(graphicsDevice));
 
-        public DefaultMaterial(GraphicsDevice graphicsDevice)
+        _graphicsDevice = graphicsDevice;
+    }
+
+    public Material Get(Color? color = null)
+    {
+        var materialDescription = new MaterialDescriptor
         {
-            if (graphicsDevice == null) throw new ArgumentNullException(nameof(graphicsDevice));
-
-            _graphicsDevice = graphicsDevice;
-        }
-
-        public Material Get(Color? color = null)
-        {
-            var materialDescription = new MaterialDescriptor
-            {
-                Attributes =
+            Attributes =
                 {
                     Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(color ?? _defaulColour)),
                     DiffuseModel = new MaterialDiffuseLambertModelFeature(),
@@ -24,9 +24,9 @@ namespace Stride.GameDefaults
                     SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
                     MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.65f))
                 }
-            };
+        };
 
-            return Material.New(_graphicsDevice, materialDescription);
-        }
+        return Material.New(_graphicsDevice, materialDescription);
     }
 }
+
