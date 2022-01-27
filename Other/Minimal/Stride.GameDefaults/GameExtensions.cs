@@ -239,7 +239,7 @@ public static class GameExtensions
         => new DefaultMaterial(game.GraphicsDevice).Get(color);
 
     // This is similar to one in Unity, which I think returns Entity
-    public static Entity CreatePrimitive(this Game game, PrimtiveModelType type)
+    public static Entity CreatePrimitive(this Game game, PrimtiveModelType type, Material? material = null)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
         {
@@ -256,44 +256,9 @@ public static class GameExtensions
 
         var model = proceduralModel.Generate(game.Services);
 
+        model.Materials.Add(material);
+
         return new Entity() { new ModelComponent(model) };
-
-        //switch (type)
-        //{
-        //    case PrimtiveModelType.Plane:
-        //        model = new PlaneProceduralModel
-        //        {
-        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
-        //            //Tessellation = 30,
-        //        };
-        //        break;
-        //    case PrimtiveModelType.Sphere:
-        //        model = new SphereProceduralModel
-        //        {
-        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
-        //            Tessellation = 30,
-        //        };
-        //        break;
-        //    case PrimtiveModelType.Cube:
-        //        model = new CubeProceduralModel
-        //        {
-        //            //MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
-        //            //Tessellation = 30,
-        //        };
-        //        break;
-        //    case PrimtiveModelType.Cylinder:
-        //        break;
-        //    case PrimtiveModelType.Torus:
-        //        break;
-        //    case PrimtiveModelType.Teapot:
-        //        break;
-        //    case PrimtiveModelType.Cone:
-        //        break;
-        //    case PrimtiveModelType.Capsule:
-        //        break;
-        //}
-
-
     }
 
     /// <summary>
@@ -311,13 +276,40 @@ public static class GameExtensions
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
 
-    public static void AddRaycast(this Game game)
+    /// <summary>
+    /// Returns a HitResult based on a ray going from camera through a screen point. The ray is in world space, starting on the near plane of the camera and going through position's (x,y) pixel coordinates on the screen.
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="mousePosition"></param>
+    /// <returns></returns>
+    public static HitResult ScreenPointToRay(this Game game, Vector2? mousePosition = null)
     {
-        var camera = game.SceneSystem.SceneInstance.RootScene.Entities.Single(x => x.Name == CameraEntityName);
+        var validMousePosition = mousePosition ?? game.Input.MousePosition;
 
-        if (camera is null) return;
+        var simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
 
-        camera.Add(new CameraRaycast());
+        if (simulation is null) return new HitResult();
+
+        var camera = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == CameraEntityName)?.Get<CameraComponent>();
+
+        if (camera is null) return new HitResult();
+
+        var invertedMatrix = Matrix.Invert(camera.ViewProjectionMatrix);
+
+        Vector3 position;
+        position.X = validMousePosition.X * 2f - 1f;
+        position.Y = 1f - validMousePosition.Y * 2f;
+        position.Z = 0f;
+
+        Vector4 vectorNear = Vector3.Transform(position, invertedMatrix);
+        vectorNear /= vectorNear.W;
+
+        position.Z = 1f;
+
+        Vector4 vectorFar = Vector3.Transform(position, invertedMatrix);
+        vectorFar /= vectorFar.W;
+
+        return simulation.Raycast(vectorNear.XYZ(), vectorFar.XYZ());
     }
 
     ////////////////////////////////////////////////

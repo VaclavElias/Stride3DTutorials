@@ -17,7 +17,7 @@ using (var game = new Game())
 
         entity.Scene = rootScene;
 
-        var cylinder = game.CreatePrimitive(PrimtiveModelType.Torus);
+        var cylinder = game.CreatePrimitive(PrimtiveModelType.Teapot, game.NewDefaultMaterial(Color.Blue));
 
         cylinder.Scene = rootScene;
     }
@@ -35,7 +35,6 @@ using (var game = new Game())
         game.SetupBase3DScene();
         game.AddGroundCollider();
         game.AddProfiler();
-        game.AddRaycast();
 
         var model = new CubeProceduralModel().Generate(game.Services);
 
@@ -53,7 +52,15 @@ using (var game = new Game())
 
     void Update(Scene rootScene, GameTime time)
     {
+        if (game.Input.HasMouse && game.Input.IsMouseButtonPressed(MouseButton.Left))
+        {
+            var result = game.ScreenPointToRay();
 
+            if (result.Succeeded)
+            {
+                result.Collider.Entity.Scene = null;
+            }
+        }
     }
 }
 

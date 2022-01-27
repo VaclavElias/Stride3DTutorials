@@ -9,3 +9,4 @@ global using Minimal;
 global using Minimal.Components;
 global using Stride.Games;
 global using Stride.Graphics;
+global using Stride.Input;
