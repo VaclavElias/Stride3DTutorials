@@ -2,11 +2,11 @@ namespace Stride.GameDefaults;
 
 public static class GameExtensions
 {
-    public const string CameraEntityName = "Camera";
-    public const string GroundEntityName = "Ground";
-    //public const string SkyboxEntityName = "Skybox";
-    //public const string SunEntityName = "Directional light";
+    private const string CameraEntityName = "Camera";
+    private const string GroundEntityName = "Ground";
+    private const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
+    private const string SkyboxEntityName = "Skybox";
     private const string Profiler = "Profiler";
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
@@ -30,12 +30,21 @@ public static class GameExtensions
         Scene GetRootScene() => game.SceneSystem.SceneInstance.RootScene;
     }
 
+    /// <summary>
+    /// Sets up the mininum: Graphics Compositor, Camera and Light
+    /// </summary>
+    /// <param name="game"></param>
     public static void SetupBase(this Game game)
     {
         AddGraphicsCompositor(game);
-        AddScene(game);
+        AddCamera(game);
+        AddLight(game);
     }
 
+    /// <summary>
+    /// Sets up the default scene similarly like in Stride.Assets.Entities, SceneBaseFactory; Graphics Compositor, Camera and Light, Skybox, MouseLookCamera, Ground, Sphere
+    /// </summary>
+    /// <param name="game"></param>
     public static void SetupBase3DScene(this Game game)
     {
         game.SetupBase();
@@ -66,19 +75,94 @@ public static class GameExtensions
         game.SceneSystem.GraphicsCompositor = graphicsCompositor;
     }
 
-    private static void AddScene(Game game)
+    public static void AddCamera(this Game game)
     {
-        var scene =  game.SceneSystem.SceneInstance.RootScene;
+        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == CameraEntityName);
 
-        scene.AddBaseEntities();
+        if (cameraEntity is not null) return;
 
-        var cameraEntity = scene.Entities.Single(x => x.Name == SceneExtensions.CameraEntityName);
+        var entity = new Entity(CameraEntityName) { new CameraComponent {
+            Projection = CameraProjectionMode.Perspective,
+            Slot =  game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId()}
+        };
 
-        cameraEntity.Components.Get<CameraComponent>().Slot = game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId();
+        entity.Transform.Position = new(6, 6, 6);
+        entity.Transform.Rotation = Quaternion.RotationYawPitchRoll(
+            MathUtil.DegreesToRadians(45),
+            MathUtil.DegreesToRadians(-30),
+            MathUtil.DegreesToRadians(0));
+
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    }
+
+    public static void AddLight(this Game game)
+    {
+        var sunEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SunEntityName);
+
+        if (sunEntity is not null) return;
+
+        var entity = new Entity(SunEntityName) { new LightComponent
+            {
+                Intensity =  20.0f,
+                Type = new LightDirectional
+                {
+                    Shadow =
+                    {
+                        Enabled = true,
+                        Size = LightShadowMapSize.Large,
+                        Filter = new LightShadowMapFilterTypePcf { FilterSize = LightShadowMapFilterTypePcfSize.Filter5x5 },
+                    }
+                }
+            } };
+
+        entity.Transform.Position = new Vector3(0, 2.0f, 0);
+        entity.Transform.Rotation = Quaternion.RotationX(MathUtil.DegreesToRadians(-30.0f)) * Quaternion.RotationY(MathUtil.DegreesToRadians(-180.0f));
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+    }
+
+    public static void AddSkybox(this Game game)
+    {
+        var skyboxEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SkyboxEntityName);
+
+        if (skyboxEntity is not null) return;
+
+        using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
+
+        var texture = Texture.Load(game.GraphicsDevice, stream, TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
+
+        var skyboxGeneratorContext = new SkyboxGeneratorContext(game);
+
+        var skybox = new Skybox();
+
+        skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
+
+        var entity = new Entity(SkyboxEntityName) {
+                new BackgroundComponent { Intensity = 1.0f, Texture = texture },
+                new LightComponent {
+                    Intensity = 1.0f,
+                    Type = new LightSkybox() { Skybox = skybox } }
+        };
+
+        entity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
+
+        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
     }
 
     /// <summary>
-    /// Add ground with default Size 10,10
+    /// The camera entity can be moved using W, A, S, D, Q and E, arrow keys, a gamepad's left stick or dragging/scaling using multi-touch.
+    /// Rotation is achieved using the Numpad, the mouse while holding the right mouse button, a gamepad's right stick, or dragging using single-touch.
+    /// </summary>
+    public static void AddMouseLookCamera(this Game game)
+    {
+        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
+
+        cameraEntity?.Add(new BasicCameraController());
+    }
+
+    /// <summary>
+    /// Add ground with default Size 10,10. You can use AddGroundCollider() if needed.
     /// </summary>
     /// <param name="game"></param>
     /// <param name="size"></param>
@@ -145,48 +229,12 @@ public static class GameExtensions
         ground.Add(component);
     }
 
-    public static void AddSkybox(this Game game)
-    {
-        var skyboxEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SceneExtensions.SkyboxEntityName);
-
-        if (skyboxEntity is not null) return;
-
-        using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
-
-        var texture = Texture.Load(game.GraphicsDevice, stream, TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
-
-        var skyboxGeneratorContext = new SkyboxGeneratorContext(game);
-
-        var skybox = new Skybox();
-
-        skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
-
-        var entity = new Entity(SceneExtensions.SkyboxEntityName) {
-                new BackgroundComponent { Intensity = 1.0f, Texture = texture },
-                new LightComponent {
-                    Intensity = 1.0f,
-                    Type = new LightSkybox() { Skybox = skybox } }
-        };
-
-        entity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
-
-        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-
-        //skyboxEntity.Get<BackgroundComponent>().Texture = texture;
-
-        //entity.Get<LightComponent>().Type = new LightSkybox
-        //{
-        //    Skybox = skybox,
-        //};
-    }
-
-    public static void AddMouseLookCamera(this Game game)
-    {
-        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
-
-        cameraEntity?.Add(new BasicCameraController());
-    }
-
+    /// <summary>
+    /// Basic default material
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="color"></param>
+    /// <returns></returns>
     public static Material NewDefaultMaterial(this Game game, Color? color = null)
         => new DefaultMaterial(game.GraphicsDevice).Get(color);
 
@@ -248,6 +296,7 @@ public static class GameExtensions
 
     }
 
+
     public static void AddProfiler(this Game game)
     {
         var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(w => w.Name == Profiler);
@@ -271,7 +320,7 @@ public static class GameExtensions
     ////////////////////////////////////////////////
     //                Do we need theses?          //   
     ////////////////////////////////////////////////
-    
+
     public static void AddSplashScreen(this Game game) { }
 
     // If we want this, refactor with CreatePrimitive if that is approved
