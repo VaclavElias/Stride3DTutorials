@@ -1,7 +1,13 @@
-﻿namespace Stride.GameDefaults;
+namespace Stride.GameDefaults;
 
 public static class CameraComponentExtensions
 {
+    /// <summary>
+    /// Returns new and far vector based on a ray going from camera through a screen point. The ray is in world space, starting on the near plane of the camera and going through position's (x,y) pixel coordinates on the screen.
+    /// </summary>
+    /// <param name="cameraComponent"></param>
+    /// <param name="mousePosition"></param>
+    /// <returns></returns>
     public static (Vector4 VectorNear, Vector4 VectorFar) ScreenPointToRay(this CameraComponent cameraComponent, Vector2 mousePosition)
     {
         var validMousePosition = mousePosition;

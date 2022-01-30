@@ -271,6 +271,7 @@ public static class GameExtensions
         return entity;
     }
 
+    // This will be replaced with CameraComponentExtensions.ScreenPointToRay
     /// <summary>
     /// Returns a HitResult based on a ray going from camera through a screen point. The ray is in world space, starting on the near plane of the camera and going through position's (x,y) pixel coordinates on the screen.
     /// </summary>
