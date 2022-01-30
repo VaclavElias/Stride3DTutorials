@@ -235,7 +235,13 @@ public static class GameExtensions
         return Material.New(game.GraphicsDevice, materialDescription);
     }
 
-    // This is similar to one in Unity, which I think returns Entity
+    /// <summary>
+    /// Creates a game object with a primitive mesh renderer.
+    /// </summary>
+    /// <param name="game"></param>
+    /// <param name="type"></param>
+    /// <param name="material"></param>
+    /// <returns></returns>
     public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, Material? material = null)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
