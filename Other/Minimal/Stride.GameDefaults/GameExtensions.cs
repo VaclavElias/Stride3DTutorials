@@ -39,7 +39,7 @@ public static class GameExtensions
     public static void SetupBase(this Game game)
     {
         AddGraphicsCompositor(game);
-        AddCamera(game);
+        AddCamera(game, CameraEntityName);
         AddLight(game);
     }
 
@@ -78,9 +78,9 @@ public static class GameExtensions
         return graphicsCompositor;
     }
 
-    public static Entity AddCamera(this Game game)
+    public static Entity AddCamera(this Game game, string entityName)
     {
-        var entity = new Entity(CameraEntityName) { new CameraComponent {
+        var entity = new Entity(entityName) { new CameraComponent {
             Projection = CameraProjectionMode.Perspective,
             Slot =  game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId()}
         };
@@ -90,7 +90,6 @@ public static class GameExtensions
             MathUtil.DegreesToRadians(45),
             MathUtil.DegreesToRadians(-30),
             MathUtil.DegreesToRadians(0));
-
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
@@ -151,9 +150,11 @@ public static class GameExtensions
     /// The camera entity can be moved using W, A, S, D, Q and E, arrow keys, a gamepad's left stick or dragging/scaling using multi-touch.
     /// Rotation is achieved using the Numpad, the mouse while holding the right mouse button, a gamepad's right stick, or dragging using single-touch.
     /// </summary>
-    public static void AddMouseLookCamera(this Game game)
+    /// <param name="game"></param>
+    /// <param name="cameraEntityName"></param>
+    public static void AddMouseLookCamera(this Game game, string cameraEntityName = CameraEntityName)
     {
-        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == CameraEntityName);
+        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == cameraEntityName);
 
         cameraEntity?.Add(new BasicCameraController());
     }
