@@ -6,7 +6,7 @@ global using Stride.Rendering.ProceduralModels;
 global using Stride.Rendering;
 global using Stride.Physics;
 global using Minimal;
-global using Minimal.Components;
+global using Minimal.ComponentScripts;
 global using Stride.Games;
 global using Stride.Graphics;
 global using Stride.Input;

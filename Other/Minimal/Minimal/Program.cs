@@ -4,10 +4,7 @@ using (var game = new Game())
 
     void Start(Scene rootScene)
     {
-        game.SetupBase();
-        game.AddSkybox();
-        game.AddMouseLookCamera();
-        game.AddGround();
+        game.SetupBase3DScene();
 
         var entity = new Entity(new Vector3(1f, 0.5f, 3f))
             {
@@ -27,13 +24,21 @@ using (var game = new Game())
 {
     var entity = new Entity(new Vector3(1f, 0.5f, 3f));
     var cubeGenerator = new CubesGenerator(game.Services);
+    CameraComponent? cameraComponent = null;
+    Simulation? simulation = null;
 
     game.Run(start: Start, update: Update);
 
     void Start(Scene rootScene)
     {
-        game.SetupBase3DScene();
+        game.SetupBase();
+        game.AddSkybox();
+        game.AddMouseLookCamera();
+        game.AddGround();
         game.AddProfiler();
+
+        cameraComponent = rootScene.Entities.SingleOrDefault(x => x.Name == "Camera")?.Get<CameraComponent>();
+        simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
 
         var model = new CubeProceduralModel().Generate(game.Services);
 
@@ -51,14 +56,25 @@ using (var game = new Game())
 
     void Update(Scene rootScene, GameTime time)
     {
+        if (simulation is null || cameraComponent is null) return;
+
         if (game.Input.HasMouse && game.Input.IsMouseButtonPressed(MouseButton.Left))
         {
-            var result = game.ScreenPointToRay();
+            var ray = cameraComponent.ScreenPointToRay(game.Input.MousePosition);
 
-            if (result.Succeeded)
+            var hitResult = simulation.Raycast(ray.VectorNear.XYZ(), ray.VectorFar.XYZ());
+
+            if (hitResult.Succeeded)
             {
-                result.Collider.Entity.Scene = null;
+                hitResult.Collider.Entity.Scene = null;
             }
+
+            //var result = game.ScreenPointToRay();
+
+            //if (result.Succeeded)
+            //{
+            //    result.Collider.Entity.Scene = null;
+            //}
         }
     }
 }
