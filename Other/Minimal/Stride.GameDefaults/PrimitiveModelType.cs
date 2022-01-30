@@ -1,6 +1,6 @@
 ﻿namespace Stride.GameDefaults;
 
-public enum PrimtiveModelType
+public enum PrimitiveModelType
 {
     Sphere,
     Cube,

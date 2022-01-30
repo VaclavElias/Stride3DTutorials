@@ -17,7 +17,7 @@ using (var game = new Game())
 
         entity.Scene = rootScene;
 
-        var cylinder = game.CreatePrimitive(PrimtiveModelType.Teapot, game.NewDefaultMaterial(Color.Blue));
+        var cylinder = game.CreatePrimitive(PrimitiveModelType.Teapot, game.NewDefaultMaterial(Color.Blue));
 
         cylinder.Scene = rootScene;
     }
@@ -33,7 +33,6 @@ using (var game = new Game())
     void Start(Scene rootScene)
     {
         game.SetupBase3DScene();
-        game.AddGroundCollider();
         game.AddProfiler();
 
         var model = new CubeProceduralModel().Generate(game.Services);

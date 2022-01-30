@@ -3,11 +3,13 @@ namespace Stride.GameDefaults;
 public static class GameExtensions
 {
     private const string CameraEntityName = "Camera";
-    private const string GroundEntityName = "Ground";
-    private const string SunEntityName = "Directional light";
+    //private const string GroundEntityName = "Ground";
+    //private const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
-    private const string SkyboxEntityName = "Skybox";
-    private const string Profiler = "Profiler";
+    //private const string SkyboxEntityName = "Skybox";
+    //private const string Profiler = "Profiler";
+
+    private static readonly Color _defaulColour = Color.FromBgra(0xFF8C8C8C);
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
@@ -52,10 +54,9 @@ public static class GameExtensions
         game.AddSkybox();
         game.AddMouseLookCamera();
         game.AddGround();
-        game.AddSphere(); // Do we want this Sphere?
     }
 
-    private static void AddGraphicsCompositor(Game game)
+    public static GraphicsCompositor AddGraphicsCompositor(Game game)
     {
         // This is already build in Stride engine
         //var graphicsCompositor = GraphicsCompositorHelper.CreateDefault(true);
@@ -73,14 +74,12 @@ public static class GameExtensions
         var graphicsCompositor = GraphicsCompositorBuilder.Create();
 
         game.SceneSystem.GraphicsCompositor = graphicsCompositor;
+
+        return graphicsCompositor;
     }
 
-    public static void AddCamera(this Game game)
+    public static Entity AddCamera(this Game game)
     {
-        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == CameraEntityName);
-
-        if (cameraEntity is not null) return;
-
         var entity = new Entity(CameraEntityName) { new CameraComponent {
             Projection = CameraProjectionMode.Perspective,
             Slot =  game.SceneSystem.GraphicsCompositor.Cameras[0].ToSlotId()}
@@ -94,15 +93,13 @@ public static class GameExtensions
 
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
     }
 
-    public static void AddLight(this Game game)
+    public static Entity AddLight(this Game game)
     {
-        var sunEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SunEntityName);
-
-        if (sunEntity is not null) return;
-
-        var entity = new Entity(SunEntityName) { new LightComponent
+        var entity = new Entity() { new LightComponent
             {
                 Intensity =  20.0f,
                 Type = new LightDirectional
@@ -120,14 +117,12 @@ public static class GameExtensions
         entity.Transform.Rotation = Quaternion.RotationX(MathUtil.DegreesToRadians(-30.0f)) * Quaternion.RotationY(MathUtil.DegreesToRadians(-180.0f));
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
     }
 
-    public static void AddSkybox(this Game game)
+    public static Entity AddSkybox(this Game game)
     {
-        var skyboxEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == SkyboxEntityName);
-
-        if (skyboxEntity is not null) return;
-
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
         var texture = Texture.Load(game.GraphicsDevice, stream, TextureFlags.ShaderResource, GraphicsResourceUsage.Dynamic);
@@ -138,7 +133,7 @@ public static class GameExtensions
 
         skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
 
-        var entity = new Entity(SkyboxEntityName) {
+        var entity = new Entity() {
                 new BackgroundComponent { Intensity = 1.0f, Texture = texture },
                 new LightComponent {
                     Intensity = 1.0f,
@@ -148,6 +143,8 @@ public static class GameExtensions
         entity.Transform.Position = new Vector3(0.0f, 2.0f, -2.0f);
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
     }
 
     /// <summary>
@@ -162,17 +159,14 @@ public static class GameExtensions
     }
 
     /// <summary>
-    /// Add ground with default Size 10,10. You can use AddGroundCollider() if needed.
+    /// Adds a ground with default Size 10,10.
     /// </summary>
     /// <param name="game"></param>
     /// <param name="size"></param>
+    /// <param name="isPhysical">Adds a collider</param>
     /// <returns></returns>
-    public static Entity AddGround(this Game game, Vector2? size = null)
+    public static Entity AddGround(this Game game, Vector2? size = null, bool isPhysical = true)
     {
-        var groundEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == GroundEntityName);
-
-        if (groundEntity is not null) return groundEntity;
-
         var materialDescription = new MaterialDescriptor
         {
             Attributes =
@@ -187,46 +181,34 @@ public static class GameExtensions
 
         var material = Material.New(game.GraphicsDevice, materialDescription);
 
+        var validSize = size ?? new Vector2(10.0f, 10.0f);
+
         var groundModel = new PlaneProceduralModel
         {
-            Size = size ?? new Vector2(10.0f, 10.0f),
+            Size = validSize,
             MaterialInstance = { Material = material }
         };
 
         var model = groundModel.Generate(game.Services);
 
-        var entity = new Entity(GroundEntityName) { new ModelComponent(model) };
+        var entity = new Entity() { new ModelComponent(model) };
+
+        if (isPhysical)
+        {
+            var groundCollider = new StaticColliderComponent();
+
+            groundCollider.ColliderShapes.Add(new BoxColliderShapeDesc()
+            {
+                Size = new Vector3(validSize.X, 1, validSize.Y),
+                LocalOffset = new Vector3(0, -0.5f, 0)
+            });
+
+            entity.Add(groundCollider);
+        }
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
         return entity;
-    }
-
-    /// <summary>
-    /// Adds static collider to default Ground
-    /// </summary>
-    /// <param name="game"></param>
-    public static void AddGroundCollider(this Game game)
-    {
-        var ground = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == GroundEntityName);
-
-        if (ground is null) return;
-
-        var modelComponent = ground.Get<ModelComponent>();
-
-        if (modelComponent is null) return;
-
-        var distance = modelComponent.Model.BoundingBox.Maximum.X - modelComponent.Model.BoundingBox.Minimum.X;
-
-        var component = new StaticColliderComponent();
-
-        component.ColliderShapes.Add(new BoxColliderShapeDesc()
-        {
-            Size = new Vector3(distance, 1, distance),
-            LocalOffset = new Vector3(0, -0.5f, 0)
-        });
-
-        ground.Add(component);
     }
 
     /// <summary>
@@ -236,21 +218,35 @@ public static class GameExtensions
     /// <param name="color"></param>
     /// <returns></returns>
     public static Material NewDefaultMaterial(this Game game, Color? color = null)
-        => new DefaultMaterial(game.GraphicsDevice).Get(color);
+    {
+        var materialDescription = new MaterialDescriptor
+        {
+            Attributes =
+                {
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(color ?? _defaulColour)),
+                    DiffuseModel = new MaterialDiffuseLambertModelFeature(),
+                    Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(1.0f)),
+                    SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
+                    MicroSurface = new MaterialGlossinessMapFeature(new ComputeFloat(0.65f))
+                }
+        };
+
+        return Material.New(game.GraphicsDevice, materialDescription);
+    }
 
     // This is similar to one in Unity, which I think returns Entity
-    public static Entity CreatePrimitive(this Game game, PrimtiveModelType type, Material? material = null)
+    public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, Material? material = null)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
         {
-            PrimtiveModelType.Plane => new PlaneProceduralModel(),
-            PrimtiveModelType.Sphere => new SphereProceduralModel(),
-            PrimtiveModelType.Cube => new CubeProceduralModel(),
-            PrimtiveModelType.Cylinder => new CylinderProceduralModel(),
-            PrimtiveModelType.Torus => new TorusProceduralModel(),
-            PrimtiveModelType.Teapot => new TeapotProceduralModel(),
-            PrimtiveModelType.Cone => new ConeProceduralModel(),
-            PrimtiveModelType.Capsule => new CapsuleProceduralModel(),
+            PrimitiveModelType.Plane => new PlaneProceduralModel(),
+            PrimitiveModelType.Sphere => new SphereProceduralModel(),
+            PrimitiveModelType.Cube => new CubeProceduralModel(),
+            PrimitiveModelType.Cylinder => new CylinderProceduralModel(),
+            PrimitiveModelType.Torus => new TorusProceduralModel(),
+            PrimitiveModelType.Teapot => new TeapotProceduralModel(),
+            PrimitiveModelType.Cone => new ConeProceduralModel(),
+            PrimitiveModelType.Capsule => new CapsuleProceduralModel(),
             _ => throw new NotImplementedException(),
         };
 
@@ -265,15 +261,13 @@ public static class GameExtensions
     /// Toggle profiling Left Shift + Left Ctrl + P, Toggle filtering mode F1
     /// </summary>
     /// <param name="game"></param>
-    public static void AddProfiler(this Game game)
+    public static Entity AddProfiler(this Game game)
     {
-        var profilerEntity = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(w => w.Name == Profiler);
-
-        if (profilerEntity is not null) return;
-
-        var entity = new Entity(Profiler) { new GameProfiler() };
+        var entity = new Entity() { new GameProfiler() };
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
+
+        return entity;
     }
 
     /// <summary>
@@ -310,31 +304,5 @@ public static class GameExtensions
         vectorFar /= vectorFar.W;
 
         return simulation.Raycast(vectorNear.XYZ(), vectorFar.XYZ());
-    }
-
-    ////////////////////////////////////////////////
-    //                Do we need theses?          //   
-    ////////////////////////////////////////////////
-
-    public static void AddSplashScreen(this Game game) { }
-
-    // If we want this, refactor with CreatePrimitive if that is approved
-    public static Entity AddSphere(this Game game, Color? color = null)
-    {
-        var sphereModel = new SphereProceduralModel
-        {
-            MaterialInstance = { Material = new DefaultMaterial(game.GraphicsDevice).Get(color) },
-            Tessellation = 30,
-        };
-
-        var model = sphereModel.Generate(game.Services);
-
-        var entity = new Entity("Sphere") { new ModelComponent(model) };
-
-        entity.Transform.Position = new Vector3(0, 0.5f, 0);
-
-        game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
-
-        return entity;
     }
 }
