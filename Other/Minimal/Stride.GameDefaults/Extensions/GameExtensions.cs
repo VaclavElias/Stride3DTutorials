@@ -239,7 +239,7 @@ public static class GameExtensions
     /// <param name="type"></param>
     /// <param name="material"></param>
     /// <returns></returns>
-    public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, string? entityName = null, Material? material = null)
+    public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, string? entityName = null, Material? material = null, bool includeCollider = true)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
         {
@@ -258,7 +258,44 @@ public static class GameExtensions
 
         model.Materials.Add(material);
 
-        return new Entity(entityName) { new ModelComponent(model) };
+        var entity = new Entity(entityName) { new ModelComponent(model) };
+
+        if (includeCollider)
+        {
+            IInlineColliderShapeDesc colliderShape = type switch
+            {
+                PrimitiveModelType.Plane => throw new NotImplementedException(),
+                PrimitiveModelType.Sphere => new SphereColliderShapeDesc(),
+                PrimitiveModelType.Cube => new BoxColliderShapeDesc(),
+                PrimitiveModelType.Cylinder => new CylinderColliderShapeDesc(),
+                PrimitiveModelType.Torus => throw new NotImplementedException(),
+                PrimitiveModelType.Teapot => throw new NotImplementedException(),
+                PrimitiveModelType.Cone => new ConeColliderShapeDesc(),
+                PrimitiveModelType.Capsule => new CapsuleColliderShapeDesc(),
+                _ => throw new NotImplementedException(),
+            };
+
+            var collider = new RigidbodyComponent();
+
+            collider.ColliderShapes.Add(colliderShape);
+
+            //if (type == PrimitiveModelType.Sphere)
+            //{
+            //    var colliderShape = new SphereColliderShapeDesc();
+
+            //}
+
+            //if (type == PrimitiveModelType.Cube)
+            //{
+            //    var colliderShape = new BoxColliderShapeDesc();
+
+            //    collider.ColliderShapes.Add(colliderShape);
+            //}
+
+            entity.Add(collider);
+        }
+
+        return entity;
     }
 
     /// <summary>
