@@ -1,4 +1,4 @@
-namespace Stride.GameDefaults;
+namespace Stride.GameDefaults.Extensions;
 
 public static class GameExtensions
 {
@@ -163,7 +163,7 @@ public static class GameExtensions
     /// <param name="size"></param>
     /// <param name="includeCollider">Adds a collider</param>
     /// <returns></returns>
-    public static Entity AddGround(this Game game, string? entityName = null,  Vector2? size = null, bool includeCollider = true)
+    public static Entity AddGround(this Game game, string? entityName = null, Vector2? size = null, bool includeCollider = true)
     {
         var materialDescription = new MaterialDescriptor
         {

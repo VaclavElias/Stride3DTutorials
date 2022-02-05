@@ -1,4 +1,4 @@
-namespace Stride.GameDefaults;
+namespace Stride.GameDefaults.Extensions;
 
 public static class CameraComponentExtensions
 {
