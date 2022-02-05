@@ -1,19 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Stride.GameDefaults\Stride.GameDefaults.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Stride.Physics" Version="4.1.0.1-beta" />
-        <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />-->
-    </ItemGroup>
-
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Stride.GameDefaults\Stride.GameDefaults.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Stride.Physics" Version="4.1.0.1" />
+    <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />-->
+  </ItemGroup>
 </Project>
