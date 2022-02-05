@@ -14,7 +14,7 @@ using (var game = new Game())
 
         entity.Scene = rootScene;
 
-        var cylinder = game.CreatePrimitive(PrimitiveModelType.Teapot, game.NewDefaultMaterial(Color.Blue));
+        var cylinder = game.CreatePrimitive(PrimitiveModelType.Teapot, material: game.NewDefaultMaterial(Color.Blue));
 
         cylinder.Scene = rootScene;
     }
@@ -24,6 +24,8 @@ using (var game = new Game())
 {
     var entity = new Entity(new Vector3(1f, 0.5f, 3f));
     var cubeGenerator = new CubesGenerator(game.Services);
+    var cameraEntityName = "Camera";
+
     CameraComponent? cameraComponent = null;
     Simulation? simulation = null;
 
@@ -31,13 +33,14 @@ using (var game = new Game())
 
     void Start(Scene rootScene)
     {
-        game.SetupBase();
+        game.AddGraphicsCompositor();
+        game.AddMouseLookCamera(game.AddCamera(cameraEntityName));
+        game.AddLight();
         game.AddSkybox();
-        game.AddMouseLookCamera();
         game.AddGround();
         game.AddProfiler();
 
-        cameraComponent = rootScene.Entities.SingleOrDefault(x => x.Name == "Camera")?.Get<CameraComponent>();
+        cameraComponent = rootScene.Entities.SingleOrDefault(x => x.Name == cameraEntityName)?.Get<CameraComponent>();
         simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
 
         var model = new CubeProceduralModel().Generate(game.Services);
@@ -68,13 +71,6 @@ using (var game = new Game())
             {
                 hitResult.Collider.Entity.Scene = null;
             }
-
-            //var result = game.ScreenPointToRay();
-
-            //if (result.Succeeded)
-            //{
-            //    result.Collider.Entity.Scene = null;
-            //}
         }
     }
 }

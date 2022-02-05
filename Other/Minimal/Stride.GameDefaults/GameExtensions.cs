@@ -2,14 +2,8 @@ namespace Stride.GameDefaults;
 
 public static class GameExtensions
 {
-    private const string CameraEntityName = "Camera";
-    //private const string GroundEntityName = "Ground";
-    //private const string SunEntityName = "Directional light";
     private const string SkyboxTexture = "skybox_texture_hdr.dds";
-    //private const string SkyboxEntityName = "Skybox";
-    //private const string Profiler = "Profiler";
-
-    private static readonly Color _defaulColour = Color.FromBgra(0xFF8C8C8C);
+    private static readonly Color _defaulMaterialColor = Color.FromBgra(0xFF8C8C8C);
 
     public static void Run(this Game game, GameContext? context = null, Action<Scene>? start = null, Action<Scene, GameTime>? update = null)
     {
@@ -20,13 +14,14 @@ public static class GameExtensions
         async Task RootScript()
         {
             start?.Invoke(GetRootScene());
-            if (update == null)
-                return;
-            do
+
+            if (update == null) return;
+
+            while (true)
             {
                 update.Invoke(GetRootScene(), game.UpdateTime);
                 await game.Script.NextFrame();
-            } while (true);
+            }
         }
 
         Scene GetRootScene() => game.SceneSystem.SceneInstance.RootScene;
@@ -38,9 +33,9 @@ public static class GameExtensions
     /// <param name="game"></param>
     public static void SetupBase(this Game game)
     {
-        AddGraphicsCompositor(game);
-        AddCamera(game, CameraEntityName);
-        AddLight(game);
+        game.AddGraphicsCompositor();
+        game.AddCamera();
+        game.AddLight();
     }
 
     /// <summary>
@@ -49,14 +44,18 @@ public static class GameExtensions
     /// <param name="game"></param>
     public static void SetupBase3DScene(this Game game)
     {
-        game.SetupBase();
+        game.AddGraphicsCompositor();
+
+        game.AddMouseLookCamera(game.AddCamera());
+
+        game.AddLight();
 
         game.AddSkybox();
-        game.AddMouseLookCamera();
+
         game.AddGround();
     }
 
-    public static GraphicsCompositor AddGraphicsCompositor(Game game)
+    public static GraphicsCompositor AddGraphicsCompositor(this Game game)
     {
         // This is already build in Stride engine
         //var graphicsCompositor = GraphicsCompositorHelper.CreateDefault(true);
@@ -78,7 +77,7 @@ public static class GameExtensions
         return graphicsCompositor;
     }
 
-    public static Entity AddCamera(this Game game, string entityName)
+    public static Entity AddCamera(this Game game, string? entityName = null)
     {
         var entity = new Entity(entityName) { new CameraComponent {
             Projection = CameraProjectionMode.Perspective,
@@ -96,9 +95,9 @@ public static class GameExtensions
         return entity;
     }
 
-    public static Entity AddLight(this Game game)
+    public static Entity AddLight(this Game game, string? entityName = null)
     {
-        var entity = new Entity() { new LightComponent
+        var entity = new Entity(entityName) { new LightComponent
             {
                 Intensity =  20.0f,
                 Type = new LightDirectional
@@ -120,7 +119,7 @@ public static class GameExtensions
         return entity;
     }
 
-    public static Entity AddSkybox(this Game game)
+    public static Entity AddSkybox(this Game game, string? entityName = null)
     {
         using var stream = new FileStream($"Resources\\{SkyboxTexture}", FileMode.Open, FileAccess.Read);
 
@@ -132,7 +131,7 @@ public static class GameExtensions
 
         skybox = SkyboxGenerator.Generate(skybox, skyboxGeneratorContext, texture);
 
-        var entity = new Entity() {
+        var entity = new Entity(entityName) {
                 new BackgroundComponent { Intensity = 1.0f, Texture = texture },
                 new LightComponent {
                     Intensity = 1.0f,
@@ -152,10 +151,8 @@ public static class GameExtensions
     /// </summary>
     /// <param name="game"></param>
     /// <param name="cameraEntityName"></param>
-    public static void AddMouseLookCamera(this Game game, string cameraEntityName = CameraEntityName)
+    public static void AddMouseLookCamera(this Game game, Entity? cameraEntity)
     {
-        var cameraEntity = game.SceneSystem.SceneInstance.RootScene.Entities.Single(w => w.Name == cameraEntityName);
-
         cameraEntity?.Add(new BasicCameraController());
     }
 
@@ -164,9 +161,9 @@ public static class GameExtensions
     /// </summary>
     /// <param name="game"></param>
     /// <param name="size"></param>
-    /// <param name="isPhysical">Adds a collider</param>
+    /// <param name="includeCollider">Adds a collider</param>
     /// <returns></returns>
-    public static Entity AddGround(this Game game, Vector2? size = null, bool isPhysical = true)
+    public static Entity AddGround(this Game game, string? entityName = null,  Vector2? size = null, bool includeCollider = true)
     {
         var materialDescription = new MaterialDescriptor
         {
@@ -192,9 +189,9 @@ public static class GameExtensions
 
         var model = groundModel.Generate(game.Services);
 
-        var entity = new Entity() { new ModelComponent(model) };
+        var entity = new Entity(entityName) { new ModelComponent(model) };
 
-        if (isPhysical)
+        if (includeCollider)
         {
             var groundCollider = new StaticColliderComponent();
 
@@ -224,7 +221,7 @@ public static class GameExtensions
         {
             Attributes =
                 {
-                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(color ?? _defaulColour)),
+                    Diffuse = new MaterialDiffuseMapFeature(new ComputeColor(color ?? _defaulMaterialColor)),
                     DiffuseModel = new MaterialDiffuseLambertModelFeature(),
                     Specular =  new MaterialMetalnessMapFeature(new ComputeFloat(1.0f)),
                     SpecularModel = new MaterialSpecularMicrofacetModelFeature(),
@@ -242,7 +239,7 @@ public static class GameExtensions
     /// <param name="type"></param>
     /// <param name="material"></param>
     /// <returns></returns>
-    public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, Material? material = null)
+    public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, string? entityName = null, Material? material = null)
     {
         PrimitiveProceduralModelBase proceduralModel = type switch
         {
@@ -261,56 +258,19 @@ public static class GameExtensions
 
         model.Materials.Add(material);
 
-        return new Entity() { new ModelComponent(model) };
+        return new Entity(entityName) { new ModelComponent(model) };
     }
 
     /// <summary>
     /// Toggle profiling Left Shift + Left Ctrl + P, Toggle filtering mode F1
     /// </summary>
     /// <param name="game"></param>
-    public static Entity AddProfiler(this Game game)
+    public static Entity AddProfiler(this Game game, string? entityName = null)
     {
-        var entity = new Entity() { new GameProfiler() };
+        var entity = new Entity(entityName) { new GameProfiler() };
 
         game.SceneSystem.SceneInstance.RootScene.Entities.Add(entity);
 
         return entity;
-    }
-
-    // This will be replaced with CameraComponentExtensions.ScreenPointToRay
-    /// <summary>
-    /// Returns a HitResult based on a ray going from camera through a screen point. The ray is in world space, starting on the near plane of the camera and going through position's (x,y) pixel coordinates on the screen.
-    /// </summary>
-    /// <param name="game"></param>
-    /// <param name="mousePosition"></param>
-    /// <returns></returns>
-    public static HitResult ScreenPointToRay(this Game game, Vector2? mousePosition = null)
-    {
-        var validMousePosition = mousePosition ?? game.Input.MousePosition;
-
-        var simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
-
-        if (simulation is null) return new HitResult();
-
-        var camera = game.SceneSystem.SceneInstance.RootScene.Entities.SingleOrDefault(x => x.Name == CameraEntityName)?.Get<CameraComponent>();
-
-        if (camera is null) return new HitResult();
-
-        var invertedMatrix = Matrix.Invert(camera.ViewProjectionMatrix);
-
-        Vector3 position;
-        position.X = validMousePosition.X * 2f - 1f;
-        position.Y = 1f - validMousePosition.Y * 2f;
-        position.Z = 0f;
-
-        Vector4 vectorNear = Vector3.Transform(position, invertedMatrix);
-        vectorNear /= vectorNear.W;
-
-        position.Z = 1f;
-
-        Vector4 vectorFar = Vector3.Transform(position, invertedMatrix);
-        vectorFar /= vectorFar.W;
-
-        return simulation.Raycast(vectorNear.XYZ(), vectorFar.XYZ());
     }
 }
