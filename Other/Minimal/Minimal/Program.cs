@@ -14,9 +14,24 @@ using (var game = new Game())
 
         entity.Scene = rootScene;
 
-        var cylinder = game.CreatePrimitive(PrimitiveModelType.Teapot, material: game.NewDefaultMaterial(Color.Blue));
+        var entity2 = game.CreatePrimitive(PrimitiveModelType.Teapot, material: game.NewDefaultMaterial(Color.Blue));
+        entity2.Scene = rootScene;
 
-        cylinder.Scene = rootScene;
+        var entity3 = game.CreatePrimitive(PrimitiveModelType.Cube);
+        entity3.Transform.Position = new Vector3(0, 2, 0);
+        entity3.Scene = rootScene;
+
+        var entity4 = game.CreatePrimitive(PrimitiveModelType.Torus);
+        entity4.Transform.Position = new Vector3(0, 4, 0);
+        entity4.Scene = rootScene;
+
+        var entity5 = game.CreatePrimitive(PrimitiveModelType.Cone);
+        entity5.Transform.Position = new Vector3(0, 6, 0);
+        entity5.Scene = rootScene;
+
+        var entity6 = game.CreatePrimitive(PrimitiveModelType.Capsule);
+        entity6.Transform.Position = new Vector3(0, 8, 0);
+        entity6.Scene = rootScene;
     }
 }
 
