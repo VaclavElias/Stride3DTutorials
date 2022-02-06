@@ -39,7 +39,7 @@ public static class GameExtensions
     }
 
     /// <summary>
-    /// Sets up the default scene similarly like in Stride.Assets.Entities, SceneBaseFactory; Graphics Compositor, Camera and Light, Skybox, MouseLookCamera, Ground, Sphere
+    /// Sets up the default scene similarly like in Stride.Assets.Entities, SceneBaseFactory; Graphics Compositor, Camera and Light, Skybox, MouseLookCamera, Ground
     /// </summary>
     /// <param name="game"></param>
     public static void SetupBase3DScene(this Game game)
