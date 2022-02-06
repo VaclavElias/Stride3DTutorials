@@ -160,6 +160,7 @@ public static class GameExtensions
     /// Adds a ground with default Size 10,10.
     /// </summary>
     /// <param name="game"></param>
+    /// <param name="entityName"></param>
     /// <param name="size"></param>
     /// <param name="includeCollider">Adds a collider</param>
     /// <returns></returns>
@@ -233,11 +234,13 @@ public static class GameExtensions
     }
 
     /// <summary>
-    /// Creates a game object with a primitive mesh renderer.
+    /// Creates a game object with a primitive mesh renderer and adds appropriate collider except for Torus, Teapot and Plane.
     /// </summary>
     /// <param name="game"></param>
     /// <param name="type"></param>
+    /// <param name="entityName"></param>
     /// <param name="material"></param>
+    /// <param name="includeCollider">Adds a default collider except for Torus, Teapot and Plane</param>
     /// <returns></returns>
     public static Entity CreatePrimitive(this Game game, PrimitiveModelType type, string? entityName = null, Material? material = null, bool includeCollider = true)
     {
@@ -260,40 +263,28 @@ public static class GameExtensions
 
         var entity = new Entity(entityName) { new ModelComponent(model) };
 
-        if (includeCollider)
+        if (!includeCollider) return entity;
+        
+        IInlineColliderShapeDesc? colliderShape = type switch
         {
-            IInlineColliderShapeDesc colliderShape = type switch
-            {
-                PrimitiveModelType.Plane => throw new NotImplementedException(),
-                PrimitiveModelType.Sphere => new SphereColliderShapeDesc(),
-                PrimitiveModelType.Cube => new BoxColliderShapeDesc(),
-                PrimitiveModelType.Cylinder => new CylinderColliderShapeDesc(),
-                PrimitiveModelType.Torus => throw new NotImplementedException(),
-                PrimitiveModelType.Teapot => throw new NotImplementedException(),
-                PrimitiveModelType.Cone => new ConeColliderShapeDesc(),
-                PrimitiveModelType.Capsule => new CapsuleColliderShapeDesc(),
-                _ => throw new NotImplementedException(),
-            };
+            PrimitiveModelType.Plane => null,
+            PrimitiveModelType.Sphere => new SphereColliderShapeDesc(),
+            PrimitiveModelType.Cube => new BoxColliderShapeDesc(),
+            PrimitiveModelType.Cylinder => new CylinderColliderShapeDesc(),
+            PrimitiveModelType.Torus => null,
+            PrimitiveModelType.Teapot => null,
+            PrimitiveModelType.Cone => new ConeColliderShapeDesc(),
+            PrimitiveModelType.Capsule => new CapsuleColliderShapeDesc(),
+            _ => throw new NotImplementedException(),
+        };
 
-            var collider = new RigidbodyComponent();
+        if (colliderShape is null) return entity;
 
-            collider.ColliderShapes.Add(colliderShape);
+        var collider = new RigidbodyComponent();
 
-            //if (type == PrimitiveModelType.Sphere)
-            //{
-            //    var colliderShape = new SphereColliderShapeDesc();
+        collider.ColliderShapes.Add(colliderShape);
 
-            //}
-
-            //if (type == PrimitiveModelType.Cube)
-            //{
-            //    var colliderShape = new BoxColliderShapeDesc();
-
-            //    collider.ColliderShapes.Add(colliderShape);
-            //}
-
-            entity.Add(collider);
-        }
+        entity.Add(collider);
 
         return entity;
     }
