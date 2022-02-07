@@ -11,7 +11,7 @@ All examples are in .NET 5 using C# 9.0 or .NET 6 using C# 10.
 Example/Tutorial|Status
 ---------|----------
 Drag and Drop|![Research](https://img.shields.io/badge/status-done-green?style=for-the-badge)
-Minimal API | ![Research](https://img.shields.io/badge/status-testing-orange?style=for-the-badge)
+Code Only Approach | ![Research](https://img.shields.io/badge/status-testing-orange?style=for-the-badge)
 Multi Screen | ![Research](https://img.shields.io/badge/status-research-blue?style=for-the-badge)
 
 ### Drag And Drop
@@ -31,19 +31,16 @@ Additional set up (Clean UI) is needed https://github.com/stride3d/stride/issues
 #### Q3: Why the application gets problem with 10,000 boxes?
 - Probably there is a better way to instance boxes
 
-### Minimal Stride API
-Minimal APIs are architected to create APIs with minimal dependencies (improved in .NET 6). They are ideal for apps that want to include only the minimum files, features and dependencies.
+### Code Only Approach
+Project https://github.com/VaclavElias/stride-code-only
 
 **ToDos**
 - Make some examples
-- Minimal API for 2D
-- Minimal API for 3D
-  - Minimal API pure
-  - Miniaml API with nice set up (lights, sky, ..) out of the box
+- Code Only for 2D
+- Code Only for 3D
+  - Code Only with nice set up (lights, sky, ..) out of the box
 
-Explore https://docs.microsoft.com/en-us/aspnet/core/tutorials/min-web-api?view=aspnetcore-6.0&tabs=visual-studio
-
-#### Why would you use Minimal APIs and not Stride Editor?
+#### Why would you use Code Only and not Stride Editor?
 There might be many reasons, including:
 - You don't want to install anything on your computer
 - You want to start very quickly
