@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
@@ -10,6 +10,6 @@
         <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />-->
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\..\..\stride-code-only\src\Stride.GameDefaults\Stride.GameDefaults.csproj" />
+        <ProjectReference Include="..\..\..\..\stride-code-only\src\Stride.GameDefaults\Stride.GameDefaults.csproj" />
     </ItemGroup>
 </Project>

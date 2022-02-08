@@ -6,151 +6,226 @@ using (var game = new Game())
     {
         game.SetupBase3DScene();
 
-        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
-            {
-                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
-                new RotationComponentScript()
-            };
+        var vertices = new VertexPositionTexture[4];
+        vertices[0].Position = new Vector3(0f, 0.5f, 0f); // Orange
+        vertices[1].Position = new Vector3(0f, 1f, 0f); // Blue
+        vertices[2].Position = new Vector3(0f, 1f, 1f); // Green
+        vertices[3].Position = new Vector3(0f, 0f, 1f); // Red
 
-        entity.Scene = rootScene;
+        var vertexBuffer = Stride.Graphics.Buffer.Vertex.New(game.GraphicsDevice, vertices,
+                                                                     GraphicsResourceUsage.Dynamic);
 
-        var entity2 = game.CreatePrimitive(PrimitiveModelType.Teapot, material: game.NewDefaultMaterial(Color.Blue));
-        entity2.Scene = rootScene;
+        // 1,3,2
+        // 0,3,2
+        // 0,3,1
+        // 2,1,0
+        // 2,1,3
+        // 2,0,3
+        // 3,1,0
+        int[] indices = { 1, 3, 2, 0, 3, 2 };
+        var indexBuffer = Stride.Graphics.Buffer.Index.New(game.GraphicsDevice, indices);
 
-        var entity3 = game.CreatePrimitive(PrimitiveModelType.Cube);
-        entity3.Transform.Position = new Vector3(0, 2, 0);
-        entity3.Scene = rootScene;
-
-        var entity4 = game.CreatePrimitive(PrimitiveModelType.Torus);
-        entity4.Transform.Position = new Vector3(0, 4, 0);
-        entity4.Scene = rootScene;
-
-        var entity5 = game.CreatePrimitive(PrimitiveModelType.Cone);
-        entity5.Transform.Position = new Vector3(0, 6, 0);
-        entity5.Scene = rootScene;
-
-        var entity6 = game.CreatePrimitive(PrimitiveModelType.Capsule);
-        entity6.Transform.Position = new Vector3(0, 8, 0);
-        entity6.Scene = rootScene;
-    }
-}
-
-using (var game = new Game())
-{
-    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
-    var cubeGenerator = new CubesGenerator(game.Services);
-    var cameraEntityName = "Camera";
-
-    CameraComponent? cameraComponent = null;
-    Simulation? simulation = null;
-
-    game.Run(start: Start, update: Update);
-
-    void Start(Scene rootScene)
-    {
-        game.AddGraphicsCompositor();
-        game.AddMouseLookCamera(game.AddCamera(cameraEntityName));
-        game.AddLight();
-        game.AddSkybox();
-        game.AddGround();
-        game.AddProfiler();
-
-        cameraComponent = rootScene.Entities.SingleOrDefault(x => x.Name == cameraEntityName)?.Get<CameraComponent>();
-        simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
-
-        var model = new CubeProceduralModel().Generate(game.Services);
-
-        model.Materials.Add(game.NewDefaultMaterial());
-
-        entity.Components.Add(new ModelComponent(model));
-
-        entity.Scene = rootScene;
-
-        for (int i = 0; i < 1000; i++)
+        var mesh = new Mesh
         {
-            entity.AddChild(cubeGenerator.GetCube());
-        }
-    }
-
-    void Update(Scene rootScene, GameTime time)
-    {
-        if (simulation is null || cameraComponent is null) return;
-
-        if (game.Input.HasMouse && game.Input.IsMouseButtonPressed(MouseButton.Left))
-        {
-            var ray = cameraComponent.ScreenPointToRay(game.Input.MousePosition);
-
-            var hitResult = simulation.Raycast(ray.VectorNear.XYZ(), ray.VectorFar.XYZ());
-
-            if (hitResult.Succeeded)
+            Draw = new MeshDraw
             {
-                hitResult.Collider.Entity.Scene = null;
+                /* Vertex buffer and index buffer setup */
+                PrimitiveType = PrimitiveType.TriangleList,
+                DrawCount = indices.Length,
+                IndexBuffer = new IndexBufferBinding(indexBuffer, true, indices.Length),
+                VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer,
+                                  VertexPositionTexture.Layout, vertexBuffer.ElementCount) },
             }
-        }
-    }
-}
-
-using (var game = new Game())
-{
-    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
-    var angle = 0f;
-    var initialPosition = entity.Transform.Position;
-
-    game.Run(start: Start, update: Update);
-
-    void Start(Scene rootScene)
-    {
-        game.SetupBase3DScene();
-        game.AddProfiler();
-
-        var model = new CubeProceduralModel().Generate(game.Services);
-
-        model.Materials.Add(game.NewDefaultMaterial());
-
-        entity.Components.Add(new ModelComponent(model));
-
-        entity.Scene = rootScene;
-    }
-
-    void Update(Scene rootScene, GameTime time)
-    {
-        angle += 1f * (float)time.Elapsed.TotalSeconds;
-
-        var offset = new Vector3((float)Math.Sin(angle), 0, (float)Math.Cos(angle)) * 1f;
-
-        entity.Transform.Position = initialPosition + offset;
-    }
-}
-
-
-using (var game = new Game())
-{
-    game.Run(start: Start);
-
-    void Start(Scene rootScene)
-    {
-        // adds default camera, camera script, skybox, ground, ..like through UI
-        game.SetupBase3DScene();
-        game.AddProfiler();
-
-        var model = new CubeProceduralModel().Generate(game.Services);
-
-        model.Materials.Add(game.NewDefaultMaterial());
-
-        var entity = new Entity(new Vector3(1f, 0.5f, -3f))
-        {
-            new ModelComponent(model),
-            new MotionComponentScript()
         };
 
+        var model = new Model();
+        model.Meshes.Add(mesh);
+        model.Materials.Add(game.NewDefaultMaterial());
+
+        var meshEntity = new Entity(new Vector3(0, 0, 0));
+        meshEntity.Components.Add(new ModelComponent(model));
+        meshEntity.Scene = rootScene;
+
+
+        var entityDot1 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Orange), includeCollider: false);
+        entityDot1.Transform.Scale = new Vector3(0.1f);
+        entityDot1.Transform.Position = vertices[0].Position;
+        meshEntity.AddChild(entityDot1);
+
+        var entityDot2 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Blue), includeCollider: false);
+        entityDot2.Transform.Scale = new Vector3(0.1f);
+        entityDot2.Transform.Position = vertices[1].Position;
+        meshEntity.AddChild(entityDot2);
+
+        var entityDot3 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Green), includeCollider: false);
+        entityDot3.Transform.Scale = new Vector3(0.1f);
+        entityDot3.Transform.Position = vertices[2].Position;
+        meshEntity.AddChild(entityDot3);
+
+        var entityDot4 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Red), includeCollider: false);
+        entityDot4.Transform.Scale = new Vector3(0.1f);
+        entityDot4.Transform.Position = vertices[3].Position;
+        meshEntity.AddChild(entityDot4);
+
+        var entity = game.CreatePrimitive(PrimitiveModelType.Capsule);
+        entity.Transform.Position = new Vector3(0, 8, 0);
         entity.Scene = rootScene;
-
-        var entity2 = new Entity(new Vector3(1, 0.5f, 3))
-            {
-                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
-                new MotionComponentScript()
-            };
-
-        entity2.Scene = rootScene;
     }
 }
+
+//using (var game = new Game())
+//{
+//    game.Run(start: Start);
+
+//    void Start(Scene rootScene)
+//    {
+//        game.SetupBase3DScene();
+
+//        var entity = new Entity(new Vector3(1f, 0.5f, 3f))
+//            {
+//                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
+//                new RotationComponentScript()
+//            };
+
+//        entity.Scene = rootScene;
+
+//        var entity2 = game.CreatePrimitive(PrimitiveModelType.Teapot, material: game.NewDefaultMaterial(Color.Blue));
+//        entity2.Scene = rootScene;
+
+//        var entity3 = game.CreatePrimitive(PrimitiveModelType.Cube);
+//        entity3.Transform.Position = new Vector3(0, 2, 0);
+//        entity3.Scene = rootScene;
+
+//        var entity4 = game.CreatePrimitive(PrimitiveModelType.Torus);
+//        entity4.Transform.Position = new Vector3(0, 4, 0);
+//        entity4.Scene = rootScene;
+
+//        var entity5 = game.CreatePrimitive(PrimitiveModelType.Cone);
+//        entity5.Transform.Position = new Vector3(0, 6, 0);
+//        entity5.Scene = rootScene;
+
+//        var entity6 = game.CreatePrimitive(PrimitiveModelType.Capsule);
+//        entity6.Transform.Position = new Vector3(0, 8, 0);
+//        entity6.Scene = rootScene;
+//    }
+//}
+
+//using (var game = new Game())
+//{
+//    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
+//    var cubeGenerator = new CubesGenerator(game.Services);
+//    var cameraEntityName = "Camera";
+
+//    CameraComponent? cameraComponent = null;
+//    Simulation? simulation = null;
+
+//    game.Run(start: Start, update: Update);
+
+//    void Start(Scene rootScene)
+//    {
+//        game.AddGraphicsCompositor();
+//        game.AddMouseLookCamera(game.AddCamera(cameraEntityName));
+//        game.AddLight();
+//        game.AddSkybox();
+//        game.AddGround();
+//        game.AddProfiler();
+
+//        cameraComponent = rootScene.Entities.SingleOrDefault(x => x.Name == cameraEntityName)?.Get<CameraComponent>();
+//        simulation = game.SceneSystem.SceneInstance.GetProcessor<PhysicsProcessor>()?.Simulation;
+
+//        var model = new CubeProceduralModel().Generate(game.Services);
+
+//        model.Materials.Add(game.NewDefaultMaterial());
+
+//        entity.Components.Add(new ModelComponent(model));
+
+//        entity.Scene = rootScene;
+
+//        for (int i = 0; i < 1000; i++)
+//        {
+//            entity.AddChild(cubeGenerator.GetCube());
+//        }
+//    }
+
+//    void Update(Scene rootScene, GameTime time)
+//    {
+//        if (simulation is null || cameraComponent is null) return;
+
+//        if (game.Input.HasMouse && game.Input.IsMouseButtonPressed(MouseButton.Left))
+//        {
+//            var ray = cameraComponent.ScreenPointToRay(game.Input.MousePosition);
+
+//            var hitResult = simulation.Raycast(ray.VectorNear.XYZ(), ray.VectorFar.XYZ());
+
+//            if (hitResult.Succeeded)
+//            {
+//                hitResult.Collider.Entity.Scene = null;
+//            }
+//        }
+//    }
+//}
+
+//using (var game = new Game())
+//{
+//    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
+//    var angle = 0f;
+//    var initialPosition = entity.Transform.Position;
+
+//    game.Run(start: Start, update: Update);
+
+//    void Start(Scene rootScene)
+//    {
+//        game.SetupBase3DScene();
+//        game.AddProfiler();
+
+//        var model = new CubeProceduralModel().Generate(game.Services);
+
+//        model.Materials.Add(game.NewDefaultMaterial());
+
+//        entity.Components.Add(new ModelComponent(model));
+
+//        entity.Scene = rootScene;
+//    }
+
+//    void Update(Scene rootScene, GameTime time)
+//    {
+//        angle += 1f * (float)time.Elapsed.TotalSeconds;
+
+//        var offset = new Vector3((float)Math.Sin(angle), 0, (float)Math.Cos(angle)) * 1f;
+
+//        entity.Transform.Position = initialPosition + offset;
+//    }
+//}
+
+
+//using (var game = new Game())
+//{
+//    game.Run(start: Start);
+
+//    void Start(Scene rootScene)
+//    {
+//        // adds default camera, camera script, skybox, ground, ..like through UI
+//        game.SetupBase3DScene();
+//        game.AddProfiler();
+
+//        var model = new CubeProceduralModel().Generate(game.Services);
+
+//        model.Materials.Add(game.NewDefaultMaterial());
+
+//        var entity = new Entity(new Vector3(1f, 0.5f, -3f))
+//        {
+//            new ModelComponent(model),
+//            new MotionComponentScript()
+//        };
+
+//        entity.Scene = rootScene;
+
+//        var entity2 = new Entity(new Vector3(1, 0.5f, 3))
+//            {
+//                new ModelComponent(new CubeProceduralModel().Generate(game.Services)),
+//                new MotionComponentScript()
+//            };
+
+//        entity2.Scene = rootScene;
+//    }
+//}
