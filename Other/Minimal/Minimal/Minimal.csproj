@@ -7,9 +7,10 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Stride.Physics" Version="4.1.0.1" />
+        <PackageReference Include="CodeCapital.Stride.GameDefaults" Version="1.0.0-preview.4" />
         <!--<PackageReference Include="Stride.Core.Assets.CompilerApp" Version="4.1.0.1-beta" IncludeAssets="build;buildTransitive" />-->
     </ItemGroup>
-    <ItemGroup>
+    <!--<ItemGroup>
         <ProjectReference Include="..\..\..\..\stride-code-only\src\Stride.GameDefaults\Stride.GameDefaults.csproj" />
-    </ItemGroup>
+    </ItemGroup>-->
 </Project>
