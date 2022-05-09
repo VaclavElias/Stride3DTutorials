@@ -6,6 +6,19 @@ using (var game = new Game())
     {
         game.SetupBase3DScene();
 
+        // Approach 1
+
+        var myModel = new MyProceduralModel();
+        var model2 = myModel.Generate(game.Services);
+        model2.Materials.Add(game.NewDefaultMaterial());
+
+        var meshEntity2 = new Entity(new Vector3(1, 1, 1));
+        meshEntity2.Components.Add(new ModelComponent(model2));
+        meshEntity2.Scene = rootScene;
+
+
+        // Approach 2
+
         var vertices = new VertexPositionTexture[4];
         vertices[0].Position = new Vector3(0f, 0.5f, 0f); // Orange
         vertices[1].Position = new Vector3(0f, 1f, 0f); // Blue
@@ -14,7 +27,7 @@ using (var game = new Game())
 
         var vertexBuffer = Stride.Graphics.Buffer.Vertex.New(game.GraphicsDevice, vertices,
                                                                      GraphicsResourceUsage.Dynamic);
-
+        // clock wise direction of vertices
         // 1,3,2
         // 0,3,2
         // 0,3,1
@@ -22,7 +35,7 @@ using (var game = new Game())
         // 2,1,3
         // 2,0,3
         // 3,1,0
-        int[] indices = { 1, 3, 2, 0, 3, 2 };
+        int[] indices = { 0, 3, 2, 0, 2, 1 };
         var indexBuffer = Stride.Graphics.Buffer.Index.New(game.GraphicsDevice, indices);
 
         var mesh = new Mesh
@@ -70,6 +83,42 @@ using (var game = new Game())
         var entity = game.CreatePrimitive(PrimitiveModelType.Capsule);
         entity.Transform.Position = new Vector3(0, 8, 0);
         entity.Scene = rootScene;
+    }
+}
+
+public class MyProceduralModel : PrimitiveProceduralModelBase
+{
+    // A custom property that shows up in Game Studio
+    /// <summary>
+    /// Gets or sets the size of the model.
+    /// </summary>
+    public Vector3 Size { get; set; } = Vector3.One;
+
+    protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
+    {
+        // First generate the arrays for vertices and indices with the correct size
+        var vertexCount = 4;
+        var indexCount = 6;
+        var vertices = new VertexPositionNormalTexture[vertexCount];
+        var indices = new int[indexCount];
+
+        // Create custom vertices, in this case just a quad facing in Y direction
+        var normal = Vector3.UnitZ;
+        vertices[0] = new VertexPositionNormalTexture(new Vector3(-0.5f, 0.5f, 0) * Size, normal, new Vector2(0, 0));
+        vertices[1] = new VertexPositionNormalTexture(new Vector3(0.5f, 0.5f, 0) * Size, normal, new Vector2(1, 0));
+        vertices[2] = new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, 0) * Size, normal, new Vector2(0, 1));
+        vertices[3] = new VertexPositionNormalTexture(new Vector3(0.5f, -0.5f, 0) * Size, normal, new Vector2(1, 1));
+
+        // Create custom indices
+        indices[0] = 0;
+        indices[1] = 1;
+        indices[2] = 2;
+        indices[3] = 1;
+        indices[4] = 3;
+        indices[5] = 2;
+
+        // Create the primitive object for further processing by the base class
+        return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false) { Name = "MyModel" };
     }
 }
 
