@@ -1,126 +1,142 @@
-using (var game = new Game())
+using var game = new Game();
+
+game.Run(start: (Scene rootScene) =>
 {
-    game.Run(start: Start);
+    game.SetupBase3DScene();
 
-    void Start(Scene rootScene)
-    {
-        game.SetupBase3DScene();
+    var entity = new Entity(new Vector3(1f, 0.5f, 3f));
 
-        // Approach 1
+    entity.Add(new ModelComponent(new CubeProceduralModel().Generate(game.Services)));
 
-        var myModel = new MyProceduralModel();
-        var model2 = myModel.Generate(game.Services);
-        model2.Materials.Add(game.NewDefaultMaterial());
-
-        var meshEntity2 = new Entity(new Vector3(1, 1, 1));
-        meshEntity2.Components.Add(new ModelComponent(model2));
-        meshEntity2.Scene = rootScene;
+    entity.Scene = rootScene;
+});
 
 
-        // Approach 2
-
-        var vertices = new VertexPositionTexture[4];
-        vertices[0].Position = new Vector3(0f, 0.5f, 0f); // Orange
-        vertices[1].Position = new Vector3(0f, 1f, 0f); // Blue
-        vertices[2].Position = new Vector3(0f, 1f, 1f); // Green
-        vertices[3].Position = new Vector3(0f, 0f, 1f); // Red
-
-        var vertexBuffer = Stride.Graphics.Buffer.Vertex.New(game.GraphicsDevice, vertices,
-                                                                     GraphicsResourceUsage.Dynamic);
-        // clock wise direction of vertices
-        // 1,3,2
-        // 0,3,2
-        // 0,3,1
-        // 2,1,0
-        // 2,1,3
-        // 2,0,3
-        // 3,1,0
-        int[] indices = { 0, 3, 2, 0, 2, 1 };
-        var indexBuffer = Stride.Graphics.Buffer.Index.New(game.GraphicsDevice, indices);
-
-        var mesh = new Mesh
-        {
-            Draw = new MeshDraw
-            {
-                /* Vertex buffer and index buffer setup */
-                PrimitiveType = PrimitiveType.TriangleList,
-                DrawCount = indices.Length,
-                IndexBuffer = new IndexBufferBinding(indexBuffer, true, indices.Length),
-                VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer,
-                                  VertexPositionTexture.Layout, vertexBuffer.ElementCount) },
-            }
-        };
-
-        var model = new Model();
-        model.Meshes.Add(mesh);
-        model.Materials.Add(game.NewDefaultMaterial());
-
-        var meshEntity = new Entity(new Vector3(0, 0, 0));
-        meshEntity.Components.Add(new ModelComponent(model));
-        meshEntity.Scene = rootScene;
 
 
-        var entityDot1 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Orange), includeCollider: false);
-        entityDot1.Transform.Scale = new Vector3(0.1f);
-        entityDot1.Transform.Position = vertices[0].Position;
-        meshEntity.AddChild(entityDot1);
+//using (var game = new Game())
+//{
+//    game.Run(start: Start);
 
-        var entityDot2 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Blue), includeCollider: false);
-        entityDot2.Transform.Scale = new Vector3(0.1f);
-        entityDot2.Transform.Position = vertices[1].Position;
-        meshEntity.AddChild(entityDot2);
+//    void Start(Scene rootScene)
+//    {
+//        game.SetupBase3DScene();
 
-        var entityDot3 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Green), includeCollider: false);
-        entityDot3.Transform.Scale = new Vector3(0.1f);
-        entityDot3.Transform.Position = vertices[2].Position;
-        meshEntity.AddChild(entityDot3);
+//        // Approach 1
 
-        var entityDot4 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Red), includeCollider: false);
-        entityDot4.Transform.Scale = new Vector3(0.1f);
-        entityDot4.Transform.Position = vertices[3].Position;
-        meshEntity.AddChild(entityDot4);
+//        var myModel = new MyProceduralModel();
+//        var model2 = myModel.Generate(game.Services);
+//        model2.Materials.Add(game.NewDefaultMaterial());
 
-        var entity = game.CreatePrimitive(PrimitiveModelType.Capsule);
-        entity.Transform.Position = new Vector3(0, 8, 0);
-        entity.Scene = rootScene;
-    }
-}
+//        var meshEntity2 = new Entity(new Vector3(1, 1, 1));
+//        meshEntity2.Components.Add(new ModelComponent(model2));
+//        meshEntity2.Scene = rootScene;
 
-public class MyProceduralModel : PrimitiveProceduralModelBase
-{
-    // A custom property that shows up in Game Studio
-    /// <summary>
-    /// Gets or sets the size of the model.
-    /// </summary>
-    public Vector3 Size { get; set; } = Vector3.One;
 
-    protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
-    {
-        // First generate the arrays for vertices and indices with the correct size
-        var vertexCount = 4;
-        var indexCount = 6;
-        var vertices = new VertexPositionNormalTexture[vertexCount];
-        var indices = new int[indexCount];
+//        // Approach 2
 
-        // Create custom vertices, in this case just a quad facing in Y direction
-        var normal = Vector3.UnitZ;
-        vertices[0] = new VertexPositionNormalTexture(new Vector3(-0.5f, 0.5f, 0) * Size, normal, new Vector2(0, 0));
-        vertices[1] = new VertexPositionNormalTexture(new Vector3(0.5f, 0.5f, 0) * Size, normal, new Vector2(1, 0));
-        vertices[2] = new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, 0) * Size, normal, new Vector2(0, 1));
-        vertices[3] = new VertexPositionNormalTexture(new Vector3(0.5f, -0.5f, 0) * Size, normal, new Vector2(1, 1));
+//        var vertices = new VertexPositionTexture[4];
+//        vertices[0].Position = new Vector3(0f, 0.5f, 0f); // Orange
+//        vertices[1].Position = new Vector3(0f, 1f, 0f); // Blue
+//        vertices[2].Position = new Vector3(0f, 1f, 1f); // Green
+//        vertices[3].Position = new Vector3(0f, 0f, 1f); // Red
 
-        // Create custom indices
-        indices[0] = 0;
-        indices[1] = 1;
-        indices[2] = 2;
-        indices[3] = 1;
-        indices[4] = 3;
-        indices[5] = 2;
+//        var vertexBuffer = Stride.Graphics.Buffer.Vertex.New(game.GraphicsDevice, vertices,
+//                                                                     GraphicsResourceUsage.Dynamic);
+//        // clock wise direction of vertices
+//        // 1,3,2
+//        // 0,3,2
+//        // 0,3,1
+//        // 2,1,0
+//        // 2,1,3
+//        // 2,0,3
+//        // 3,1,0
+//        int[] indices = { 0, 3, 2, 0, 2, 1 };
+//        var indexBuffer = Stride.Graphics.Buffer.Index.New(game.GraphicsDevice, indices);
 
-        // Create the primitive object for further processing by the base class
-        return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false) { Name = "MyModel" };
-    }
-}
+//        var mesh = new Mesh
+//        {
+//            Draw = new MeshDraw
+//            {
+//                /* Vertex buffer and index buffer setup */
+//                PrimitiveType = PrimitiveType.TriangleList,
+//                DrawCount = indices.Length,
+//                IndexBuffer = new IndexBufferBinding(indexBuffer, true, indices.Length),
+//                VertexBuffers = new[] { new VertexBufferBinding(vertexBuffer,
+//                                  VertexPositionTexture.Layout, vertexBuffer.ElementCount) },
+//            }
+//        };
+
+//        var model = new Model();
+//        model.Meshes.Add(mesh);
+//        model.Materials.Add(game.NewDefaultMaterial());
+
+//        var meshEntity = new Entity(new Vector3(0, 0, 0));
+//        meshEntity.Components.Add(new ModelComponent(model));
+//        meshEntity.Scene = rootScene;
+
+
+//        var entityDot1 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Orange), includeCollider: false);
+//        entityDot1.Transform.Scale = new Vector3(0.1f);
+//        entityDot1.Transform.Position = vertices[0].Position;
+//        meshEntity.AddChild(entityDot1);
+
+//        var entityDot2 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Blue), includeCollider: false);
+//        entityDot2.Transform.Scale = new Vector3(0.1f);
+//        entityDot2.Transform.Position = vertices[1].Position;
+//        meshEntity.AddChild(entityDot2);
+
+//        var entityDot3 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Green), includeCollider: false);
+//        entityDot3.Transform.Scale = new Vector3(0.1f);
+//        entityDot3.Transform.Position = vertices[2].Position;
+//        meshEntity.AddChild(entityDot3);
+
+//        var entityDot4 = game.CreatePrimitive(PrimitiveModelType.Sphere, material: game.NewDefaultMaterial(Color.Red), includeCollider: false);
+//        entityDot4.Transform.Scale = new Vector3(0.1f);
+//        entityDot4.Transform.Position = vertices[3].Position;
+//        meshEntity.AddChild(entityDot4);
+
+//        var entity = game.CreatePrimitive(PrimitiveModelType.Capsule);
+//        entity.Transform.Position = new Vector3(0, 8, 0);
+//        entity.Scene = rootScene;
+//    }
+//}
+
+//public class MyProceduralModel : PrimitiveProceduralModelBase
+//{
+//    // A custom property that shows up in Game Studio
+//    /// <summary>
+//    /// Gets or sets the size of the model.
+//    /// </summary>
+//    public Vector3 Size { get; set; } = Vector3.One;
+
+//    protected override GeometricMeshData<VertexPositionNormalTexture> CreatePrimitiveMeshData()
+//    {
+//        // First generate the arrays for vertices and indices with the correct size
+//        var vertexCount = 4;
+//        var indexCount = 6;
+//        var vertices = new VertexPositionNormalTexture[vertexCount];
+//        var indices = new int[indexCount];
+
+//        // Create custom vertices, in this case just a quad facing in Y direction
+//        var normal = Vector3.UnitZ;
+//        vertices[0] = new VertexPositionNormalTexture(new Vector3(-0.5f, 0.5f, 0) * Size, normal, new Vector2(0, 0));
+//        vertices[1] = new VertexPositionNormalTexture(new Vector3(0.5f, 0.5f, 0) * Size, normal, new Vector2(1, 0));
+//        vertices[2] = new VertexPositionNormalTexture(new Vector3(-0.5f, -0.5f, 0) * Size, normal, new Vector2(0, 1));
+//        vertices[3] = new VertexPositionNormalTexture(new Vector3(0.5f, -0.5f, 0) * Size, normal, new Vector2(1, 1));
+
+//        // Create custom indices
+//        indices[0] = 0;
+//        indices[1] = 1;
+//        indices[2] = 2;
+//        indices[3] = 1;
+//        indices[4] = 3;
+//        indices[5] = 2;
+
+//        // Create the primitive object for further processing by the base class
+//        return new GeometricMeshData<VertexPositionNormalTexture>(vertices, indices, isLeftHanded: false) { Name = "MyModel" };
+//    }
+//}
 
 //using (var game = new Game())
 //{
