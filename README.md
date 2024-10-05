@@ -1,5 +1,8 @@
 # Stride Game Engine Tutorials
 
+> [!WARNING]
+> All content has been moved to the Stride Community Toolkit repository, which can be found here: https://github.com/stride3d/stride-community-toolkit.
+
 This repo is going to list some tutorials and examples for Stride - Open-source C# Game Engine.
 
 https://www.stride3d.net/
